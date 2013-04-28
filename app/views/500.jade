@@ -4,13 +4,9 @@
     Time: 下午3:28
 extends layouts/default
 
-block main
-    h1 Oops something went wrong
-    br
-    span 500
-
 block content
-    #error-message-box
-        #error-stack-trace
-            pre
-                code!= error
+    div.container
+        h1 500
+        p Oops something went wrong
+        pre
+            code!=error

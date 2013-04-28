@@ -4,13 +4,9 @@
     Time: 下午3:26
 extends layouts/default
 
-block main
-    h1 Oops something went wrong
-    br
-    span 404
-
 block content
-    #error-message-box
-        #error-stack-trace
-            pre
-                code!= error
+    div.container
+        h1 404
+        p=url
+        =error
+
