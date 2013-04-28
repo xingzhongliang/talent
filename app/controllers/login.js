@@ -1,7 +1,6 @@
 /*
  * login page.
  */
- function login (req, res) {
+module.exports = function (req, res) {
     res.render('login', { title: 'login' });
 };
-module.exports = login;

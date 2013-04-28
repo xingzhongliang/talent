@@ -1,0 +1,16 @@
+//
+    User: laichendong
+    Date: 13-4-28
+    Time: 下午3:26
+extends layouts/default
+
+block main
+    h1 Oops something went wrong
+    br
+    span 404
+
+block content
+    #error-message-box
+        #error-stack-trace
+            pre
+                code!= error
