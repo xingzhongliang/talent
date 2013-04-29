@@ -11,6 +11,6 @@
 		"jade": "*",
 		"less-middleware": "*",
 		"mongoose": "*",
-		"soap": "*"
+		"soap": "0.2.7"
 	}
 }

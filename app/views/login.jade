@@ -1,0 +1,13 @@
+//
+    登陆页面
+    User: laichendong
+    Date: 13-4-23
+    Time: 上午11:31
+extends layouts/default
+block content
+    div.container
+        form.form-signin(method="post", action="")
+            h2.form-signin-heading 登录
+            input.input-block-level(type="text",placeholder="ERP账号",name="name")
+            input.input-block-level(type="password",placeholder="密码",name="passwd")
+            button.btn.btn-large.btn-primary(type="submit") 登录
