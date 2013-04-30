@@ -18,4 +18,8 @@ module.exports = function (app) {
     app.get('/login', login.login);
     app.post('/doLogin', login.doLogin);
 
+    // 管理控制台
+    var admin = require("../app/controllers/admin");
+    app.get("/admin", admin.index);
+
 };
