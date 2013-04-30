@@ -10,5 +10,9 @@ module.exports = {
     root: rootPath,
     app: {
         name: '京东达人秀'
+    },
+    admins:["bjlaichendong"],
+    isAdmin: function(userName){
+        return this.admins.contain(userName);
     }
 };
