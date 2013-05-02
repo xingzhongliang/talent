@@ -17,6 +17,7 @@ module.exports = function (app) {
     var login = require("../app/controllers/login");
     app.get('/login', login.login);
     app.post('/doLogin', login.doLogin);
+    app.get('/doLogout', login.doLogout);
 
     // 管理控制台
     var admin = require("../app/controllers/admin");

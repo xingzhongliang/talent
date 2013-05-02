@@ -71,6 +71,8 @@ exports.doLogin = function (req, res) {
  */
 exports.doLogout = function (req, res) {
     if (req.session.user) {
-
+        req.session.user = undefined;
+        req.session.save();
     }
-}
+    res.redirect("/");
+};
