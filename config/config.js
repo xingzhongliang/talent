@@ -13,6 +13,6 @@ module.exports = {
     },
     admins:["bjlaichendong"],
     isAdmin: function(userName){
-        return this.admins.contain(userName);
+        return this.admins.toString().indexOf(userName) >= 0;
     }
 };

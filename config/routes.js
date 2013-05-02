@@ -20,6 +20,7 @@ module.exports = function (app) {
 
     // 管理控制台
     var admin = require("../app/controllers/admin");
-    app.get("/admin", admin.index);
+    var auth = require("../config/middlewares/auth");
+    app.get("/admin", auth("admin"), admin.index);
 
 };
