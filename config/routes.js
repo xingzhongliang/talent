@@ -13,7 +13,7 @@ module.exports = function (app) {
         });
     });
 
-    //登陆页 - 无权限控制
+    // 登录登出
     var login = require("../app/controllers/login");
     app.get('/login', login.login);
     app.post('/doLogin', login.doLogin);
