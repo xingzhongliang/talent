@@ -1,5 +1,5 @@
-var User = require("../models/user")
-    , config = require("../../config/config");
+var User = require("../models/user");
+var config = require("../../config/config");
 /*
  * login page.
  */
