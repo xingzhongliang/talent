@@ -4,7 +4,7 @@ var User = require("../models/user")
  * login page.
  */
 exports.login = function (req, res) {
-    res.render('login', { title: 'login' });
+    res.render('login', { title: 'login', target: req.param("target")});
 };
 
 /**
@@ -30,7 +30,13 @@ exports.doLogin = function (req, res) {
         // todo 完善user对象中的信息
         req.session.user = user;
         req.session.save();
-        res.redirect("/");
+
+        var target = req.body.target;
+        if (target) {
+            res.redirect(target);
+        } else {
+            res.redirect("/");
+        }
 
 //        var soap = require('soap');
 //        var url = 'http://erp1.360buy.com/hrmservice/DeptWebService.asmx?wsdl';
