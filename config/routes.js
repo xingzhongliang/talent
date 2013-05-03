@@ -5,6 +5,8 @@
  * @time 14:51
  * @param app
  */
+// require auth模块
+var auth = require("../config/middlewares/auth");
 module.exports = function (app) {
     //首页
     app.get('/', function (req, res) {
@@ -21,7 +23,6 @@ module.exports = function (app) {
 
     // 管理控制台
     var admin = require("../app/controllers/admin");
-    var auth = require("../config/middlewares/auth");
     app.get("/admin", auth("admin"), admin.index);
 
 };
