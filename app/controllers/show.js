@@ -23,3 +23,13 @@ exports.list = function (req, res) {
     var area = req.param("area");
     res.render("show/list", {"title": area + "赛区 - " + config.app.name});
 };
+
+/**
+ * 个人详情页
+ * @param req
+ * @param res
+ */
+exports.person = function (req, res) {
+    var erpId = req.param("erpId");
+    res.render("show/person", {title: erpId + " - " + config.app.name});
+};
