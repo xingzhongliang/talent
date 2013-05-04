@@ -76,9 +76,7 @@ exports.doLogin = function (req, res) {
  * @param res
  */
 exports.doLogout = function (req, res) {
-    if (req.session.user) {
-        req.session.user = undefined;
-        req.session.save();
-    }
-    res.redirect("/");
+    req.session.destroy(function(){
+        res.redirect('/');
+    });
 };
