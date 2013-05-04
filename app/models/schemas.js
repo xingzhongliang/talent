@@ -40,36 +40,6 @@ var Token = new Schema({
     }}
 });
 
-/**
- * 候选人
- * @type {Schema}
- */
-var Candidate = new Schema({
-    // 姓名
-    name: String
-    // ERP ID
-    , erpId: { type: String, required: true, index: { unique: true } }
-    // 部门
-    , department: String
-    // 所在地
-    , area: { type: String, index: true }
-    // 所属投票主题
-    , subject: { type: String, index: true }
-    // 头像
-    , avatar: String
-    // 简介
-    , introduce: String
-    // 才艺文字展示
-    , witOfText: String
-    // 才艺图片展示
-    , witOfImg: String
-    // 才艺音频展示
-    , witOfAudio: String
-    // 才艺视频展示
-    , witOfVideo: String
-    // 得票数
-    , votes: Number
-});
 
 /**
  * 投票
