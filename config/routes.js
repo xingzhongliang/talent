@@ -14,8 +14,11 @@ module.exports = function (app) {
     app.get('/', show.index);
     // 列表页
     app.get("/list/:area", show.list);
+    var candidate = require("../app/controllers/candidate");
+    app.get("/candidate/new", candidate.new);
     // 个人详情页
-    app.get("/person/:erpId", show.person);
+    app.get("/candidate/:erpId", show.candidate);
+
 
     var login = require("../app/controllers/login");
     // 登录登出

@@ -47,6 +47,14 @@ CandidateSchema.path("erpId").validate(function (erpId) {
 
 /******************* 属性验证方法结束 ******************/
 
+/******************* 成员方法开始 ******************/
+CandidateSchema.methods = {
+    insert: function(callBack) {
+        this.save(callBack);
+    }
+};
+/******************* 成员方法结束 ******************/
+
 /******************* 静态方法开始 ******************/
 
 CandidateSchema.statics = {

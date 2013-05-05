@@ -15,7 +15,7 @@ exports.index = function (req, res) {
 };
 
 /**
- * 列表页 （各个地区的页面）
+ * 候选人列表页 （各个地区的页面）
  * @param req
  * @param res
  */
@@ -25,11 +25,11 @@ exports.list = function (req, res) {
 };
 
 /**
- * 个人详情页
+ * 候选人详情页
  * @param req
  * @param res
  */
-exports.person = function (req, res) {
+exports.candidate = function (req, res) {
     var erpId = req.param("erpId");
     res.render("show/person", {title: erpId + " - " + config.app.name});
 };
