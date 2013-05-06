@@ -4,7 +4,7 @@ var config = require("../../config/config");
  * login page.
  */
 exports.login = function (req, res) {
-    res.render('login', { title: 'login', target: req.param("target")});
+    res.render('login', { target: req.param("target")});
 };
 
 /**

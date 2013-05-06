@@ -20,7 +20,7 @@ module.exports = function (app) {
     app.get("/candidate/:erpId", show.candidate);
 
 
-    var login = require("../app/controllers/login");
+    var login = require("../app/controllers/passport");
     // 登录登出
     app.get('/login', login.login);
     app.post('/doLogin', login.doLogin);
