@@ -13,6 +13,7 @@ module.exports = function (app, config) {
         app.set('view engine', 'jade');
         app.use(express.favicon());
         app.use(express.logger('dev'));
+        app.use(require("./middlewares/utils")(config.app.name));
         app.use(express.bodyParser());
         app.use(express.methodOverride());
         app.use(express.cookieParser('password is nothing'));
