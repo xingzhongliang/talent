@@ -3,10 +3,10 @@
  * @param user
  * @constructor
  */
-
 function User(user) {
     this.name = user.name;
-    this.role = user.role;
+    this.erpId = user.erpId;
+    this.role = user.role; //  [] user, candidate, admin
 };
 
 module.exports = User;

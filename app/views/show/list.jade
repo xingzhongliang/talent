@@ -1,32 +1,19 @@
 //
-   User: laichendong
-   Date: 13-4-23
-   Time: 上午11:31
-extends layouts/default
+    列表页
+    User: laichendong
+    Date: 13-5-3
+    Time: 下午4:
+extends ../layouts/default
 block content
     .w
         .list-area
             .list-area-title
-                table
-                    tr
-                        td.curr
-                            h2
-                                a(href="") 北京赛区
-                        td
-                            h2
-                                a(href="") 成都赛区
-                        td
-                            h2
-                                a(href="") 沈阳赛区
-                        td
-                            h2
-                                a(href="") 南京赛区
+                h2 北京赛区
             -for(var j=0; j<3; j++)
+
                 .list-category
                     h3 大师级程序员
-                        .more
-                            a(href="") 更多&gt;
-                    -for(var i=0; i<3; i++)
+                    -for(var i=0; i<10; i++)
                         .list-item
                             .portrait
                                 img(src="", alt="达人的姓名")
@@ -42,3 +29,4 @@ block content
                                     strong 1423
                             .toupiao
                                 a(href="").btn.btn-r1 投票
+

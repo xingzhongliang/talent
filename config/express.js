@@ -13,29 +13,32 @@ module.exports = function (app, config) {
         app.set('view engine', 'jade');
         app.use(express.favicon());
         app.use(express.logger('dev'));
+        app.use(require("./middlewares/utils")(config.app.name));
         app.use(express.bodyParser());
         app.use(express.methodOverride());
         app.use(express.cookieParser('password is nothing'));
         app.use(express.session());
         app.use(app.router);
         app.use(require('less-middleware')({ src: config.root + '/public' }));
-        app.use(express.static( config.root + '/public'));
+        app.use(express.static(config.root + '/public'));
 
-        // 全局错误处理
+        // 全局错误处理 404 和 500
         app.use(function (err, req, res, next) {
             // treat as 404
-            if (~err.message.indexOf('not found')) return next();
+            if (~err.message.indexOf('not found')) {
+                next();
+            }
 
             // log it
             console.error(err.stack);
 
             // error page
-            res.status(500).render('500', { error: err.stack });
+            res.status(500).render('500', {title: "500", error: err.stack });
         });
 
         // assume 404 since no middleware responded
         app.use(function (req, res, next) {
-            res.status(404).render('404', { url: req.originalUrl, error: 'Not found' });
+            res.status(404).render('404', {title: "404", url: req.originalUrl, error: 'Not found' });
         });
     });
 };

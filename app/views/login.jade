@@ -3,11 +3,12 @@
     User: laichendong
     Date: 13-4-23
     Time: 上午11:31
-extends layouts/default
+extends layouts/bootstrap
 block content
     div.container
-        form.form-signin(method="post", action="")
+        form.form-signin(method="post", action="/doLogin")
             h2.form-signin-heading 登录
-            input.input-block-level(type="text",placeholder="ERP账号",name="name")
-            input.input-block-level(type="password",placeholder="密码",name="passwd")
+            input.input-block-level(type="text",placeholder="ERP账号",name="userName")
+            input.input-block-level(type="password",placeholder="密码",name="password")
+            input(type="hidden", name="target", value=target)
             button.btn.btn-large.btn-primary(type="submit") 登录
