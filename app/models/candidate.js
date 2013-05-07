@@ -10,40 +10,23 @@ var Schema = mongoose.Schema;
  * @type {Schema}
  */
 var CandidateSchema = new Schema({
-    // 姓名
-    name: String
-    // ERP ID
-    , erpId: { type: String, required: true, index: { unique: true } }
-    // 部门
-    , department: String
-    // 所在地
-    , area: { type: String, index: true }
-    // 所属投票主题
-    , subject: { type: String, index: true }
-    // 头像
-    , avatar: String
-    // 简介
-    , introduce: String
-    // 才艺文字展示
-    , witOfText: String
-    // 才艺图片展示
-    , witOfImg: String
-    // 才艺音频展示
-    , witOfAudio: String
-    // 才艺视频展示
-    , witOfVideo: String
-    // 得票数
-    , votes: Number
+    name: String // 姓名/名称
+    , value: { type: String, required: true } // 用于标识candidate的值 候选者是人时为候选人的erpId，如果是其他，则由系统指定
+    , subject: String // 属于哪个subject
+    , scope: String // 属于哪个scope
+    , group: String // 属于哪个group
+    , department: String // 部门 candidate是人时提供
+    , avatar: String // 头像 candidate是人时提供
+    , introduce: String // 简介
+    , witOfText: String // 才艺文字展示
+    , witOfImg: String // 才艺图片展示
+    , witOfAudio: String // 才艺音频展示
+    , witOfVideo: String // 才艺视频展示
+    , votes: Number // 得票数
 });
 
 /******************* 属性验证方法开始 ******************/
 
-/**
- * 验证erpId不为空
- */
-CandidateSchema.path("erpId").validate(function (erpId) {
-    return erpId.length > 0;
-}, "候选人的erpId不能为空");
 
 /******************* 属性验证方法结束 ******************/
 
@@ -81,15 +64,8 @@ CandidateSchema.statics = {
             .limit(options.pageSize)
             .skip(options.pageSize * options.pageNo)
             .exec(callBack);
-    },
-
-    /**
-     * 向mongo中插入一个候选人
-     * @param candidate 候选人
-     * @param callBack 插入后回调的回调函数
-     */
-    insert: function (candidate, callBack) {
     }
+
 };
 
 /******************* 静态方法结束 ******************/

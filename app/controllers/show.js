@@ -5,13 +5,22 @@
  * Time: 下午4:41
  */
 var config = require("../../config/config");
+var mongoose = require("mongoose");
 /**
  * 首页
  * @param req
  * @param res
  */
 exports.index = function (req, res) {
-    res.render("index", {"title": config.app.name});
+//    var Candidate = mongoose.model("Candidate");
+//    var candidates = Candidate.list({
+//        criteria: {},
+//        pageSize: 3,
+//        pageNo: 0
+//    }, function () {
+//    });
+    res.render("index", {candidates: {}});
+
 };
 
 /**
