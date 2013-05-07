@@ -5,5 +5,5 @@
  * Time: 下午2:11
  */
 exports.index = function (req, res) {
-    res.render("admin/index", {title: "管理控制台 - 达人官网"});
+    res.render("admin/index", {title: "管理控制台"});
 };
