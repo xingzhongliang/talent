@@ -32,11 +32,10 @@ module.exports = function (app) {
 
 
     //添加主题
-    var addSub = require("../app/controllers/addSubject");
-    app.get('/addSub',addSub);
+    var subject = require("../app/controllers/subject");
+    app.get('/admin/addSub',auth("admin"), subject.addSubject);
     //主题选项详情页编辑
-    var addSubOpt = require("../app/controllers/addSubjectOption");
-    app.get('/addSubOpt',addSubOpt);
+    app.get('/admin/addSubOpt',auth("admin"), subject.addSubjectOption);
 
 
 };
