@@ -1,0 +1,50 @@
+//
+    后台管理layout
+    User: laichendong
+    Date: 13-4-30
+    Time: 下午2:00
+!!! 5
+html
+    head
+        title=title
+        meta(name="viewport",content="width=device-width, initial-scale=1.0")
+        link(href="/css/bootstrap.min.css",rel="stylesheet",media="screen")
+        link(href="/css/style.css",rel="stylesheet",media="screen")
+        link(href="/css/foot.css",rel="stylesheet",media="screen")
+        script(src="http://code.jquery.com/jquery.js")
+        block head
+    body
+        // 导航条
+        div.navbar.navbar-inverse.navbar-fixed-top
+            div.navbar-inner
+                div.container
+                    a.brand JD.com
+                    ul.nav
+                        li.active
+                            a(href="/admin") 首页
+                        li
+                            a 首页
+                        li
+                            a 首页
+                    p.navbar-text.pull-right
+                        if(req.session.user)
+                            span 欢迎&nbsp;
+                                =req.session.user.name
+                                | &nbsp;&nbsp;
+                            a(href="/doLogout") 退出
+                        else
+                            a(href="/login") 登录
+        // 全局banner
+        header.subhead
+            .container
+               block subhead
+
+        .container
+                block content
+        .footer.row.navbar-fixed-bottom
+            div.container
+                span Powered by JD.com
+                span &nbsp;&nbsp;&nbsp;
+                a 别联系我们
+        block footer
+        script(src="/js/bootstrap.min.js")
