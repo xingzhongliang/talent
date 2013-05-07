@@ -1,0 +1,271 @@
+extends ../layouts/adminWithSideBar
+block head
+    link(href="/css/bootstrapSwitch.css",rel="stylesheet",media="screen")
+    link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
+    script(src="/js/bootstrap-sniper.js")
+    script(src="/js/datepicker/js/bootstrap-datepicker.js")
+    script
+        $(function(){
+            $('#voteMax').sniper();
+            $('#regMax').sniper();
+        });
+
+
+block sidebar
+    ul.nav.nav-list
+        li
+            a adf
+        li
+            a adf
+        li
+            a adf
+
+
+block main
+    div.page-header
+        h2 添加主题
+            small     Add Subject
+
+    form
+        fieldset
+            legend 基本信息
+            input.input-block-level(type='text',name='title',placeholder='活动名称')
+            textarea.input-block-level(name='comment',placeholder='活动说明')
+        fieldset
+            legend 活动设置
+            div.row
+                .span3
+                    div.switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
+                        input(type='checkbox',checked='true')
+                .span3
+                    div.switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
+                        input(type='checkbox',checked='true')
+                .span3
+                    div.switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
+                        input(type='checkbox')
+            div.row &nbsp;
+            div.row
+                div.span4
+                    div.well
+                        h5 投票设置
+                        p 每个人在这次活动中能投多少票
+                        input#voteMax(type='text',name='title',value="1")
+                        p 投票的窗口期：
+                        div.input-append
+                            input.dpInpt.input-block-level(type="text")
+                            span.add-on
+                                i.icon-th
+                        div.input-append
+                            input.dpInpt.input-block-level(type="text")
+                            span.add-on
+                                i.icon-th
+                div.span4.fl-right
+                    div.well
+                        h5 报名设置
+                        p 每个人在这次活动中能报名几次
+                        input#regMax(type='text',name='title',value='1')
+                        p 报名的窗口期：
+                        div.input-append
+                            input.dpInpt.input-block-level(type="text")
+                            span.add-on
+                                i.icon-th
+                        div.input-append
+                            input.dpInpt.input-block-level(type="text")
+                            span.add-on
+                                i.icon-th
+        fieldset
+            legend 页面设置
+            h5 选项展示方式
+            label.radio
+                input(type='radio',value='1',name='showType',checked='true')
+                span 简单文本展示——适用于一般的简单意见调查
+            label.radio
+                input(type='radio',value='2',name='showType')
+                span 文本加缩略图展示——比简单文本展示方式稍微丰富一点的方式
+            label.radio
+                input(type='radio',value='3',name='showType')
+                span 文本、缩略图加详情页——用于复杂的调研活动，各个选项有专门的详情页介绍详细信息
+
+        fieldset
+            legend 域
+            div.alert.alert-info
+                strong 注意！
+                span 一旦主题创建之后就不能修改域和分组信息
+            ul#scopeTab.nav.nav-tabs
+                li
+                    a(href='javascript:;',title='添加域',onclick='addScope(this)')
+                        i.icon-plus
+            div#panelDiv.row
+
+
+
+            //div.span4
+                div.well
+                    ul
+                        li 一个主题需要包含一个或多个域
+                            ul
+                                li 什么是域？例如京东达人秀活动，它的域就是”北京“、”成都“、”沈阳“……
+                                li 如果没有手动的创建域和分组信息，那么所有的选项信息都会被存入一个默认的域和分组中
+                            p &nbsp;
+                            li 一个域由一个或多个分组构成，分组下面包含了具体的选项
+                            p &nbsp;
+                            li 不开放报名时如果选择“使用令牌”，那么持有令牌的用户仍然可以报名；如果选择“禁用令牌”，那么除了管理员任何人不能报名
+                            p &nbsp;
+                            li 某些情况下可能需要对报名的总人数做限制，这时就需要手动建立分组信息并在其中限制选项的总数
+
+
+    div#gm.modal.hide(role='dialog',aria-labelledby="myModalLabel",aria-hidden="true",style="width:700px;height:auto")
+        div.modal-header
+            button.close(data-dismiss="modal",aria-hidden="true") x
+            h5#myModalLabel 分组信息
+        div.modal-body
+            input.input-block-level(type='text',name='title',placeholder='分组')
+            input.input-block-level(type='text',name='title',placeholder='报名数量')
+        div.modal-footer
+            button.btn(data-dismiss="modal",aria-hidden="true") 关闭
+            button.btn.btn-primary 确定
+    div#pm.popover.fade.bottom
+        div.arrow
+        h4.pop-title 分组信息
+        div.pop-content
+            input.input-block-level(type='text',name='title',placeholder='分组名称')
+            input.input-block-level(type='text',name='maxNum',placeholder='选项数量')
+            div.pull-right
+                btn(onclick='closeTip(this)').btn 关闭
+                span &nbsp;
+                btn(onclick='insrtG(this)').btn.btn-success 保存
+            div.clearfix
+
+    div#chgName.popover.fade.bottom
+        div.input-append
+            input(type='text',name='title',placeholder='请输入名称')
+            a(href="javascript:;",onclick='setGName(this)').btn.btn-success 确定
+            a(href="javascript:;",onclick='cancelGName(this)').btn
+                i.icon-remove
+
+    div#tmplTab.hide
+        li.dropdown
+            a.dropdown-toggle(data-toggle='dropdown',href='javascript:;',onclick='showPanel(this)')
+                span.gn-span 未命名
+                b.caret
+            ul.dropdown-menu
+                li
+                    a(href='javascript:;',onclick='chgName(this)')
+                        i.icon-edit
+                        span &nbsp;重命名
+                li
+                    a(href='javascript:;',onclick='chgName(this)')
+                        i.icon-remove
+                        span &nbsp;删除域
+                li
+                    a(href='javascript:;',onclick='chgName(this)')
+                        i.icon-share
+                        span &nbsp;复制
+    div#tmplPanel.hide
+        div.span8.tabPanel
+            a.btn.btn-block.btn-success.btn-add-group(href='javascript:;') 创建分组
+            table.table.hide
+                thead
+                    tr
+                        th.span1 #
+                        th.span3 组名
+                        th.span1 Max
+                        th.span3
+                tbody
+                    tr.tmpl.hide.success
+                        td 0
+                        td
+                        td
+                        td
+                            div.btn-group
+                                button.btn.btn-small(title='编辑')
+                                    i.icon-edit
+                                button.btn.btn-small(title='删除')
+                                    i.icon-remove
+                                button.btn.btn-small 复制组
+                                a(href='javascript:;').btn.btn-small.btn-success.btn-add-opt 添加选项
+
+block footer
+    script(src="/js/bootstrapSwitch.js")
+
+    script
+        var gtab,gname,pi = 0;
+        var closed = true;
+
+        function chgName(obj) {
+            gname = $(obj).parents('li.active');
+            console.info(gname.get(0));
+            gname.popover('show');
+        }
+        function setGName(obj) {
+            gname.find('.gn-span').get(0).innerHTML = $(obj).prev().val();
+            gname.popover('hide');
+        }
+
+        function cancelGName(obj) {
+            gname.popover('hide');
+        }
+
+        function closeTip() {
+            var $it = gtab.parent().find('.btn-add-group');
+            $it.popover('hide');
+            $it.get(0).shown = !$it.get(0).shown;
+        }
+        function insrtG(obj) {
+             gtab[0].t_index ? (gtab[0].t_index += 1) : (gtab[0].t_index = 1);
+             var tm = gtab.find('.tmpl');
+             var tds = gtab.append('<tr>' + tm.html() + '</tr>').find('tr:last').addClass('info').find('td');
+             $(tds.get(0)).html(gtab[0].t_index);
+             $(tds.get(1)).html($(obj).parent().parent().find('input').get(0).value);
+             $(tds.get(2)).html($(obj).parent().parent().find('input').get(1).value);
+             $(tds.get(3)).find('.btn-add-opt').click(addOpt);
+             closeTip();
+             gtab.show();
+        }
+
+        function addOpt() {
+            $('#gm').modal('show');
+        }
+
+        function addScope(obj) {
+            $(obj).parent().before($('#tmplTab').html());
+            var it = $(obj).parent().prev().get(0);
+            it.index = ++pi;
+            it.id = 'tab' + it.index;
+            var p = $('#panelDiv').append($('#tmplPanel').html()).find('.tabPanel:last').get(0);
+            p.id = 'panel' + it.index;
+            var a = $(it).popover({
+                html:true,
+                placement:'top',
+                trigger:'',
+                content:$('#chgName').html()
+            }).find('a.dropdown-toggle').get(0);
+            $(p).find('.btn-add-group').popover({
+                html:true,
+                placement:'bottom',
+                content:$('#pm').html()
+            }).click(toAddG);
+            showPanel(a);
+        }
+
+        function showPanel(obj) {
+            $('#scopeTab').find('li.active').removeClass('active');
+            var it = $(obj).parents('li').addClass('active').get(0);
+            $('#panelDiv').find('.tabPanel').hide();
+            $('#panel' + it.index).show();
+        }
+
+        function toAddG() {
+            var self = this;
+            this.shown = !this.shown;
+            gtab = $(self).parent().find('table');
+            !this.shown ? $(self).popover('hide') :  $(self).popover('show');
+        }
+
+        $(function(){
+            $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
+            $('#gm').modal({
+                show:false,
+                remote:'/addSubOpt'
+            });
+        });

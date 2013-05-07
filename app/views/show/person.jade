@@ -1,0 +1,29 @@
+//
+    个人详情页
+    User: laichendong
+    Date: 13-5-3
+    Time: 下午8:03
+extends ../layouts/default
+block content
+    .w
+        .list-area
+            .list-area-title
+                h2 北京赛区
+            .details
+                .description
+                    dl
+                        dt 姓名：
+                        dd 赖晨东
+                        dt 部门：
+                        dd 研发部
+                        dt 介绍：
+                        dd IT人士的终极称号战斗在一线的代码工作者。
+                        dt.purple 票数
+                        dd.purple
+                            strong 1423
+                        .toupiao
+                            a(href="").btn.btn-r1 投票
+                .portraits
+                    -for(var i=0; i<6; i++)
+                        .portrait
+                            img(src="", alt="达人的姓名")
