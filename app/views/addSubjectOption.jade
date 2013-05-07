@@ -1,0 +1,25 @@
+head
+    title=title
+    meta(name="viewport",content="width=device-width, initial-scale=1.0")
+body
+    div.container.span8
+        div.row
+            div.span8
+                div.page-header
+                    h2 选项详情
+        div.row
+            div#d1.span3
+                div#dw(style='height:180px').well
+                    a(href='javascript:;').btn.btn-block 上传图片
+            div.span5
+                form
+                    fieldset#d2
+                        legend 基本信息
+                        input.input-block-level(type='text',name='title',placeholder='名称')
+                        textarea.input-block-level(name='comment',placeholder='说明')
+        div.row
+            div.span8
+                form
+                    fieldset
+                        legend 页面编辑
+                        textarea.input-block-level(name='comment',placeholder='富文本编辑器')

@@ -30,4 +30,13 @@ module.exports = function (app) {
     var admin = require("../app/controllers/admin");
     app.get("/admin", auth("admin"), admin.index);
 
+
+    //添加主题
+    var addSub = require("../app/controllers/addSubject");
+    app.get('/addSub',addSub);
+    //主题选项详情页编辑
+    var addSubOpt = require("../app/controllers/addSubjectOption");
+    app.get('/addSubOpt',addSubOpt);
+
+
 };

@@ -1,7 +1,7 @@
 /*
- * login page.
+ * addSubject page.
  */
- function login (req, res) {
-    res.render('login', { title: 'login' });
+ function addSubject (req, res) {
+    res.render('addSubject', { title: 'addSubject' });
 };
-module.exports = login;
+module.exports = addSubject;
