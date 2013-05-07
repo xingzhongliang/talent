@@ -1,13 +1,13 @@
 /**
  * 站点主题
  * 一个主题就是一个活动，比如“京东达人秀活动”或“code hack day”活动
- *
+ * 新建一个主题时，默认会相应的新建一个属于他的scope和group
  *
  * User: lijiale, laichendong
  * @type {*}
  */
-var mongoose = require('mongoose')
-    , Schema = mongoose.Schema;
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 /**
  * 主题
  * @type {*}
