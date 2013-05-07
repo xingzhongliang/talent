@@ -18,43 +18,30 @@ html
         div.navbar.navbar-inverse.navbar-fixed-top
             div.navbar-inner
                 div.container
-                    //button.btn.btn-navbar(type="button", data-toggle="collapse", data-target=".nav-collapse")
-                        span.icon-bar
-                        span.icon-bar
-                        span.icon-bar
-                    a.brand 达人官网
-                        //p.navbar-text.pull-right
-                            span 欢迎 赖晨东
-                            a.navbar-link 退出
+                    a.brand JD.com
                     ul.nav
                         li.active
-                            a 首页
+                            a(href="/admin") 首页
                         li
                             a 首页
                         li
                             a 首页
-                    p.navbar-text
-                        a(href="/doLogout") 退出
+                    p.navbar-text.pull-right
+                        if(req.session.user)
+                            span 欢迎&nbsp;
+                                =req.session.user.name
+                                | &nbsp;&nbsp;
+                            a(href="/doLogout") 退出
+                        else
+                            a(href="/login") 登录
         // 全局banner
         header.subhead
             .container
-               | 顶部banner
-        .container
-            .row
-                // 侧边栏
-                .span3
-                    ul.nav.nav-list
-                        li.active
-                            a 侧边栏
-                        li
-                            a adf
-                        li
-                            a adf
-                // 主体内容
-                .span9
-                    block main
+               block subhead
 
-        .footer.row
+        .container
+                block content
+        .footer.row.navbar-fixed-bottom
             div.container
                 span Powered by JD.com
                 span &nbsp;&nbsp;&nbsp;

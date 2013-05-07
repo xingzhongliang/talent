@@ -1,3 +1,7 @@
+body {
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
 .fl-left {
     float: left;
 }

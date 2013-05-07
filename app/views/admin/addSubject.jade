@@ -1,4 +1,4 @@
-extends ../layouts/admin
+extends ../layouts/adminWithSideBar
 block head
     link(href="/css/bootstrapSwitch.css",rel="stylesheet",media="screen")
     link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
@@ -9,6 +9,16 @@ block head
             $('#voteMax').sniper();
             $('#regMax').sniper();
         });
+
+
+block sidebar
+    ul.nav.nav-list
+        li
+            a adf
+        li
+            a adf
+        li
+            a adf
 
 
 block main
