@@ -13,15 +13,4 @@ var Candidate = mongoose.model("Candidate");
  * @param res
  */
 exports.new = function (req, res) {
-    var candidate = new Candidate({
-        erpId : "bjlaichendong"
-    });
-    candidate.insert(function (err) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.redirect("/");
-        }
-
-    });
 };
