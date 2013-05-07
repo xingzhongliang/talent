@@ -8,7 +8,7 @@ var express = require('express')
     , fs = require('fs');
 
 // 启动数据库连接
-mongoose.connect(config.db);
+//mongoose.connect(config.db);
 
 // 加载各个model依赖
 var models_path = __dirname + '/app/models';
