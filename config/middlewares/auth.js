@@ -5,7 +5,7 @@ module.exports = function (role, url) {
     return function (req, res, next) {
         if (!req.session.user) {
             // 登录后跳转到的url
-            var targetUrl = url ? url : req.url;
+            var targetUrl = url ? url : req.originalUrl;
             targetUrl = encodeURIComponent(targetUrl);
             res.redirect('/login?target=' + targetUrl);
         } else {
