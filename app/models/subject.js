@@ -31,14 +31,24 @@ var SubjectSchema = new Schema({
 });
 
 SubjectSchema.statics = {
-  list : function(options, callBack) {
-      var criteria = options.criteria || {};
-      var subjects = this.find(criteria)
-          .limit(options.pageSize)
-          .skip(options.pageSize * options.pageNo)
-          .exec();
-      callBack(subjects);
-  }
+    load: function (id, cb) {
+        this.findOne({ _id: id }).exec(cb);
+    },
+
+    list: function (options, cb) {
+        var criteria = options.criteria || {};
+        this.find(criteria)
+            .limit(options.pageSize)
+            .skip(options.pageSize * options.page)
+            .exec(cb);
+    }
+
+};
+
+SubjectSchema.methods = {
+    create : function(cb){
+        this.save(cb);
+    }
 };
 
 mongoose.model("Subject", SubjectSchema);
