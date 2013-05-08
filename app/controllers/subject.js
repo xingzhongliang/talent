@@ -10,7 +10,7 @@ var Subject = mongoose.model("Subject");
 exports.subject = function (req, res, next, id){
     Subject.load(id, function(err, subject) {
         if (err) return next(err);
-        if (!subject) return next(new Error('Failed to load subject ' + id));
+        if (!subject) return next('找不到该主题，主题ID： ' + id);
         req.subject = subject;
         next()
     });
@@ -32,10 +32,14 @@ exports.add = function (req, res) {
  * @param res
  */
 exports.edit = function (req, res) {
-    var id = req.param("id");
-    console.log(id);
-    res.render('admin/addSubject', { title: '主题管理' });
+    var subject = req.subject;
+    res.render('admin/addSubject', { title: '主题管理', subject: subject });
 };
+
+exports.show = function (req, res) {
+    var subject = req.subject;
+    res.render('index', { title: '主题管理', subject: subject });
+}
 
 exports.addSubjectOption = function (req, res) {
     res.render('addSubjectOption', { title: 'addSubjectOption' });

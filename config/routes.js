@@ -34,8 +34,9 @@ module.exports = function (app) {
     // 主题相关
     var subject = require("../app/controllers/subject");
     app.get('/subject/add', auth("admin"), subject.add); // 添加主题
-    //app.get('/subject/:subjectId',  subject.show); // 前台展示主题首页
+    app.get('/subject/:subjectId',  subject.show); // 前台展示主题首页
     app.get('/subject/:subjectId/edit', auth("admin"), subject.edit); // 编辑，管理主题
+
     app.param("subjectId", subject.subject); // 处理带:subjectId参数的url中的:subjectId
 
     // 主题选项详情页编辑
