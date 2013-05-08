@@ -4,9 +4,33 @@
     Date: 13-4-30
     Time: 下午2:07
 extends ../layouts/admin
+block head
+    link(href="/css/admin.css",rel="stylesheet",media="screen")
 block subhead
-    | 我是首页啊
 
 block content
-    div 啦啦啦  我没侧边栏
+    .row &nbsp
+    // 分页显示主题
+    ul.thumbnails
+        for subject in subjects
+            li.span4
+                .thumbnail
+                    .well.well-small
+                        h3!=subject.name
+                            small!=subject.owner
+                        p.subjectComment!=cut(subject.comment, 100)
+                    p
+                        a.btn.btn-info(href="/admin/subject/#{subject._id}/edit") &nbsp;管&nbsp;&nbsp;理&nbsp;
+                        &nbsp;&nbsp;
+                        a.btn(href="/subject/#{subject._id}") &nbsp;查&nbsp;&nbsp;看&nbsp;
+                        br
 
+    // 分页条
+    .pagination.pagination-centered
+        ul
+            != createPagination(pages, page)
+
+    // 新增主题按钮
+    hr
+    .well
+        a.btn.btn-large.btn-block.btn-primary(href="/admin/subject/add") 新增主题

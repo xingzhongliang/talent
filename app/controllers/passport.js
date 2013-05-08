@@ -16,21 +16,24 @@ exports.doLogin = function (req, res) {
         if (config.app.needErpLogin) {
             loginWithErp(req, res, function (err) {
                 if (err) {
-                    res.flash(err);
+                    req.flash('errors', [err.message]);
+                    return res.redirect("/login");
                 }
                 gotoTarget(req, res);
             });
         } else {
             loginNoErp(req, res, function (err) {
                 if (err) {
-                    res.flash(err);
+                    req.flash('errors', [err.message]);
+                    return res.redirect("/login");
                 }
                 gotoTarget(req, res);
             });
         }
 
     } else {
-        res.flash("login error", "ERP账号和密码必填");
+        req.flash('errors', ["ERP账号和密码必填"]);
+        return res.redirect("/login");
     }
 };
 
@@ -58,7 +61,7 @@ var loginWithErp = function (req, res, callBack) {
     soap.createClient(url, function (err, client) {
         client.Verify(args, function (err, result) {
             if (err) {
-                return callBack(err);
+                return callBack({message: "糟糕，ERP好像开小差了，暂时不能登录。"});
             }
             if (result && result.VerifyResult) {
                 result = result.VerifyResult[0];
@@ -78,7 +81,7 @@ var loginWithErp = function (req, res, callBack) {
                 callBack();
             } else {
                 // 登录失败
-                callBack("登录失败");
+                callBack({message: "erp账号和密码不匹配"});
             }
         });
 

@@ -4,7 +4,7 @@
  * Date: 13-4-28
  * Time: 下午3:09
  */
-var express = require('express'), path = require("path");
+var express = require('express'), path = require("path"), flash = require('connect-flash');
 
 module.exports = function (app, config) {
     app.configure(function () {
@@ -13,11 +13,13 @@ module.exports = function (app, config) {
         app.set('view engine', 'jade');
         app.use(express.favicon());
         app.use(express.logger('dev'));
-        app.use(require("./middlewares/utils")(config.app.name));
+        app.use(express.compress()); // 启用压缩
         app.use(express.bodyParser());
         app.use(express.methodOverride());
         app.use(express.cookieParser('password is nothing'));
         app.use(express.session());
+        app.use(flash());
+        app.use(require("./middlewares/utils")(config.app.name));
         app.use(app.router);
         app.use(require('less-middleware')({ src: config.root + '/public' }));
         app.use(express.static(config.root + '/public'));

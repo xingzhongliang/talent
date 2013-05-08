@@ -32,6 +32,17 @@ var SubjectSchema = new Schema({
     , round: {type: Number, default: 1} // 当前第几轮 默认1次 可以重新开启新一轮投票
 });
 
+SubjectSchema.statics = {
+  list : function(options, callBack) {
+      var criteria = options.criteria || {};
+      var subjects = this.find(criteria)
+          .limit(options.pageSize)
+          .skip(options.pageSize * options.pageNo)
+          .exec();
+      callBack(subjects);
+  }
+};
+
 mongoose.model("Subject", SubjectSchema);
 
 
