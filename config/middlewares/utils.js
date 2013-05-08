@@ -60,15 +60,15 @@ function createPagination(req) {
 
         params.page = 0
         var clas = page == 0 ? "active" : "no"
-        str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">First</a></li>'
-        for (var p = 1; p < pages; p++) {
+        str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">首页</a></li>'
+        for (var p = 0; p < pages; p++) {
             params.page = p
             clas = page == p ? "active" : "no"
-            str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">' + p + '</a></li>'
+            str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">' + (p + 1) + '</a></li>'
         }
         params.page = --p
         clas = page == params.page ? "active" : "no"
-        str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">Last</a></li>'
+        str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">尾页</a></li>'
 
         return str
     }
@@ -123,6 +123,9 @@ function stripScript(str) {
  * @return {*}
  */
 function cut(str, maxLenght) {
+    if(!str){
+        return "";
+    }
     if (str.length < maxLenght) {
         return str;
     } else {
