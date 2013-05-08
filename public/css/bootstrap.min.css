@@ -5475,4 +5475,10 @@ a.label:hover, a.label:focus, a.badge:hover, a.badge:focus {
     margin-right: auto;
 }
 
+.label-large {
+    line-height: 24px;
+    font-size: 18px;
+    margin: 5px;
+}
+
 
