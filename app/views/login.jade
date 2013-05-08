@@ -38,6 +38,9 @@ block content
     div.container
         form.form-signin(method="post", action="/doLogin",id="loginForm")
             h2.form-signin-heading 登录
+            if locals.errors.length > 0
+                for error in errors
+                    div.alert.alert-error=error
             input.input-block-level(type="text",placeholder="ERP账号",name="userName",required)
             input.input-block-level(type="password",placeholder="密码",name="password",required)
             input(type="hidden", name="target", value=target)
