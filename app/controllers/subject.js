@@ -2,6 +2,7 @@ var mongoose = require("mongoose");
 var Subject = mongoose.model("Subject");
 var moment = require("moment");
 var sw = require('./util/schemaWrapper');
+var uuid = require("node-uuid");
 /**
  * 按Id查找主题，找到之后放到req里面
  * @param req
@@ -46,6 +47,10 @@ exports.doAdd = function(req,res) {
     console.info('<<[doAddSub]begin');
     var subject = new Subject();
     sw.wrap(subject,req.body.sub);
+    // 如果设置为使用令牌，则生成令牌
+    if (subject.token == 1) {
+        subject.token = uuid.v4();
+    }
 
     //日期属性处理
     var fmt = 'YYYY-MM-DD';
