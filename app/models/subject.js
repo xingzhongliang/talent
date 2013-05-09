@@ -17,16 +17,18 @@ var SubjectSchema = new Schema({
     , comment: String   // 备注
     , detail: String // 活动详细说明 html富文本
     , banner: String  // banner图片地址
+    , canReg: {type: Boolean, default: true} // 是否开放报名，报名是指user可以变成candidate
+    , regChance: {type: Number, default: 1}  // 每个人可以报名的次数 默认1次
     , voteChance: {type: Number, default: 1}  // 每个人可以投票的次数 默认1次
     , voteStart: Date // 投票开始时间
     , voteEnd: Date // 投票结束时间
     , regStart: Date //  报名开始时间
     , regEnd: Date // 报名结束时间
-    , canReg: {type: Boolean, default: true} // 是否开放报名，报名是指user可以变成candidate
-    , isPrivate: Boolean //  是否所有人可见
+    , isPrivate: {type:Boolean,default:true} //  是否所有人可见
     , token: String // 如果token值不为空 则user成为candidate时需要token
     , owner: String // 创建者erp账号
-    , createTime: Date //创建日期
+    , createTime: {type:Date,default:Date.now} //创建日期
+    , showType: Number  // 选项的展示方式1、文本；2、图片；3、详情页
     , round: {type: Number, default: 1} // 当前第几轮 默认1次 可以重新开启新一轮投票
 });
 
@@ -38,6 +40,7 @@ SubjectSchema.statics = {
     list: function (options, cb) {
         var criteria = options.criteria || {};
         this.find(criteria)
+            .sort({createTime:'-1'})
             .limit(options.pageSize)
             .skip(options.pageSize * options.page)
             .exec(cb);

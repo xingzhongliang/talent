@@ -19,9 +19,11 @@ block content
                         h3!=subject.name
                             small!=subject.owner
                         p.subjectComment!=cut(subject.comment, 100)
+                        div.pull-right=fmt2(subject.createTime,'YYYY-MM-DD HH:mm')
+                        div.clearfix
                     p
                         a.btn.btn-info(href="/subject/#{subject._id}/edit") &nbsp;管&nbsp;&nbsp;理&nbsp;
-                        &nbsp;&nbsp;
+                        span &nbsp;&nbsp;
                         a.btn(href="/subject/#{subject._id}") &nbsp;查&nbsp;&nbsp;看&nbsp;
                         br
 

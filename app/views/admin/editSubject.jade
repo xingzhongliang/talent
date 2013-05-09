@@ -1,0 +1,134 @@
+extends ../layouts/adminWithSideBar
+block head
+    link(href="/css/bootstrapSwitch.css",rel="stylesheet",media="screen")
+    link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
+    script(src="/js/bootstrap-sniper.js")
+    script(src="/js/datepicker/js/bootstrap-datepicker.js")
+    script
+        $(function(){
+            $('#voteMax').sniper();
+            $('#regMax').sniper();
+            $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
+        });
+
+
+block sidebar
+    ul.nav.nav-list
+        li
+            a adf
+        li
+            a adf
+        li
+            a adf
+
+
+block main
+    div.page-header
+        div.hero-unit
+            h2!=subject.name
+                small &nbsp;第 #{subject.round} 轮
+            p!=subject.comment
+            p
+                div.btn-group
+                    button.btn 下一轮投票
+                    a(href='javascript:;').btn.btn-success.btn-add-opt 新选项
+    h4 活动设置
+    div.row
+        .span9
+            if subject.isPrivate == 1
+                span.label.label-info.label-large 首页可见
+            else
+                span.label.label-large 首页不可见
+            if subject.canReg == 1
+                span.label.label-info.label-large 开放报名
+            else
+                span.label.label-large 不开放报名
+            if subject.token
+                span.label.label-important .label-large 使用令牌
+            else
+                span.label.label-large  禁用令牌
+            .well
+                p 每人可投票次数：#{subject.voteChance}
+                p 每人可报名次数：#{subject.regChance}
+                p 投票窗口期：#{fmt(subject.voteStart)} 到 #{fmt(subject.voteEnd)}
+                p 报名窗口期：#{fmt(subject.regStart)} 到 #{fmt(subject.regEnd)}
+     .pull-right
+        a.btn.btn-primary 修改
+    .clearfix
+
+
+
+
+
+    div#sp.hide
+        h3 活动设置
+        div.row
+            .span3
+                if subject.isPrivate == 1
+                    div.switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
+                        input(name='sub[isPrivate]',type='checkbox',checked='true',value='1')
+                else
+                    div.switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
+                        input(name='sub[isPrivate]',type='checkbox',checked='false',value='1')
+            .span3
+                if subject.canReg == 1
+                    div.switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
+                        input(name='sub[canReg]',type='checkbox',checked='true',value='1')
+                else
+                    div.switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
+                        input(name='sub[canReg]',type='checkbox',checked='false',value='1')
+            .span3
+                if subject.token
+                    div.switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
+                        input(name='sub[token]',type='checkbox',value='1',checked='true')
+                else
+                    div.switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
+                        input(name='sub[token]',type='checkbox',value='1')
+        div.row &nbsp;
+        div.row
+            div.span4
+                div.well
+                    h5 投票设置
+                    p 每个人在这次活动中能投多少票
+                    input#voteMax(type='text',name='sub[voteChance]',value="#{subject.voteChance}")
+                    p 投票的窗口期：
+                    div.input-append
+                        input.dpInpt.input-block-level(name='sub[voteStart]',type="text",value='#{fmt(subject.voteStart)}')
+                        span.add-on
+                            i.icon-th
+                    div.input-append
+                        input.dpInpt.input-block-level(name='sub[voteEnd]',type="text",value='#{fmt(subject.voteEnd)}')
+                        span.add-on
+                            i.icon-th
+            div.span4.fl-right
+                div.well
+                    h5 报名设置
+                    p 每个人在这次活动中能报名几次
+                    input#regMax(type='text',name='sub[regChance]',value='#{subject.regChance}')
+                    p 报名的窗口期：
+                    div.input-append
+                        input.dpInpt.input-block-level(name='sub[regStart]',type="text",value='#{fmt(subject.regStart)}')
+                        span.add-on
+                            i.icon-th
+                    div.input-append
+                        input.dpInpt.input-block-level(name='sub[regEnd]',type="text",value='#{fmt(subject.regEnd)}')
+                        span.add-on
+                            i.icon-th
+        br
+        br
+        br
+        div.row
+            div.span8
+                div.div-center
+                    a(href='javascript:;',onclick='sbmt()').btn.btn-primary  修改活动设置
+        hr
+
+
+
+block footer
+    script(src="/js/bootstrapSwitch.js")
+    script
+        function sbmt() {
+            //
+        }
+
