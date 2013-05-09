@@ -23,20 +23,22 @@ module.exports = function (app) {
     var login = require("../app/controllers/passport");
     // 登录登出
     app.get('/login', login.login);
-    app.post('/doLogin', login.doLogin);
-    app.get('/doLogout', login.doLogout);
+    app.post('/do-login', login.doLogin);
+    app.get('/do-logout', login.doLogout);
+    app.get('/token', login.token);
+    app.post('/verify-token', login.verifyToken);
 
     // 管理控制台
     var admin = require("../app/controllers/admin");
     app.get("/admin", auth("admin"), admin.index);
 
-
     // 主题相关
     var subject = require("../app/controllers/subject");
     app.get('/subject/add', auth("admin"), subject.add); // 添加主题
-    app.post('/subject/doAdd',auth("admin"), subject.doAdd);// 插入数据
+    app.post('/subject/do-add',auth("admin"), subject.doAdd);// 插入数据
     app.get('/subject/:subjectId',  subject.show); // 前台展示主题首页
     app.get('/subject/:subjectId/edit', auth("admin"), subject.edit); // 编辑，管理主题
+    app.get('/subject/:subjectId/sign-up', auth("token"), subject.show); // 编辑，管理主题
 
     app.param("subjectId", subject.subject); // 处理带:subjectId参数的url中的:subjectId
 

@@ -10,7 +10,6 @@ block content
             background-color: #f5f5f5;
         }
         .form-signin {
-            max-width: 300px;
             padding: 19px 29px 29px;
             margin: 0 auto 20px;
             background-color: #fff;
@@ -35,14 +34,16 @@ block content
             margin-bottom: 15px;
             padding: 7px 9px;
         }
+
     div.container
-        form.form-signin(method="post", action="/do-login",id="loginForm")
-            h2.form-signin-heading 登录
-            if locals.errors.length > 0
-                for error in errors
-                    div.alert.alert-error=error
-            input.input-block-level(type="text",placeholder="ERP账号",name="userName",required)
-            input.input-block-level(type="password",placeholder="密码",name="password",required)
-            input(type="hidden", name="target", value=target)
-            button.btn.btn-large.btn-primary(type="submit") 登录
+        .span10.offset1
+            form.form-signin(method="post", action="/verify-token",id="loginForm")
+                h2.form-signin-heading 令牌验证
+                if locals.errors.length > 0
+                    for error in errors
+                        div.alert.alert-error=error
+                input.input-block-level(type="text",placeholder="令牌",name="token",required)
+                input(type="hidden", name="target", value!=locals.target)
+                input(type="hidden", name="subjectId", value!=locals.subjectId)
+                button.btn.btn-large.btn-primary(type="submit") 验&nbsp;证
 
