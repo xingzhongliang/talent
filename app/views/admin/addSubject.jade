@@ -6,8 +6,8 @@ block head
     script(src="/js/datepicker/js/bootstrap-datepicker.js")
     script
         $(function(){
-            $('#voteMax').sniper();
-            $('#regMax').sniper();
+            // $('#voteMax').sniper();
+            // $('#regMax').sniper();
             $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
         });
 
@@ -38,13 +38,13 @@ block main
             legend 活动设置
             div.row
                 .span3
-                    div.switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
+                    div.b-switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
                         input(name='sub[isPrivate]',type='checkbox',checked='true',value='1')
                 .span3
-                    div.switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
+                    div.b-switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
                         input(name='sub[canReg]',type='checkbox',checked='true',value='1')
                 .span3
-                    div.switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
+                    div.b-switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
                         input(name='sub[token]',type='checkbox',value='1')
             div.row &nbsp;
             div.row
