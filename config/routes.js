@@ -34,8 +34,7 @@ module.exports = function (app) {
     // 主题相关
     var subject = require("../app/controllers/subject");
     app.get('/subject/add', auth("admin"), subject.add); // 添加主题
-    //插入数据
-    app.post('/admin/doAddSub',auth("admin"), subject.doAddSub);
+    app.post('/subject/doAdd',auth("admin"), subject.doAdd);// 插入数据
     app.get('/subject/:subjectId',  subject.show); // 前台展示主题首页
     app.get('/subject/:subjectId/edit', auth("admin"), subject.edit); // 编辑，管理主题
 
@@ -44,7 +43,7 @@ module.exports = function (app) {
     // 主题选项详情页编辑
     app.get('/admin/addSubOpt',auth("admin"), subject.addSubjectOption);
     //主题管理
-    app.get('/admin/subject/edit/:_id',auth("admin"), subject.edit);
+    //app.get('/admin/subject/edit/:_id',auth("admin"), subject.edit);
 
 
 };

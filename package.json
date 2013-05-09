@@ -12,6 +12,7 @@
 		"less-middleware": "*",
 		"mongoose": "*",
 		"soap": "0.2.7",
-		"connect-flash": "0.1.0"
+		"connect-flash": "0.1.0",
+		"moment": "2.0.0"
 	}
 }

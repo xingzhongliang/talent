@@ -15,12 +15,11 @@ block content
         for subject in subjects
             li.span4
                 .thumbnail
-                    .well.well-small
+                    .well.well-small.clearfix
                         h3!=subject.name
                             small!=subject.owner
                         p.subjectComment!=cut(subject.comment, 100)
                         div.pull-right=fmt2(subject.createTime,'YYYY-MM-DD HH:mm')
-                        div.clearfix
                     p
                         a.btn.btn-info(href="/subject/#{subject._id}/edit") &nbsp;管&nbsp;&nbsp;理&nbsp;
                         span &nbsp;&nbsp;

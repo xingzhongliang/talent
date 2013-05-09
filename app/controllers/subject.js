@@ -21,7 +21,7 @@ exports.subject = function (req, res, next, id){
 /*
  * addSubject page.
  */
-exports.addSubject = function (req, res) {
+exports.add = function (req, res) {
     res.render('admin/addSubject', { title: '添加主题' });
 };
 
@@ -32,7 +32,7 @@ exports.addSubject = function (req, res) {
  */
 exports.edit = function (req, res) {
     var subject = req.subject;
-    res.render('admin/addSubject', { title: '主题管理', subject: subject });
+    res.render('admin/editSubject', { title: '主题管理', subject: subject });
 };
 
 exports.show = function (req, res) {
@@ -42,7 +42,7 @@ exports.show = function (req, res) {
 
 
 //将用户提交的主题数据插入到DB
-exports.doAddSub = function(req,res) {
+exports.doAdd = function(req,res) {
     console.info('<<[doAddSub]begin');
     var subject = new Subject();
     sw.wrap(subject,req.body.sub);
