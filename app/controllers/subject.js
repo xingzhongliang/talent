@@ -51,6 +51,8 @@ exports.doAdd = function(req,res) {
     if (subject.token == 1) {
         subject.token = uuid.v4();
     }
+    // 给主题赋值owner
+    subject.owner = req.session.user.name;
 
     //日期属性处理
     var fmt = 'YYYY-MM-DD';
