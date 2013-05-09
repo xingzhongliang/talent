@@ -17,7 +17,7 @@ module.exports = function (app, config) {
         app.use(express.bodyParser());
         app.use(express.methodOverride());
         app.use(express.cookieParser('password is nothing'));
-        app.use(express.session());
+        app.use(express.cookieSession({cookie:{ maxAge: 1800000 }}));
         app.use(flash());
         app.use(require("./middlewares/utils")(config.app.name));
         app.use(app.router);

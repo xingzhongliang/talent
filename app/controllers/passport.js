@@ -48,9 +48,8 @@ exports.doLogin = function (req, res) {
  * @param res
  */
 exports.doLogout = function (req, res) {
-    req.session.destroy(function () {
-        res.redirect('/');
-    });
+    req.session.user = null;
+    res.redirect('/');
 };
 
 /**
@@ -88,7 +87,6 @@ exports.verifyToken = function (req, res) {
                 console.info(subject.token);
                 if (req.body.token == subject.token) { // token 验证通过
                     req.session.user.token = req.body.token;
-                    req.session.save();
                     gotoTarget(req, res);
                 } else {
                     return returnError("您的令牌不对");
@@ -128,7 +126,6 @@ var loginWithErp = function (req, res, callBack) {
                     user.role.push("admin");
                 }
                 req.session.user = user;
-                req.session.save();
                 callBack();
             } else {
                 // 登录失败
@@ -155,7 +152,6 @@ var loginNoErp = function (req, res, callBack) {
         user.role.push("admin");
     }
     req.session.user = user;
-    req.session.save();
 
     callBack();
 };
