@@ -37,8 +37,8 @@ exports.edit = function (req, res) {
 
 exports.show = function (req, res) {
     var subject = req.subject;
-    res.render('index', { title: '主题管理', subject: subject });
-}
+    res.render('index', { title: subject.name, subject: subject });
+};
 
 
 //将用户提交的主题数据插入到DB

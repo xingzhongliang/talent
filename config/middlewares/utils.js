@@ -12,7 +12,8 @@
 
 var url = require('url')
     , qs = require('querystring')
-    , moment = require('moment');
+    , moment = require('moment')
+    , config = require("../config");
 
 /**
  * Helpers method
@@ -34,6 +35,7 @@ function utils(name) {
         res.locals.cut = cut;
         res.locals.fmt = fmt;
         res.locals.fmt2 = fmt2;
+        res.locals.config = config;
 
         if (typeof req.flash !== 'undefined') {
             res.locals.info = req.flash('info');
