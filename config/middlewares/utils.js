@@ -58,9 +58,8 @@ module.exports = utils;
  * @return {String}
  * @api private
  */
-
 function createPagination(req) {
-    return function createPagination(pageSize, pageNo) {
+    return function createPagination(pages, page) {
         try {
             var params = qs.parse(url.parse(req.url).query)
             var str = ''
