@@ -67,9 +67,10 @@ exports.doAdd = function(req,res) {
         if(err) {
             console.log(err);
         }
+        res.redirect('/admin');
+        console.info('[doAddSub]end>>');
     });
-    res.redirect('/admin');
-    console.info('[doAddSub]end>>');
+
 };
 
 
