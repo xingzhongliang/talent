@@ -15,24 +15,24 @@ block content
         for subject in subjects
             li.span4
                 .thumbnail
-                    .well.well-small
+                    .well.well-small.clearfix
                         h3!=subject.name
                             small!=subject.owner
                         p.subjectComment!=cut(subject.comment, 100)
                         div.pull-right=fmt2(subject.createTime,'YYYY-MM-DD HH:mm')
-                        div.clearfix
                     p
-                        a.btn.btn-info(href="/admin/subject/edit/#{subject._id}") &nbsp;管&nbsp;&nbsp;理&nbsp;
+                        a.btn.btn-info(href="/subject/#{subject._id}/edit") &nbsp;管&nbsp;&nbsp;理&nbsp;
                         span &nbsp;&nbsp;
                         a.btn(href="/subject/#{subject._id}") &nbsp;查&nbsp;&nbsp;看&nbsp;
                         br
 
     // 分页条
-    .pagination.pagination-centered
-        ul
-            != createPagination(pageSize, pageNo)
+    if pages > 1
+        .pagination.pagination-centered
+            ul
+                != createPagination(pages, page)
 
     // 新增主题按钮
     hr
     .well
-        a.btn.btn-large.btn-block.btn-primary(href="/admin/addSub") 新增主题
+        a.btn.btn-large.btn-block.btn-primary(href="/subject/add") 新增主题

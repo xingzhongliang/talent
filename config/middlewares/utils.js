@@ -12,7 +12,8 @@
 
 var url = require('url')
     , qs = require('querystring')
-    , moment = require('moment');
+    , moment = require('moment')
+    , config = require("../config");
 
 /**
  * Helpers method
@@ -22,7 +23,6 @@ var url = require('url')
  * @api public
  */
 
-
 function utils(name) {
     return function (req, res, next) {
         res.locals.appName = name || 'App';
@@ -31,10 +31,11 @@ function utils(name) {
         res.locals.formatDate = formatDate;
         res.locals.formatDatetime = formatDatetime;
         res.locals.stripScript = stripScript;
-        res.locals.createPagination = createPagination;
+        res.locals.createPagination = createPagination(req);
         res.locals.cut = cut;
         res.locals.fmt = fmt;
         res.locals.fmt2 = fmt2;
+        res.locals.config = config;
 
         if (typeof req.flash !== 'undefined') {
             res.locals.info = req.flash('info');
@@ -54,7 +55,7 @@ module.exports = utils;
  *
  * @param {Number} pages
  * @param {Number} page
- * @return {function}
+ * @return {String}
  * @api private
  */
 
@@ -64,17 +65,17 @@ function createPagination(req) {
             var params = qs.parse(url.parse(req.url).query)
             var str = ''
 
-            params.page = 0
-            var clas = pageNo == 0 ? "active" : "no"
-            str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">First</a></li>'
-            for (var p = 1; p < pageSize; p++) {
-                params.page = p
-                clas = pageNo == p ? "active" : "no"
-                str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">' + p + '</a></li>'
-            }
-            params.page = --p
-            clas = pageNo == params.page ? "active" : "no"
-            str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">Last</a></li>'
+        params.page = 0
+        var clas = page == 0 ? "active" : "no"
+        str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">首页</a></li>'
+        for (var p = 0; p < pages; p++) {
+            params.page = p
+            clas = page == p ? "active" : "no"
+            str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">' + (p + 1) + '</a></li>'
+        }
+        params.page = --p
+        clas = page == params.page ? "active" : "no"
+        str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">尾页</a></li>'
 
             return str
         }catch(err) {

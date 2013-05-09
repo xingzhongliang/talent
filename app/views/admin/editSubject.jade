@@ -44,17 +44,25 @@ block main
             else
                 span.label.label-large 不开放报名
             if subject.token
-                span.label.label-important .label-large 使用令牌
+                span.label.label-important.label-large 使用令牌
             else
                 span.label.label-large  禁用令牌
             .well
+                if subject.canReg == 1
+                    .input-prepend
+                        span.add-on 报名链接
+                        input.span7(type="text",value="http://#{config.app.domain}/subject/#{subject._id}/sign-up")
+                if subject.token
+                    .input-prepend
+                        span.add-on 报名令牌
+                        input.span7(type="text",value="#{subject.token}")
                 p 每人可投票次数：#{subject.voteChance}
                 p 每人可报名次数：#{subject.regChance}
                 p 投票窗口期：#{fmt(subject.voteStart)} 到 #{fmt(subject.voteEnd)}
                 p 报名窗口期：#{fmt(subject.regStart)} 到 #{fmt(subject.regEnd)}
-     .pull-right
+    .pull-right.clearfix
         a.btn.btn-primary 修改
-    .clearfix
+
 
 
 

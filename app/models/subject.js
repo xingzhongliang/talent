@@ -33,15 +33,25 @@ var SubjectSchema = new Schema({
 });
 
 SubjectSchema.statics = {
-  list : function(options, callBack) {
-      var criteria = options.criteria || {};
-      //坑货 给哥挖坑
-      this.find(criteria,'name comment')
-          .sort({createTime:'-1'})
-          .limit(options.pageSize)
-          .skip(options.pageSize * options.pageNo)
-          .exec(callBack);
-  }
+    load: function (id, cb) {
+        this.findOne({ _id: id }).exec(cb);
+    },
+
+    list: function (options, cb) {
+        var criteria = options.criteria || {};
+        this.find(criteria)
+            .sort({createTime:'-1'})
+            .limit(options.pageSize)
+            .skip(options.pageSize * options.page)
+            .exec(cb);
+    }
+
+};
+
+SubjectSchema.methods = {
+    create : function(cb){
+        this.save(cb);
+    }
 };
 
 mongoose.model("Subject", SubjectSchema);
