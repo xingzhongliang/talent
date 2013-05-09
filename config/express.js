@@ -42,5 +42,10 @@ module.exports = function (app, config) {
         app.use(function (req, res, next) {
             res.status(404).render('404', {title: "404", url: req.originalUrl, error: 'Not found' });
         });
+
+        // 处理“未捕获异常”，防止服务器异常退出
+        process.on('uncaughtException', function(err) {
+            console.error("uncaughtException!!!", err);
+        });
     });
 };
