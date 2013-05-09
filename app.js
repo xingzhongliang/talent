@@ -8,8 +8,8 @@ var express = require('express')
     , fs = require('fs');
 
 // 启动数据库连接
-//mongoose.connect(config.db);
-
+mongoose.connect(config.db);
+mongoose.set('debug',true);
 // 加载各个model依赖
 var models_path = __dirname + '/app/models';
 fs.readdirSync(models_path).forEach(function (file) {

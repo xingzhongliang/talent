@@ -9,11 +9,19 @@ var config = require("../../config/config");
 
 exports.index = function (req, res) {
     var Subject = mongoose.model("Subject");
+    var pageSize = req.param['pageSize'] || config.app.pageSize;
+    var pageNo = req.param['pageNo'] || config.app.pageNo;
+    res.locals.pageSize = pageSize;
+    res.locals.pageNo = pageNo;
     Subject.list({
         criteria : {}
-        , pageSize : config.app.pageSize
-        , pageNo : config.app.pageNo
-    }, function (subjects){
-        res.render("admin/index", {title: "管理控制台", subjects : subjects});
+        , pageSize : pageSize
+        , pageNo : pageNo
+    }, function (err,subjects){
+        if(err) {
+            console.info(err);
+        }else{
+            res.render("admin/index", {title: "管理控制台", subjects : subjects});
+        }
     });
 };

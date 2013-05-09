@@ -31,11 +31,15 @@ module.exports = function (app) {
     app.get("/admin", auth("admin"), admin.index);
 
 
-    //添加主题
     var subject = require("../app/controllers/subject");
+    //添加主题
     app.get('/admin/addSub',auth("admin"), subject.addSubject);
-    //主题选项详情页编辑
+    //插入数据
+    app.post('/admin/doAddSub',auth("admin"), subject.doAddSub);
+    //主题选项详
     app.get('/admin/addSubOpt',auth("admin"), subject.addSubjectOption);
+    //主题管理
+    app.get('/admin/subject/edit/:_id',auth("admin"), subject.edit);
 
 
 };
