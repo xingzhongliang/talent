@@ -16,8 +16,9 @@ block content
             li.span4
                 .thumbnail
                     .well.well-small.clearfix
-                        h3!=subject.name
-                            small!=subject.owner
+                        h3(title!=subject.name)!=cut(subject.name, 9)
+                        .clearfix
+                            p.pull-right!=subject.owner
                         p.subjectComment!=cut(subject.comment, 100)
                         div.pull-right=fmt2(subject.createTime,'YYYY-MM-DD HH:mm')
                     p
