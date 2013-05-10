@@ -12,8 +12,32 @@ var Schema = mongoose.Schema;
  * @type {Schema}
  */
 var GroupSchema = new Schema({
-    subject: String // 属于哪个subject的
-    , name: String // 名称
+    name: String // 名称
+     ,subject: String // 属于哪个subject的
+     ,max: {type:Number,default:9999} // 报名人数上限
+     ,createTime: {type:Date,default:Date.now}
+     ,yn: {type:Number,default:1}
 });
+
+GroupSchema.statics = {
+    load: function (id, cb) {
+        this.findOne({ _id: id }).exec(cb);
+    },
+
+    findBySubjectId: function (sid, cb) {
+        _list.call(this,{subject:sid,yn:1},cb);
+    },
+
+    list: function(conditon,cb) {
+        _list.call(this,conditon,cb);
+    }
+};
+
+function _list(condition, cb) {
+    this.find(condition)
+        .sort({createTime: '-1'})
+        .exec(cb);
+}
+
 
 mongoose.model("Group", GroupSchema);

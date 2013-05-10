@@ -46,7 +46,9 @@ module.exports = function (app) {
     app.get('/admin/addSubOpt',auth("admin"), subject.addSubjectOption);
 
     //域管理
-    app.get('/scope/add',auth("admin"), subject.addScope);
+    app.get('/scope/save',auth("admin"), subject.saveScope);
+    //分组管理
+    app.get('/group/save',auth("admin"), subject.saveGroup);
 
 
 };
