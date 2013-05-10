@@ -120,6 +120,8 @@
      * @param o1
      * @param o2
      */
+    $.simpleMerge = merge;
+
     function merge(o1, o2) {
         var o = {};
         wrap(o, o1);
@@ -132,6 +134,8 @@
      * @param o1
      * @param o2
      */
+    $.simpleWrap =  wrap;
+
     function wrap(o1, o2) {
         try {
             for (var p in o2) {
@@ -194,11 +198,48 @@
     $.importJS = function (model) {
         var opt = {
             method: 'get',
-            url: getLocation().replace(FILE_NAME,model),
+            url: getLocation().replace(FILE_NAME, model),
             async: false,
             dataType: 'script'
         };
         $.ajax(opt);
     }
 
-})(jQuery);
+
+
+    /**
+     * 断言工具
+     * @type {{}}
+     */
+    $.assert = assert;
+    var assert = {
+
+            isNotNull: function (obj, msg) {
+                if (!obj && obj !== '') {
+                    throw new Error(msg || 'Null error');
+                }
+            },
+
+            isAvailable: function (obj, msg) {
+                if (!obj) {
+                    throw  new Error(msg || 'Not available error');
+                }
+            },
+
+            isNotEmpty: function(obj,msg) {
+                if(typeof obj == "boolean") return;
+                if( !obj  || ($.type(obj) == 'string' && !$.trim(obj))
+                    || ($.type(obj) == 'array' && !obj.length)
+                    || ($.type(obj) == 'obj' && $.isEmptyObject(obj))
+                    || ($.type(obj) == 'obj' && $.isEmptyObject(obj))) {
+                    throw new Error(msg || 'Empty error')
+                }
+            }
+        }
+
+
+
+
+
+})
+    (jQuery);
