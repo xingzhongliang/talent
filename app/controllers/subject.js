@@ -1,6 +1,5 @@
 var mongoose = require("mongoose");
 var moment = require("moment");
-var sw = require('./util/schemaWrapper');
 var uuid = require("node-uuid");
 var Subject = mongoose.model("Subject");
 var Scope = mongoose.model("Scope");
@@ -55,8 +54,7 @@ exports.show = function (req, res) {
  */
 exports.doAdd = function (req, res) {
     console.info('<<[doAddSub]begin');
-    var subject = new Subject();
-    sw.wrap(subject, req.body.sub);
+    var subject = new Subject(req.body);
     // 如果设置为使用令牌，则生成令牌
     if (subject.token == 1) {
         subject.token = uuid.v4();
