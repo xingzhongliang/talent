@@ -38,7 +38,7 @@ module.exports = function (app) {
     app.post('/subject/do-add',auth("admin"), subject.doAdd);// 插入数据
     app.get('/subject/:subjectId',  subject.show); // 前台展示主题首页
     app.get('/subject/:subjectId/edit', auth("admin"), subject.edit); // 编辑，管理主题
-    app.get('/subject/:subjectId/sign-up', auth("token"), subject.show); // 主题报名
+    app.get('/subject/:subjectId/sign-up', auth("token"), candidate.new); // 主题报名
 
     app.param("subjectId", subject.subject); // 处理带:subjectId参数的url中的:subjectId
 
@@ -49,6 +49,9 @@ module.exports = function (app) {
     app.get('/scope/save',auth("admin"), subject.saveScope);
     //分组管理
     app.get('/group/save',auth("admin"), subject.saveGroup);
+
+    var uploaddata = require('../app/controllers/uploaddata');
+    app.all('/uploaddata',uploaddata.uploaddata);
 
 
 };

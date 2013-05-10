@@ -7,8 +7,7 @@ var path = require('path');
 var rootPath = path.normalize(__dirname + '/..');
 
 module.exports = {
-//    db: 'mongodb://localhost/talent', // 数据库连接字符串
-    db: 'mongodb://192.168.133.134:40000/talent', // 数据库连接字符串
+    db: 'mongodb://localhost/talent', // 数据库连接字符串
 
     root: rootPath, // 系统根路径
     app: {

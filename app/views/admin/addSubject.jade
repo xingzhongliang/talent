@@ -77,20 +77,20 @@ block main
                             span.add-on
                                 i.icon-th
         fieldset
-            legend 页面设置
-            h5 选项展示方式
-            label.radio
-                input(type='radio',value='1',name='sub[showType]',checked='true')
-                span 简单文本展示——适用于一般的简单意见调查
-            label.radio
-                input(type='radio',value='2',name='sub[showType]')
-                span 文本加缩略图展示——比简单文本展示方式稍微丰富一点的方式
-            label.radio
-                input(type='radio',value='3',name='sub[showType]')
-                span 文本、缩略图加详情页——用于复杂的调研活动，各个选项有专门的详情页介绍详细信息
-        br
-        br
-        br
+            h4#toggleAdvancedOptsBtn.clearfix 高级设置
+                i.icon-plus
+            div#advancedOpts.hide.well
+                h5 选项展示方式
+                label.radio
+                    input(type='radio',value='1',name='sub[showType]')
+                    span 简单文本展示——适用于一般的简单意见调查
+                label.radio
+                    input(type='radio',value='2',name='sub[showType]')
+                    span 文本加缩略图展示——比简单文本展示方式稍微丰富一点的方式
+                label.radio
+                    input(type='radio',value='3',name='sub[showType]',checked='true')
+                    span 文本、缩略图加详情页——用于复杂的调研活动，各个选项有专门的详情页介绍详细信息
+        .row &nbsp;
         hr
         div.row
             div.span8
@@ -113,3 +113,10 @@ block footer
         function showMsg(msg) {
             $('#msgDiv').show().find('span').html(msg);
         }
+
+        $(function(){
+            $("#toggleAdvancedOptsBtn").click(function(){
+                $(this).find("i").toggleClass("icon-plus").toggleClass("icon-minus");
+                $("#advancedOpts").slideToggle();
+            });
+        });
