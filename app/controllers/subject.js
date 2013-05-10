@@ -1,8 +1,9 @@
 var mongoose = require("mongoose");
-var Subject = mongoose.model("Subject");
 var moment = require("moment");
 var sw = require('./util/schemaWrapper');
 var uuid = require("node-uuid");
+var Subject = mongoose.model("Subject");
+var Scope = mongoose.model("Scope");
 /**
  * 按Id查找主题，找到之后放到req里面
  * @param req
@@ -79,4 +80,22 @@ exports.doAdd = function(req,res) {
 
 exports.addSubjectOption = function (req, res) {
     res.render('addSubjectOption', { title: 'addSubjectOption' });
+};
+
+/**
+ * 添加域
+ * @param req
+ * @param res
+ */
+exports.addScope = function(req,res) {
+    var scope = new Scope();
+    scope.subject = req.query.subject;
+    scope.name = req.query.name;
+    scope.save(function(err) {
+        if(err) {
+            console.info(err);
+        }
+    });
+    res.set('Content-Type', 'text/plain');
+    res.send(scope);
 };

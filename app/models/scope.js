@@ -7,13 +7,14 @@
  */
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-
 /**
  * @type {Schema}
  */
 var ScopeSchema = new Schema({
-    subject: String // 属于哪个subject的
+     subject: String // 属于哪个subject的
     , name: String // 名称
+    , createTime: {type:Date,default : Date.now} // 日期
+    , yn: {type:Number,default : 1} // 是否可用 1、0
 });
 
 mongoose.model("Scope", ScopeSchema);

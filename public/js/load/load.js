@@ -24,15 +24,15 @@
             $(img).addClass('img').html('&nbsp;').appendTo(div);
             $self.addCover({
                 position: 'center',
-                container: self
+                content: div
             }).showCover();
         });
         var opt = {
-            ur: url,
+            url: url,
             method: 'get',
             dataType: 'json',
-            success: function () {
-                callback && callback();
+            success: function (res) {
+                callback && callback(res);
                 $t.each(function () {
                     $(this).hideCover();
                 });

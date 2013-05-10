@@ -3,6 +3,7 @@ block head
     link(href="/css/bootstrapSwitch.css",rel="stylesheet",media="screen")
     link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
     script(src="/js/bootstrap-sniper.js")
+    script(src="/js/load/load.js")
     style
         .muted {
             background: #F5F5F5;
@@ -34,8 +35,8 @@ block sidebar
         li
             a adf
 
-
 block main
+    input#sid(type='hidden',value='#{subject._id}')
     div.page-header
         div.hero-unit
             h2!=subject.name
@@ -85,24 +86,24 @@ block main
         .span9
             div(style="overflow:")
             .alert
-                 ul
+                ul
                     li 用于对选项进行水平分类
                     li 域的数量小于或等于一个时，不会显示域的信息
             div#scope.well.muted.hide
                 table.table
                     thead
                         tr
-                            th #
+                            th.span1 #
                             th 名称
-                            th 操作
+                            th.span2 操作
                     tbody
                         tr.tmpl.hide
                             td
                             td
                             td
                                 .btn-group
-                                    button.btn 修改
-                                    button.btn.btn-danger 删除
+                                    button.btn.btn-small 修改
+                                    button.btn.btn-small.btn-danger 删除
             btn#addScopeBtn.btn.btn-block.btn-success  添加域
 
     hr
@@ -186,7 +187,7 @@ block main
         .input-append
             input(type='text',placeholder='请输入域的名称')
             button(onclick='addScope(this)').btn.btn-success 确认
-            button(onclick='cancelAS()').btn
+            button(onclick='closeAS()').btn
                 i.icon-remove
 
 
@@ -199,12 +200,22 @@ block footer
         //新增域
         function addScope(obj) {
             var val = jQuery.trim($(obj).prev().val());
+            var data = {};
+            data.name = val;
+            data.subject = $('#sid').val();
+            closeAS();
             if(val) {
-
+                $('#addScopeBtn').loading('/scope/add',data,function(res){
+                    var tab = $('#scope').show().find('table');
+                    tab.append('<tr>' + tab.find('.tmpl').html() + '</tr>').show();
+                    var tds = tab.find('tr:last td');
+                    tds.eq(0).html(tab.find('tbody').find('tr').size() - 1);
+                    tds.eq(1).html(res.name);
+                });
             }
         }
 
-        function cancelAS() {
+        function closeAS() {
             var it = $('#addScopeBtn').popover('hide').get(0);
             it.pop = !it.pop;
         }

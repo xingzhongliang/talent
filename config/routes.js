@@ -44,8 +44,9 @@ module.exports = function (app) {
 
     // 主题选项详情页编辑
     app.get('/admin/addSubOpt',auth("admin"), subject.addSubjectOption);
-    //主题管理
-    //app.get('/admin/subject/edit/:_id',auth("admin"), subject.edit);
+
+    //域管理
+    app.get('/scope/add',auth("admin"), subject.addScope);
 
 
 };
