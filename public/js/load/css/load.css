@@ -1,0 +1,16 @@
+.load_div {
+    display: table;
+    margin-top: auto;
+    margin-left: auto;
+    text-align: center;
+    vertical-align: middle;
+    opacity: 1;
+}
+
+.load_div .img {
+    margin-top: auto;
+    margin-left: auto;
+    width: 32px;
+    height: 32px;;
+    background-image: url("../img/loading.gif");
+}
