@@ -3,12 +3,26 @@ block head
     link(href="/css/bootstrapSwitch.css",rel="stylesheet",media="screen")
     link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
     script(src="/js/bootstrap-sniper.js")
+    script(src="/js/load/load.js")
+    style
+        .muted {
+            background: #F5F5F5;
+        }
     script(src="/js/datepicker/js/bootstrap-datepicker.js")
     script
         $(function(){
             $('#voteMax').sniper();
             $('#regMax').sniper();
             $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
+
+            $('#addScopeBtn').popover({
+                placement:'bottom',
+                html:true,
+                content:$('#sp').html()
+            }).click(function(){
+                this.pop = !this.pop;
+                this.pop ? $(this).popover('show') : $(this).popover('hide');
+            });
         });
 
 
@@ -21,8 +35,8 @@ block sidebar
         li
             a adf
 
-
 block main
+    input#sid(type='hidden',value='#{subject._id}')
     div.page-header
         div.hero-unit
             h2!=subject.name
@@ -31,7 +45,9 @@ block main
             p
                 div.btn-group
                     button.btn 下一轮投票
+                    button.btn 选项管理
                     a(href='javascript:;').btn.btn-success.btn-add-opt 新选项
+
     h4 活动设置
     div.row
         .span9
@@ -60,15 +76,52 @@ block main
                 p 每人可报名次数：#{subject.regChance}
                 p 投票窗口期：#{fmt(subject.voteStart)} 到 #{fmt(subject.voteEnd)}
                 p 报名窗口期：#{fmt(subject.regStart)} 到 #{fmt(subject.regEnd)}
-    .pull-right.clearfix
+    .pull-right
         a.btn.btn-primary 修改
+    .clearfix
+    hr
 
+    h4 域
+    div.row
+        .span9
+            div(style="overflow:")
+            .alert
+                ul
+                    li 用于对选项进行水平分类
+                    li 域的数量小于或等于一个时，不会显示域的信息
+            div#scope.well.muted.hide
+                table.table
+                    thead
+                        tr
+                            th.span1 #
+                            th 名称
+                            th.span2 操作
+                    tbody
+                        tr.tmpl.hide
+                            td
+                            td
+                            td
+                                .btn-group
+                                    button.btn.btn-small 修改
+                                    button.btn.btn-small.btn-danger 删除
+            btn#addScopeBtn.btn.btn-block.btn-success  添加域
 
+    hr
 
+    h4 分组
+    div.row
+        .span9
+            .alert
+                ul
+                    li 用于对选项进行垂直分类
+                    li 分组的数量小于或等于一个时，不会显示分组的信息
+                    li 如果一个活动有分组信息，那么报名时必须要选择分组
+                    li 当需要对活动的报名人数做限制时，可以在分组中设置
+            p 默认分组
+    hr
 
-
-
-    div#sp.hide
+    //活动设置修改窗口
+    div#set.hide
         h3 活动设置
         div.row
             .span3
@@ -130,7 +183,12 @@ block main
                 div.div-center
                     a(href='javascript:;',onclick='sbmt()').btn.btn-primary  修改活动设置
         hr
-
+    div#sp.hide
+        .input-append
+            input(type='text',placeholder='请输入域的名称')
+            button(onclick='addScope(this)').btn.btn-success 确认
+            button(onclick='closeAS()').btn
+                i.icon-remove
 
 
 block footer
@@ -138,5 +196,27 @@ block footer
     script
         function sbmt() {
             //
+        }
+        //新增域
+        function addScope(obj) {
+            var val = jQuery.trim($(obj).prev().val());
+            var data = {};
+            data.name = val;
+            data.subject = $('#sid').val();
+            closeAS();
+            if(val) {
+                $('#addScopeBtn').loading('/scope/add',data,function(res){
+                    var tab = $('#scope').show().find('table');
+                    tab.append('<tr>' + tab.find('.tmpl').html() + '</tr>').show();
+                    var tds = tab.find('tr:last td');
+                    tds.eq(0).html(tab.find('tbody').find('tr').size() - 1);
+                    tds.eq(1).html(res.name);
+                });
+            }
+        }
+
+        function closeAS() {
+            var it = $('#addScopeBtn').popover('hide').get(0);
+            it.pop = !it.pop;
         }
 
