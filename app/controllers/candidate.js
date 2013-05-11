@@ -37,7 +37,13 @@ exports.add = function (req, res) {
 exports.doAdd = function (req, res) {
     var candidate = new Candidate(req.body);
     var subject = req.subject;
+    // 选项图片
+    var avatar = req.files.avatar.path;
+    avatar = avatar.substring(avatar.lastIndexOf("/"));
+    candidate.avatar = avatar;
+    // 所属主题
     candidate.subject = subject._id;
+    // 根据选项是否“是人” 来决定value和department的值
     if (subject.viewOpt.candidateIsEmployee) {
         candidate.value = req.session.user.erpId;
         candidate.department = req.session.user.department;
@@ -45,10 +51,7 @@ exports.doAdd = function (req, res) {
         candidate.value = uuid.v4();
     }
     candidate.create(function (err) {
-        if (err) {
-            console.error(err);
-            throw err;
-        }
+        if (err)  throw err;
         if (config.isAdmin(req.session.user.erpId)) {
             res.redirect('/subject/' + candidate.subject + '/candidate/list');
         } else {

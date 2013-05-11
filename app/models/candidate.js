@@ -12,7 +12,7 @@ var Schema = mongoose.Schema;
 var CandidateSchema = new Schema({
     name: String // 姓名/名称
     , value: { type: String, require: true} // 用于标识candidate的值 候选者是人时为候选人的erpId，如果是其他，则由系统指定
-    , subject: {type: String, index: true} // 属于哪个subject
+    , subject: {type: String, index: {unique: false}} // 属于哪个subject
     , scope: String // 属于哪个scope
     , group: String // 属于哪个group
     , department: String // 部门 candidate是人时提供

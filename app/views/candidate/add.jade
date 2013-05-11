@@ -10,7 +10,7 @@ block main
     h1= subject.name
       small #{subject.viewOpt.newCandidatePage.actionLabel}
   .row &nbsp;
-  form(method="post", action="/subject/#{subject._id}/candidate/new").form-horizontal
+  form(method="post",enctype="multipart/form-data", action="/subject/#{subject._id}/candidate/new").form-horizontal
     .well
       //- 如果有组或域，显示备选
       if subject.scopes.length > 1 || subject.groups.length > 1
@@ -62,14 +62,14 @@ block main
           .control-group
             label.control-label 图片：
             .controls
-              input.span6(type="file",name="avatar")
+              input.span6(type="file",name="")
           .control-group
             label.control-label 音频：
             .controls
-              input.span6(type="file",name="avatar")
+              input.span6(type="file",name="")
           .control-group
             label.control-label 视频：
             .controls
-              input.span6(type="file",name="avatar")
+              input.span6(type="file",name="")
     .well
       button.btn.btn-primary.btn-large.btn-block(type="submit") 提交报名
