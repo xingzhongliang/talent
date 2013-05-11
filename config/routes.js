@@ -14,18 +14,16 @@ module.exports = function (app) {
     app.get('/', show.index);
     // 列表页
     app.get("/list/:area", show.list);
-    var candidate = require("../app/controllers/candidate");
-    // 个人详情页
-    app.get("/candidate/:erpId", show.candidate);
 
 
-    var login = require("../app/controllers/passport");
+
+    var passport = require("../app/controllers/passport");
     // 登录登出
-    app.get('/login', login.login);
-    app.post('/do-login', login.doLogin);
-    app.get('/do-logout', login.doLogout);
-    app.get('/token', login.token);
-    app.post('/verify-token', login.verifyToken);
+    app.get('/login', passport.login);
+    app.post('/do-login', passport.doLogin);
+    app.get('/do-logout', passport.doLogout);
+    app.get('/token', passport.token);
+    app.post('/verify-token', passport.verifyToken);
 
     // 管理控制台
     var admin = require("../app/controllers/admin");
@@ -33,17 +31,26 @@ module.exports = function (app) {
 
     // 主题相关
     var subject = require("../app/controllers/subject");
+    var candidate = require("../app/controllers/candidate");
     app.get('/subject/add', auth("admin"), subject.add); // 添加主题
     app.post('/subject/do-add',auth("admin"), subject.doAdd);// 插入数据
     app.get('/subject/:subjectId',  subject.show); // 前台展示主题首页
     app.get('/subject/:subjectId/edit', auth("admin"), subject.edit); // 编辑，管理主题
-    app.get('/subject/:subjectId/candidate/add', auth("token"), candidate.add); // 主题报名
 
-    //域管理
+    // 选项管理
+    app.get('/subject/:subjectId/candidate/add', auth("token"), candidate.add); // 主题添加选项
+    app.post("/subject/:subjectId/candidate/new", auth("token"), candidate.doAdd); // 保存新选项
+    app.get('/subject/:subjectId/candidate/list', auth("admin"), candidate.list); // 主题管理选项
+
+    // 域管理
     var scope = require("../app/controllers/scope");
     app.get('/scope/save',auth("admin"), scope.save);
-    //分组管理
-    app.get('/group/save',auth("admin"), subject.saveGroup);
+    // 分组管理
+    var group = require("../app/controllers/group");
+    app.get('/group/save',auth("admin"), group.save);
+
+
+    app.get("/candidate/:erpId", show.candidate); // 选项详情页
 
     app.param("subjectId", subject.subject); // 处理带:subjectId参数的url中的:subjectId
 

@@ -1,40 +1,40 @@
 /**
- * scope controller
  * User: laichendong
- * Date: 13-5-10
- * Time: 下午5:04
+ * Date: 13-5-11
+ * Time: 下午12:15
  */
 var mongoose = require("mongoose");
 var Subject = mongoose.model("Subject");
-var Scope = mongoose.model("Scope");
+var Group = mongoose.model("Group");
 
 /**
- * 保存域的信息
+ * 保存分组信息
  * @param req
  * @param res
  */
 exports.save = function (req, res) {
-    var scope = new Scope();
+    var group = new Group();
     var _id = req.query._id;
-    _id && (scope._id = _id);
-    scope.subject = req.query.subject;
-    scope.name = req.query.name;
+    _id && (group._id = _id);
+    group.subject = req.query.subject;
+    group.name = req.query.name;
+    group.max = req.query.max;
     if (!_id) {
-        scope.save(function (err, sc) {
+        group.save(function (err, gp) {
             if (err) {
                 console.info(err);
             } else {
                 res.set('Content-Type', 'text/plain');
-                res.send({data: sc, i: 1});
+                res.send({data: gp, i: 1});
             }
         });
     } else {
-        Scope.update({_id: _id}, {$set: {name: scope.name}}, function (err, i) {
+        Group.update({_id: _id}, {$set: {name: group.name, max: group.max}}, function (err, i) {
             if (err) {
                 console.info(err);
             } else {
                 res.set('Content-Type', 'text/plain');
-                res.send({data: scope, i: i});
+                res.send({data: group, i: i});
             }
         });
     }

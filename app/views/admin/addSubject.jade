@@ -1,182 +1,182 @@
 extends ../layouts/adminWithSideBar
 block head
-    link(href="/css/bootstrapSwitch.css",rel="stylesheet",media="screen")
-    link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
-    script(src="/js/bootstrap-sniper.js")
-    script(src="/js/datepicker/js/bootstrap-datepicker.js")
-    script
-        $(function(){
-            $('#voteMax').sniper();
-            $('#regMax').sniper();
-            $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
-        });
+  link(href="/css/bootstrapSwitch.css",rel="stylesheet",media="screen")
+  link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
+  script(src="/js/bootstrap-sniper.js")
+  script(src="/js/datepicker/js/bootstrap-datepicker.js")
+  script
+    $(function(){
+        $('#voteMax').sniper();
+        $('#regMax').sniper();
+        $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
+    });
 
 
 block sidebar
-    ul.nav.nav-list
-        li
-            a adf
-        li
-            a adf
-        li
-            a adf
+  ul.nav.nav-list
+    li
+      a adf
+    li
+      a adf
+    li
+      a adf
 
 
 block main
-    div.page-header
-        h2 添加主题
-            small     Add Subject
-    div#msgDiv.alert.alert-block.alert-error.hide
-        strong 表单验证失败！
-        span(style='margin-left:5px') &nbsp
-    form#dataForm.form-horizontal(method='post',action='/subject/do-add')
-        fieldset
-            legend 基本信息
+  div.page-header
+    h2 添加主题
+      small     Add Subject
+  div#msgDiv.alert.alert-block.alert-error.hide
+    strong 表单验证失败！
+    span(style='margin-left:5px') &nbsp
+  form#dataForm.form-horizontal(method='post',action='/subject/do-add')
+    fieldset
+      legend 基本信息
+      .control-group
+        input.input-block-level(type='text',id='sub-name',name='name',placeholder='活动名称')
+      .control-group
+        textarea.input-block-level(name='comment',rows=3,placeholder='活动说明')
+    fieldset
+      legend 活动设置
+      div.row
+        .span3
+          div.b-switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
+            input(name='isPrivate',type='checkbox',checked='true',value='1')
+        .span3
+          div.b-switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
+            input(name='canReg',type='checkbox',checked='true',value='1')
+        .span3
+          div.b-switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
+            input(name='token',type='checkbox',value='1')
+      div.row &nbsp;
+      div.row
+        div.span4
+          div.well
+            h5 投票设置
+            p 每个人在这次活动中能投多少票
             .control-group
-                input.input-block-level(type='text',id='sub-name',name='name',placeholder='活动名称')
+              input#voteMax(type='text',name='voteChance',value="1")
+            p 投票的窗口期：
             .control-group
-                textarea.input-block-level(name='comment',rows=3,placeholder='活动说明')
+              div.input-append
+                input.dpInpt.input-block-level(name='voteStart',type="text")
+                span.add-on
+                  i.icon-th
+            .control-group
+              div.input-append
+                input.dpInpt.input-block-level(name='voteEnd',type="text")
+                span.add-on
+                  i.icon-th
+        div.span4.pull-right
+          div.well
+            h5 报名设置
+            p 每个人在这次活动中能报名几次
+            .control-group
+              input#regMax(type='text',name='regChance',value='1')
+            p 报名的窗口期：
+            .control-group
+              div.input-append
+                input.dpInpt.input-block-level(name='regStart',type="text")
+                span.add-on
+                  i.icon-th
+            .control-group
+              div.input-append
+                input.dpInpt.input-block-level(name='regEnd',type="text")
+                span.add-on
+                  i.icon-th
+    fieldset
+      h3#toggleAdvancedOptsBtn.btn.btn-info 高级设置&nbsp;&nbsp;&nbsp;
+        i.icon-plus.icon-white
+      .row &nbsp;
+      div#advancedOpts.well.hide
         fieldset
-            legend 活动设置
-            div.row
-                .span3
-                    div.b-switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
-                        input(name='isPrivate',type='checkbox',checked='true',value='1')
-                .span3
-                    div.b-switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
-                        input(name='canReg',type='checkbox',checked='true',value='1')
-                .span3
-                    div.b-switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
-                        input(name='token',type='checkbox',value='1')
-            div.row &nbsp;
-            div.row
-                div.span4
-                    div.well
-                        h5 投票设置
-                        p 每个人在这次活动中能投多少票
-                        .control-group
-                            input#voteMax(type='text',name='voteChance',value="1")
-                        p 投票的窗口期：
-                        .control-group
-                            div.input-append
-                                input.dpInpt.input-block-level(name='voteStart',type="text")
-                                span.add-on
-                                    i.icon-th
-                        .control-group
-                            div.input-append
-                                input.dpInpt.input-block-level(name='voteEnd',type="text")
-                                span.add-on
-                                    i.icon-th
-                div.span4.pull-right
-                    div.well
-                        h5 报名设置
-                        p 每个人在这次活动中能报名几次
-                        .control-group
-                            input#regMax(type='text',name='regChance',value='1')
-                        p 报名的窗口期：
-                        .control-group
-                            div.input-append
-                                input.dpInpt.input-block-level(name='regStart',type="text")
-                                span.add-on
-                                    i.icon-th
-                        .control-group
-                            div.input-append
-                                input.dpInpt.input-block-level(name='regEnd',type="text")
-                                span.add-on
-                                    i.icon-th
+          legend 页面通用设置
+          .control-group
+            label.control-label 选项展示方式：
+            .controls
+              label.radio
+                input(type='radio',value='1',name='viewOpt[showType]')
+                span 简单文本展示——适用于一般的简单意见调查
+              label.radio
+                input(type='radio',value='2',name='viewOpt[showType]')
+                span 文本加缩略图展示——比简单文本展示方式稍微丰富一点的方式
+              label.radio
+                input(type='radio',value='3',name='viewOpt[showType]',checked='true')
+                span 文本、缩略图加详情页——用于复杂的调研活动，各个选项有专门的详情页介绍详细信息
+          .control-group
+            label.control-label 前台显示模板：
+            .controls
+              .input-prepend.input-append
+                span.add-on /app/views/templats/
+                input(type="text",name="viewOpt[templateName]", value="default")
+                span.add-on /
+          .control-group
+            label.control-label 选项是否为京东员工：
+            .controls
+              div.b-switch(data-on-label='是',data-off-label='否')
+                input(type='checkbox',name="viewOpt[candidateIsEmployee]",checked='true',value='1')
+
         fieldset
-            h3#toggleAdvancedOptsBtn.btn.btn-info 高级设置&nbsp;&nbsp;&nbsp;
-                i.icon-plus.icon-white
-            .row &nbsp;
-            div#advancedOpts.well.hide
-                fieldset
-                    legend 页面通用设置
-                    .control-group
-                        label.control-label 选项展示方式：
-                        .controls
-                            label.radio
-                                input(type='radio',value='1',name='viewOpt[showType]')
-                                span 简单文本展示——适用于一般的简单意见调查
-                            label.radio
-                                input(type='radio',value='2',name='viewOpt[showType]')
-                                span 文本加缩略图展示——比简单文本展示方式稍微丰富一点的方式
-                            label.radio
-                                input(type='radio',value='3',name='viewOpt[showType]',checked='true')
-                                span 文本、缩略图加详情页——用于复杂的调研活动，各个选项有专门的详情页介绍详细信息
-                    .control-group
-                        label.control-label 前台显示模板：
-                        .controls
-                            .input-prepend.input-append
-                                span.add-on /app/views/templats/
-                                input(type="text",name="viewOpt[templateName]", value="default")
-                                span.add-on /
-                    .control-group
-                        label.control-label 选项是否为京东员工：
-                        .controls
-                            div.b-switch(data-on-label='是',data-off-label='否')
-                                input(type='checkbox',name="viewOpt[CandidateIsEmployee]",checked='true',value='1')
+          legend 新增选项页面设置
+          .control-group
+            label.control-label 页面动作名称：
+            .controls
+              input(type="text",name="viewOpt[newCandidatePage][actionLabel]",value="报名")
+          .control-group
+            label.control-label 选项所属域表单标题：
+            .controls
+              input(type="text",name="viewOpt[newCandidatePage][scopeLabel]",value="地区")
+          .control-group
+            label.control-label 选项所属组表单标题：
+            .controls
+              input(type="text",name="viewOpt[newCandidatePage][groupLabel]",value="分组")
+          .control-group
+            label.control-label 选项名称表单标题：
+            .controls
+              input(type="text",name="viewOpt[newCandidatePage][titleLabel]",value="姓名")
+          .control-group
+            label.control-label 选项图片表单标题：
+            .controls
+              input(type="text",name="viewOpt[newCandidatePage][imgLabel]",value="头像")
+          .control-group
+            label.control-label 选项描述表单标题：
+            .controls
+              input(type="text",name="viewOpt[newCandidatePage][descriptionLabel]",value="简介")
+          .control-group
+            label.control-label 选项详情的表单legend：
+            .controls
+              input(type="text",name="viewOpt[newCandidatePage][detailLegend]",value="才艺展示")
+          .control-group
+            label.control-label 新增选项动作按钮名称：
+            .controls
+              input(type="text",name="viewOpt[newCandidatePage][actionBtnLabel]",value="提交报名")
 
-                fieldset
-                    legend 新增选项页面设置
-                    .control-group
-                        label.control-label 页面动作名称：
-                        .controls
-                            input(type="text",name="viewOpt[newCandidatePage][actionLabel]",value="报名")
-                    .control-group
-                        label.control-label 选项所属域表单标题：
-                        .controls
-                            input(type="text",name="viewOpt[newCandidatePage][scopeLabel]",value="地区")
-                    .control-group
-                        label.control-label 选项所属组表单标题：
-                        .controls
-                            input(type="text",name="viewOpt[newCandidatePage][groupLabel]",value="分组")
-                    .control-group
-                        label.control-label 选项名称表单标题：
-                        .controls
-                            input(type="text",name="viewOpt[newCandidatePage][titleLabel]",value="姓名")
-                    .control-group
-                        label.control-label 选项图片表单标题：
-                        .controls
-                            input(type="text",name="viewOpt[newCandidatePage][imgLabel]",value="头像")
-                    .control-group
-                        label.control-label 选项描述表单标题：
-                        .controls
-                            input(type="text",name="viewOpt[newCandidatePage][descriptionLabel]",value="简介")
-                    .control-group
-                        label.control-label 选项详情的表单legend：
-                        .controls
-                            input(type="text",name="viewOpt[newCandidatePage][detailLegend]",value="才艺展示")
-                    .control-group
-                        label.control-label 新增选项动作按钮名称：
-                        .controls
-                            input(type="text",name="viewOpt[newCandidatePage][actionBtnLabel]",value="提交报名")
-
-        hr
-        div.row
-            div.span8
-                div.div-center
-                    a(href='javascript:;',onclick='sbmt()').btn.btn-large.btn-primary  提交新主题
+    hr
+    div.row
+      div.span8
+        div.div-center
+          a(href='javascript:;',onclick='sbmt()').btn.btn-large.btn-primary  提交新主题
 
 
 
 block footer
-    script(src="/js/bootstrapSwitch.js")
-    script
-        function sbmt() {
-            if(!$.trim($('#sub-name').val())) {
-                return showMsg('主题名称不能为空');
-            }
-           $('#dataForm').submit();
+  script(src="/js/bootstrapSwitch.js")
+  script
+    function sbmt() {
+        if(!$.trim($('#sub-name').val())) {
+            return showMsg('主题名称不能为空');
         }
+       $('#dataForm').submit();
+    }
 
 
-        function showMsg(msg) {
-            $('#msgDiv').show().find('span').html(msg);
-        }
+    function showMsg(msg) {
+        $('#msgDiv').show().find('span').html(msg);
+    }
 
-        $(function(){
-            $("#toggleAdvancedOptsBtn").click(function(){
-                $(this).find("i").toggleClass("icon-plus").toggleClass("icon-minus");
-                $("#advancedOpts").slideToggle();
-            });
+    $(function(){
+        $("#toggleAdvancedOptsBtn").click(function(){
+            $(this).find("i").toggleClass("icon-plus").toggleClass("icon-minus");
+            $("#advancedOpts").slideToggle();
         });
+    });

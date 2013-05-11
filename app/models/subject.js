@@ -33,7 +33,7 @@ var SubjectSchema = new Schema({
     , viewOpt: { // 页面展示选项
         templateName: String // 使用模板名称，隐含指定了模板路径
         , showType: {type: Number, default: 3}  // 候选项在前台的展示方式1、文本；2、图片；3、详情页
-        , CandidateIsEmployee:{type: Boolean, default: true}  // 选项是否为京东员工
+        , candidateIsEmployee:{type: Boolean, default: true}  // 选项是否为京东员工
         , newCandidatePage: { // 新增选项页面相关配置
             actionLabel: {type: String, default:"报名"} // 新增选项动作名称
             , scopeLabel: {type: String, default:"地区"} // 选项所属域表单label

@@ -80,7 +80,8 @@ exports.doAdd = function (req, res) {
 
     subject.save(function (err) {
         if (err) {
-            console.log(err);
+            console.error(err);
+            throw err;
         }
         res.redirect('/admin');
         console.info('[doAddSub]end>>');
@@ -90,35 +91,3 @@ exports.doAdd = function (req, res) {
 
 
 
-/**
- * 保存分组信息
- * @param req
- * @param res
- */
-exports.saveGroup = function (req, res) {
-    var group = new Group();
-    var _id = req.query._id;
-    _id && (group._id = _id);
-    group.subject = req.query.subject;
-    group.name = req.query.name;
-    group.max = req.query.max;
-    if (!_id) {
-        group.save(function (err, gp) {
-            if (err) {
-                console.info(err);
-            } else {
-                res.set('Content-Type', 'text/plain');
-                res.send({data: gp, i: 1});
-            }
-        });
-    } else {
-        Group.update({_id: _id}, {$set: {name: group.name, max: group.max}}, function (err, i) {
-            if (err) {
-                console.info(err);
-            } else {
-                res.set('Content-Type', 'text/plain');
-                res.send({data: group, i: i});
-            }
-        });
-    }
-};
