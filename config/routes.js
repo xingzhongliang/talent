@@ -39,15 +39,13 @@ module.exports = function (app) {
     app.get('/subject/:subjectId/edit', auth("admin"), subject.edit); // 编辑，管理主题
     app.get('/subject/:subjectId/candidate/add', auth("token"), candidate.add); // 主题报名
 
-    app.param("subjectId", subject.subject); // 处理带:subjectId参数的url中的:subjectId
-
-    // 主题选项详情页编辑
-    app.get('/admin/addSubOpt',auth("admin"), subject.addSubjectOption);
-
     //域管理
-    app.get('/scope/save',auth("admin"), subject.saveScope);
+    var scope = require("../app/controllers/scope");
+    app.get('/scope/save',auth("admin"), scope.save);
     //分组管理
     app.get('/group/save',auth("admin"), subject.saveGroup);
+
+    app.param("subjectId", subject.subject); // 处理带:subjectId参数的url中的:subjectId
 
     var uploaddata = require('../app/controllers/uploaddata');
     app.all('/uploaddata',uploaddata.uploaddata);

@@ -35,7 +35,7 @@ block main
             .control-group
                 input.input-block-level(type='text',id='sub-name',name='name',placeholder='活动名称')
             .control-group
-                textarea.input-block-level(name='comment',placeholder='活动说明')
+                textarea.input-block-level(name='comment',rows=3,placeholder='活动说明')
         fieldset
             legend 活动设置
             div.row
@@ -103,7 +103,6 @@ block main
                             label.radio
                                 input(type='radio',value='3',name='viewOpt[showType]',checked='true')
                                 span 文本、缩略图加详情页——用于复杂的调研活动，各个选项有专门的详情页介绍详细信息
-
                     .control-group
                         label.control-label 前台显示模板：
                         .controls
@@ -111,6 +110,11 @@ block main
                                 span.add-on /app/views/templats/
                                 input(type="text",name="viewOpt[templateName]", value="default")
                                 span.add-on /
+                    .control-group
+                        label.control-label 选项是否为京东员工：
+                        .controls
+                            div.b-switch(data-on-label='是',data-off-label='否')
+                                input(type='checkbox',name="viewOpt[CandidateIsEmployee]",checked='true',value='1')
 
                 fieldset
                     legend 新增选项页面设置
@@ -118,6 +122,14 @@ block main
                         label.control-label 页面动作名称：
                         .controls
                             input(type="text",name="viewOpt[newCandidatePage][actionLabel]",value="报名")
+                    .control-group
+                        label.control-label 选项所属域表单标题：
+                        .controls
+                            input(type="text",name="viewOpt[newCandidatePage][scopeLabel]",value="地区")
+                    .control-group
+                        label.control-label 选项所属组表单标题：
+                        .controls
+                            input(type="text",name="viewOpt[newCandidatePage][groupLabel]",value="分组")
                     .control-group
                         label.control-label 选项名称表单标题：
                         .controls

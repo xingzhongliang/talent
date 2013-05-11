@@ -18,23 +18,28 @@ block main
                 legend 基本信息
                 if subject.scopes.length > 1
                     .control-group
-                        lebel.control-label 活动域：
+                        lebel.control-label #{subject.viewOpt.newCandidatePage.scopeLabel}：
                         .controls
-                            select
+                            select.span6
                                 each scope in subject.scopes
                                     option(value="")=scope.name
                 if subject.groups.length > 1
                     .control-group
-                        lebel.control-label 活动组：
+                        lebel.control-label #{subject.viewOpt.newCandidatePage.groupLabel}：
                         .controls
-                            select
+                            select.span6
                                 each group in subject.groups
                                     option(value="")=group.name
             fieldset
                 .control-group
                     label.control-label #{subject.viewOpt.newCandidatePage.titleLabel}：
                     .controls
-                        input.span6(type="text",readonly,value=req.session.user.name)
+                        if subject.viewOpt.candidateIsEmployee
+                            //- 如果选项时京东员工，选项标题默认为员工姓名，不能更改
+                            input.span6(type="text",readonly,value=req.session.user.name)
+                        else
+                            //- 否则不提供默认值，并可输入
+                            input.span6(type="text",placeholder="#{subject.viewOpt.newCandidatePage.titleLabel}")
                 //- showType > 1 表示为非纯文本，需要图片和详细信息
                 if subject.viewOpt.showType > 1
                     .control-group

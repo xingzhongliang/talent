@@ -6,6 +6,8 @@
  */
 var mongoose = require("mongoose");
 var Candidate = mongoose.model("Candidate");
+var Scope = mongoose.model("Scope");
+var Group = mongoose.model("Group");
 
 /**
  * 新候选人
@@ -13,11 +15,14 @@ var Candidate = mongoose.model("Candidate");
  * @param res
  */
 exports.add = function (req, res) {
-    // 查询主题下的域和组
-    var scopes = [{name:"域a"},{name:"域b"},{name:"域c"}];
-    var groups = [{name:"组a"},{name:"组b"},{name:"组c"}];
-    req.subject.scopes = scopes;
-    req.subject.groups = groups;
-
-    res.render("candidate/new", {subject: req.subject});
+    var subject = req.subject;
+    // 查询主题下的域
+    Scope.findBySubjectId(subject._id, function (err, scopes) {
+        subject.scopes = scopes;
+        // 查询主题下的组
+        Group.findBySubjectId(subject._id, function (err, groups){
+            subject.groups = groups;
+            res.render("candidate/new", {subject: subject});
+        });
+    });
 };

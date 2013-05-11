@@ -41,6 +41,11 @@ exports.edit = function (req, res) {
     });
 };
 
+/**
+ * 显示主题，主题首页
+ * @param req
+ * @param res
+ */
 exports.show = function (req, res) {
     var subject = req.subject;
     res.render('index', { title: subject.name, subject: subject });
@@ -84,41 +89,6 @@ exports.doAdd = function (req, res) {
 };
 
 
-exports.addSubjectOption = function (req, res) {
-    res.render('addSubjectOption', { title: 'addSubjectOption' });
-};
-
-/**
- * 保存域的信息
- * @param req
- * @param res
- */
-exports.saveScope = function (req, res) {
-    var scope = new Scope();
-    var _id = req.query._id;
-    _id && (scope._id = _id);
-    scope.subject = req.query.subject;
-    scope.name = req.query.name;
-    if (!_id) {
-        scope.save(function (err, sc) {
-            if (err) {
-                console.info(err);
-            } else {
-                res.set('Content-Type', 'text/plain');
-                res.send({data: sc, i: 1});
-            }
-        });
-    } else {
-        Scope.update({_id: _id}, {$set: {name: scope.name}}, function (err, i) {
-            if (err) {
-                console.info(err);
-            } else {
-                res.set('Content-Type', 'text/plain');
-                res.send({data: scope, i: i});
-            }
-        });
-    }
-};
 
 /**
  * 保存分组信息

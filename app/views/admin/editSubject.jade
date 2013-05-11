@@ -331,7 +331,7 @@ block footer
 
         function msBtnInit(obj,name,id) {
             $(obj).popover({   //init edit pop
-                placement:'bottom',
+                placement:'top',
                 html:true,
                 content:$('#sp').html().replace('SN',name).replace('SI',id)
             }).click(function(){

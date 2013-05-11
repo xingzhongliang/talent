@@ -13,10 +13,9 @@ var Schema = mongoose.Schema;
  */
 var GroupSchema = new Schema({
     name: String // 名称
-     ,subject: String // 属于哪个subject的
-     ,max: {type:Number,default:9999} // 报名人数上限
-     ,createTime: {type:Date,default:Date.now}
-     ,yn: {type:Number,default:1}
+    , subject: String // 属于哪个subject的
+    , max: {type: Number, default: 9999} // 报名人数上限
+    , createTime: {type: Date, default: Date.now}, yn: {type: Number, default: 1}
 });
 
 GroupSchema.statics = {
@@ -25,11 +24,11 @@ GroupSchema.statics = {
     },
 
     findBySubjectId: function (sid, cb) {
-        _list.call(this,{subject:sid,yn:1},cb);
+        _list.call(this, {subject: sid, yn: 1}, cb);
     },
 
-    list: function(conditon,cb) {
-        _list.call(this,conditon,cb);
+    list: function (conditon, cb) {
+        _list.call(this, conditon, cb);
     }
 };
 
@@ -38,6 +37,5 @@ function _list(condition, cb) {
         .sort({createTime: '-1'})
         .exec(cb);
 }
-
 
 mongoose.model("Group", GroupSchema);
