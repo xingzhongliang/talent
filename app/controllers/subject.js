@@ -1,6 +1,5 @@
 var mongoose = require("mongoose");
 var moment = require("moment");
-var sw = require('./util/schemaWrapper');
 var uuid = require("node-uuid");
 var Subject = mongoose.model("Subject");
 var Scope = mongoose.model("Scope");
@@ -42,6 +41,11 @@ exports.edit = function (req, res) {
     });
 };
 
+/**
+ * 显示主题，主题首页
+ * @param req
+ * @param res
+ */
 exports.show = function (req, res) {
     var subject = req.subject;
     res.render('index', { title: subject.name, subject: subject });
@@ -55,8 +59,7 @@ exports.show = function (req, res) {
  */
 exports.doAdd = function (req, res) {
     console.info('<<[doAddSub]begin');
-    var subject = new Subject();
-    sw.wrap(subject, req.body.sub);
+    var subject = new Subject(req.body);
     // 如果设置为使用令牌，则生成令牌
     if (subject.token == 1) {
         subject.token = uuid.v4();
@@ -77,7 +80,8 @@ exports.doAdd = function (req, res) {
 
     subject.save(function (err) {
         if (err) {
-            console.log(err);
+            console.error(err);
+            throw err;
         }
         res.redirect('/admin');
         console.info('[doAddSub]end>>');
@@ -86,71 +90,4 @@ exports.doAdd = function (req, res) {
 };
 
 
-exports.addSubjectOption = function (req, res) {
-    res.render('addSubjectOption', { title: 'addSubjectOption' });
-};
 
-/**
- * 保存域的信息
- * @param req
- * @param res
- */
-exports.saveScope = function (req, res) {
-    var scope = new Scope();
-    var _id = req.query._id;
-    _id && (scope._id = _id);
-    scope.subject = req.query.subject;
-    scope.name = req.query.name;
-    if (!_id) {
-        scope.save(function (err, sc) {
-            if (err) {
-                console.info(err);
-            } else {
-                res.set('Content-Type', 'text/plain');
-                res.send({data: sc, i: 1});
-            }
-        });
-    } else {
-        Scope.update({_id: _id}, {$set: {name: scope.name}}, function (err, i) {
-            if (err) {
-                console.info(err);
-            } else {
-                res.set('Content-Type', 'text/plain');
-                res.send({data: scope, i: i});
-            }
-        });
-    }
-};
-
-/**
- * 保存分组信息
- * @param req
- * @param res
- */
-exports.saveGroup = function (req, res) {
-    var group = new Group();
-    var _id = req.query._id;
-    _id && (group._id = _id);
-    group.subject = req.query.subject;
-    group.name = req.query.name;
-    group.max = req.query.max;
-    if (!_id) {
-        group.save(function (err, gp) {
-            if (err) {
-                console.info(err);
-            } else {
-                res.set('Content-Type', 'text/plain');
-                res.send({data: gp, i: 1});
-            }
-        });
-    } else {
-        Group.update({_id: _id}, {$set: {name: group.name, max: group.max}}, function (err, i) {
-            if (err) {
-                console.info(err);
-            } else {
-                res.set('Content-Type', 'text/plain');
-                res.send({data: group, i: i});
-            }
-        });
-    }
-};

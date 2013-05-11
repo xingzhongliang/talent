@@ -1,0 +1,75 @@
+//
+    User: laichendong
+    Date: 13-5-10
+    Time: 下午11:54
+extends ../layouts/adminWithSideBar
+
+block main
+  .row &nbsp;
+  .page-head
+    h1= subject.name
+      small #{subject.viewOpt.newCandidatePage.actionLabel}
+  .row &nbsp;
+  form(method="post", action="/subject/#{subject._id}/candidate/new").form-horizontal
+    .well
+      //- 如果有组或域，显示备选
+      if subject.scopes.length > 1 || subject.groups.length > 1
+        fieldset
+        legend 基本信息
+        if subject.scopes.length > 1
+          .control-group
+            lebel.control-label #{subject.viewOpt.newCandidatePage.scopeLabel}：
+            .controls
+              select(name="scope").span6
+                each scope in subject.scopes
+                  option(value=scope._id)=scope.name
+        if subject.groups.length > 1
+          .control-group
+            lebel.control-label #{subject.viewOpt.newCandidatePage.groupLabel}：
+            .controls
+              select(name="group").span6
+                each group in subject.groups
+                  option(value=group._id)=group.name
+      fieldset
+        .control-group
+          label.control-label #{subject.viewOpt.newCandidatePage.titleLabel}：
+          .controls
+            if subject.viewOpt.candidateIsEmployee
+              //- 如果选项时京东员工，选项标题默认为员工姓名，不能更改
+              input.span6(name="name",type="text",readonly,value=req.session.user.name)
+            else
+              //- 否则不提供默认值，并可输入
+              input.span6(name="name",type="text",placeholder="#{subject.viewOpt.newCandidatePage.titleLabel}")
+        //- showType > 1 表示为非纯文本，需要图片和详细信息
+        if subject.viewOpt.showType > 1
+          .control-group
+            label.control-label #{subject.viewOpt.newCandidatePage.imgLabel}：
+            .controls
+              input.span6(type="file",name="avatar")
+          .control-group
+            lebel.control-label #{subject.viewOpt.newCandidatePage.descriptionLabel}：
+            .controls
+              textarea.span6(name="description",rows="5")
+    //- showType == 3 表示为有详情页，则至少需要提供一个文本，图片，音频或视频作为详情
+    if subject.viewOpt.showType == 3
+      .well
+        fieldset
+          legend #{subject.viewOpt.newCandidatePage.detailLegend}
+          .control-group
+            label.control-label 文字：
+            .controls
+              textarea.span6(rows="5")
+          .control-group
+            label.control-label 图片：
+            .controls
+              input.span6(type="file",name="avatar")
+          .control-group
+            label.control-label 音频：
+            .controls
+              input.span6(type="file",name="avatar")
+          .control-group
+            label.control-label 视频：
+            .controls
+              input.span6(type="file",name="avatar")
+    .well
+      button.btn.btn-primary.btn-large.btn-block(type="submit") 提交报名

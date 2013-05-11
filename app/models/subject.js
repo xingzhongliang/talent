@@ -24,13 +24,28 @@ var SubjectSchema = new Schema({
     , voteEnd: Date // 投票结束时间
     , regStart: Date //  报名开始时间
     , regEnd: Date // 报名结束时间
-    , isPrivate: {type:Boolean,default:true} //  是否所有人可见
+    , isPrivate: {type: Boolean, default: true} //  是否所有人可见
     , token: String // 如果token值不为空 则user成为candidate时需要token
     , owner: String // 创建者erp账号
-    , createTime: {type:Date,default:Date.now} //创建日期
-    , showType: Number  // 选项的展示方式1、文本；2、图片；3、详情页
+    , createTime: {type: Date, default: Date.now} //创建日期
     , round: {type: Number, default: 1} // 当前第几轮 默认1次 可以重新开启新一轮投票
-    , yn: {type:Number,default: 1}  //是否可用
+    , yn: {type: Number, default: 1}  //是否可用
+    , viewOpt: { // 页面展示选项
+        templateName: String // 使用模板名称，隐含指定了模板路径
+        , showType: {type: Number, default: 3}  // 候选项在前台的展示方式1、文本；2、图片；3、详情页
+        , candidateIsEmployee:{type: Boolean, default: true}  // 选项是否为京东员工
+        , newCandidatePage: { // 新增选项页面相关配置
+            actionLabel: {type: String, default:"报名"} // 新增选项动作名称
+            , scopeLabel: {type: String, default:"地区"} // 选项所属域表单label
+            , groupLabel: {type: String, default:"分组"} // 选项所属组表单label
+            , titleLabel: {type: String, default:"姓名"} // 选项标题表单label
+            , imgLabel: {type: String, default:"头像"} // 选项图片表单label
+            , descriptionLabel: {type: String, default:"简介"} // 选项详细介绍表单label
+            , detailLegend: {type: String, default:"才艺展示"} // 选项详情的表单legend
+            , actionBtnLabel: {type: String, default:"提交报名"} // 新增选项动作按钮名称
+        }
+        , actionBtnLabel: {type: String, default: "投票"} // 前台用户交互按钮名称
+    }
 });
 
 SubjectSchema.statics = {
@@ -41,7 +56,7 @@ SubjectSchema.statics = {
     list: function (options, cb) {
         var criteria = options.criteria || {};
         this.find(criteria)
-            .sort({createTime:'-1'})
+            .sort({createTime: '-1'})
             .limit(options.pageSize)
             .skip(options.pageSize * options.page)
             .exec(cb);
@@ -50,7 +65,7 @@ SubjectSchema.statics = {
 };
 
 SubjectSchema.methods = {
-    create : function(cb){
+    create: function (cb) {
         this.save(cb);
     }
 };
