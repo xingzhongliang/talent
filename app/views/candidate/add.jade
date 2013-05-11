@@ -3,6 +3,11 @@
     Date: 13-5-10
     Time: 下午11:54
 extends ../layouts/adminWithSideBar
+block sidebar
+  ul(data-spy="affix").nav.nav-tabs.nav-stacked
+    li: a(href="/subject/#{subject._id}/edit") 活动管理
+    li: a(href="/subject/#{subject._id}") 活动首页
+    li: a(href="/subject/#{subject._id}/candidate/list") 选项管理
 
 block main
   .row &nbsp;
