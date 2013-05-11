@@ -12,7 +12,7 @@ var Candidate = mongoose.model("Candidate");
  * @param req
  * @param res
  */
-exports.new = function (req, res) {
+exports.add = function (req, res) {
     // 查询主题下的域和组
     var scopes = [{name:"域a"},{name:"域b"},{name:"域c"}];
     var groups = [{name:"组a"},{name:"组b"},{name:"组c"}];
