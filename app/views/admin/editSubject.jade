@@ -32,13 +32,11 @@ block head
 
 
 block sidebar
-  ul.nav.nav-list
-    li
-      a adf
-    li
-      a adf
-    li
-      a adf
+  ul(data-spy="affix").nav.nav-tabs.nav-stacked
+    li: a(href="/subject/#{subject._id}/candidate/add") 新选项
+    li: a(href="/subject/#{subject._id}/candidate/list") 选项管理
+    li: a(href="#scopeManager") 域管理
+    li: a(href="#groupManager") 组管理
 
 block main
   input#sid(type='hidden',value='#{subject._id}')
@@ -86,7 +84,7 @@ block main
   .clearfix
   hr
 
-  h4 域
+  h4#scopeManager 域
   div.row
     .span9
       div(style="overflow:")
@@ -124,7 +122,7 @@ block main
 
   hr
 
-  h4 分组
+  h4#groupManager 分组
   div.row
     .span9
       .alert

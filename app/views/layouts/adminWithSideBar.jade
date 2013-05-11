@@ -4,10 +4,11 @@
     Time: 下午5:31
 extends  admin
 block content
-    .row
-        // 侧边栏
-        .span3
-            block sidebar
-        // 主体内容
-        .span9
-            block main
+  .row
+    // 侧边栏
+    .span3.sideBar
+      .row &nbsp;
+        block sidebar
+    // 主体内容
+    .span9
+      block main
