@@ -37,7 +37,13 @@ exports.add = function (req, res) {
 exports.doAdd = function (req, res) {
     var candidate = new Candidate(req.body);
     var subject = req.subject;
+    // 选项图片
+    var avatar = req.files.avatar.path;
+    avatar = avatar.substring(avatar.lastIndexOf("/"));
+    candidate.avatar = avatar;
+    // 所属主题
     candidate.subject = subject._id;
+    // 根据选项是否“是人” 来决定value和department的值
     if (subject.viewOpt.candidateIsEmployee) {
         candidate.value = req.session.user.erpId;
         candidate.department = req.session.user.department;
@@ -45,10 +51,7 @@ exports.doAdd = function (req, res) {
         candidate.value = uuid.v4();
     }
     candidate.create(function (err) {
-        if (err) {
-            console.error(err);
-            throw err;
-        }
+        if (err)  throw err;
         if (config.isAdmin(req.session.user.erpId)) {
             res.redirect('/subject/' + candidate.subject + '/candidate/list');
         } else {
@@ -63,7 +66,20 @@ exports.doAdd = function (req, res) {
  * @param res
  */
 exports.list = function (req, res) {
-    res.redirect('/admin');
+    var page = req.param('page') > 0 ? req.param('page') : 0;
+    var pageSize = req.param('page') || config.app.pageSize;
+    Candidate.findBySubjectId(req.subject._id, function (err, candidates) {
+        if (err) throw err;
+        Candidate.count().exec(function (err, count) {
+            res.render("candidate/list", {
+                title: "选项管理 - " + req.subject.name,
+                subject: req.subject,
+                candidates: candidates,
+                pages: count / pageSize,
+                page: page
+            });
+        });
+    });
 };
 
 

@@ -1,9 +1,8 @@
 body {
-    padding-top: 40px;
+    padding-top: 60px;
+    padding-bottom: 55px;
 }
-.fl-left {
-    float: left;
-}
-.fl-right {
-    float: right;
+.sideBar .nav{
+    width: 220px;
+    box-shadow:3px 3px 3px rgba(0,0,0,.03);
 }

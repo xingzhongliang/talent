@@ -15,7 +15,8 @@ var GroupSchema = new Schema({
     name: String // 名称
     , subject: String // 属于哪个subject的
     , max: {type: Number, default: 9999} // 报名人数上限
-    , createTime: {type: Date, default: Date.now}, yn: {type: Number, default: 1}
+    , createTime: {type: Date, default: Date.now} // 创建时间
+    , yn: {type: Number, default: 1} // 是否可用
 });
 
 GroupSchema.statics = {
