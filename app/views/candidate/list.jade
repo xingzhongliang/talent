@@ -1,0 +1,26 @@
+//
+  User: laichendong
+  Date: 13-5-11
+  Time: 下午7:57
+extends ../layouts/adminWithSideBar
+block sidebar
+  ul(data-spy="affix").nav.nav-tabs.nav-stacked
+    li: a(href="/subject/#{subject._id}/edit") 管理主题
+    li: a(href="/subject/#{subject._id}") 查看主题
+    li: a(href="/subject/add") 新增主题
+
+block main
+  table.table
+    thead
+      tr
+        th.span1 #
+        th 名称
+        th.span2 操作
+    tbody
+      tr.tmpl.hide
+        td
+        td
+        td
+          .btn-group
+            button.btn.btn-small.msBtn 修改
+            button.btn.btn-small.btn-danger.dsBtn 删除

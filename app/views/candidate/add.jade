@@ -5,12 +5,12 @@
 extends ../layouts/adminWithSideBar
 block sidebar
   ul(data-spy="affix").nav.nav-tabs.nav-stacked
-    li: a(href="/subject/#{subject._id}/edit") 活动管理
-    li: a(href="/subject/#{subject._id}") 活动首页
-    li: a(href="/subject/#{subject._id}/candidate/list") 选项管理
+    li: a(href="/subject/#{subject._id}/edit") 管理主题
+    li: a(href="/subject/#{subject._id}") 查看主题
+    li: a(href="/subject/add") 新增主题
+    li: a(href="/subject/#{subject._id}/candidate/list") 管理选项
 
 block main
-  .row &nbsp;
   .page-head
     h1= subject.name
       small #{subject.viewOpt.newCandidatePage.actionLabel}

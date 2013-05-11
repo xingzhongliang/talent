@@ -18,11 +18,12 @@ var CandidateSchema = new Schema({
     , department: String // 部门 candidate是人时提供
     , avatar: String // 头像 candidate是人时提供
     , description: String // 描述
-    , witOfText: String // 才艺文字展示
-    , witOfImg: String // 才艺图片展示
-    , witOfAudio: String // 才艺音频展示
-    , witOfVideo: String // 才艺视频展示
+    , witOfText: [String] // 才艺文字展示
+    , witOfImg: [String] // 才艺图片展示
+    , witOfAudio: [String] // 才艺音频展示
+    , witOfVideo: [String] // 才艺视频展示
     , votes: {type: Number, default: 0} // 得票数
+    , createTime: {type: Date, default: Date.now}
 });
 
 /******************* 属性验证方法开始 ******************/
@@ -59,6 +60,10 @@ CandidateSchema.statics = {
         this.findOne({"value": value}).exec(cb);
     },
 
+    findBySubjectId: function (sid, cb) {
+        _list.call(this, {subject: sid}, cb);
+    },
+
     /**
      * 按条件获取候选人列表
      * @param options 查找候选人的选项，json对象，包含以下几个属性：
@@ -68,14 +73,19 @@ CandidateSchema.statics = {
      * @param cb 获取候选人列表后的回调函数
      */
     list: function (options, cb) {
-        var criteria = options.criteria || {};
-        this.find(criteria)
-            .limit(options.pageSize)
-            .skip(options.pageSize * options.page)
-            .exec(cb);
+        _list.call(this, options, cb);
     }
 
 };
+
+function _list(options, cb) {
+    var criteria = options.criteria || {};
+    this.find(criteria)
+        .sort({createTime: '-1'})
+        .limit(options.pageSize)
+        .skip(options.pageSize * options.page)
+        .exec(cb);
+}
 
 /******************* 静态方法结束 ******************/
 

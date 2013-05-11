@@ -66,7 +66,20 @@ exports.doAdd = function (req, res) {
  * @param res
  */
 exports.list = function (req, res) {
-    res.redirect('/admin');
+    var page = req.param('page') > 0 ? req.param('page') : 0;
+    var pageSize = req.param('page') || config.app.pageSize;
+    Candidate.findBySubjectId(req.subject._id, function (err, candidates) {
+        if (err) throw err;
+        Candidate.count().exec(function (err, count) {
+            res.render("candidate/list", {
+                title: "选项管理 - " + req.subject.name,
+                subject: req.subject,
+                candidates: candidates,
+                pages: count / pageSize,
+                page: page
+            });
+        });
+    });
 };
 
 
