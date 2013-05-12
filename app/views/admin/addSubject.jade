@@ -158,11 +158,18 @@ block main
             .controls
               input(type="text",name="viewOpt[newCandidatePage][actionBtnLabel]",value="提交报名")
 
-    hr
-    div.row
-      div.span8
-        div.div-center
-          a(href='javascript:;',onclick='sbmt()').btn.btn-large.btn-primary  提交新主题
+    fieldset
+        legend
+        .control-group
+            label.control-label
+            .controls
+        div.form-actions
+            label.checkbox
+                input(type="checkbox")
+                span 其他人往这个主题添加的选项必须由我审核之后才能生效
+            a(href='javascript:;',onclick='sbmt()').btn.btn-success 提交新主题
+            span &nbsp;
+            button.btn 取消
 
 
 
