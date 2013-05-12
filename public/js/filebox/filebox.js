@@ -12,7 +12,14 @@
     $.importCSS('filebox/css/upload.css');
 
     var def = {
-        type: 'img', row: 1, cols: 1
+        type: 'img'
+      ,set_result_handler:null
+    }
+
+    var fileType = {
+        'img': '*.jpg;*.gif;*.png;*.jpeg;*.bmp'
+        ,'media': '*.mp4'
+        ,'music': '*.mp3'
     }
 
     var sw_def = {
@@ -53,7 +60,7 @@
                 $(img).hide();
                 $(liv).hide();
             })
-
+            so.file_types = fileType[opt.type];   //set file types
             so.button_width = opt.width;
             so.button_height = opt.height;
             so.button_placeholder = btn;
@@ -64,14 +71,17 @@
             so.upload_success_handler = function(f,data,res) {
                 if(res) {
                     eval('data =' + data);
-                    $(img).show().find('img').attr('src',data.path).css({maxHeight:opt.height,maxWidth:opt.width});
+                    if(opt.set_result_handler) {
+                        opt.set_result_handler(f,data,res);
+                    }else if(opt.type == 'img'){
+                        $(img).show().find('img').attr('src',data.path).css({maxHeight:opt.height,maxWidth:opt.width});
+                    }
                 }
                 opt.callback && opt.callback(f,data,res);
                 $(liv).hide();
             }
             so.upload_progress_handler  = function(file,c,total) {
                 var rate = c/total * 100;
-                console.info('rate' + rate.toFixed(1));
                 $(liv).show().find('div').html(rate.toFixed(1) + '%');
             }
             $(img).find('div').css({width:opt.width,height:opt.height}).append(btn2).append('<img src="" class="img">');
