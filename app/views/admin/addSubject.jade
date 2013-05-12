@@ -4,11 +4,20 @@ block head
   link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
   script(src="/js/bootstrap-sniper.js")
   script(src="/js/datepicker/js/bootstrap-datepicker.js")
+  script(src="/js/filebox/filebox.js")
   script
     $(function(){
         $('#voteMax').sniper();
         $('#regMax').sniper();
         $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
+
+        $('#banInpt').filebox({
+            width:450,
+            height:150,
+            callback:function(f,data,res) {
+                $('#banInpt').val(data.path);
+            }
+        });
     });
 
 
@@ -22,7 +31,7 @@ block main
       small     Add Subject
   div#msgDiv.alert.alert-block.alert-error.hide
     strong 表单验证失败！
-    span(style='margin-left:5px') &nbsp
+    span(style='margin-left:5px') &nbsp;
   form#dataForm.form-horizontal(method='post',action='/subject/do-add')
     fieldset
       legend 基本信息
@@ -85,6 +94,10 @@ block main
       div#advancedOpts.well.hide
         fieldset
           legend 页面通用设置
+          .control-group
+            label.control-label 主题Banner图片：
+            .controls
+                input#banInpt(type='text',value='1',name='banner')
           .control-group
             label.control-label 选项展示方式：
             .controls

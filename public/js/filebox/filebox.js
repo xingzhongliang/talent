@@ -43,14 +43,13 @@
             var img = document.createElement('div');
             var btn = document.createElement('div');
             var btn2 = document.createElement('div');
-            $(c).addClass('filebox_container').css({width:opt.width + 5,height:opt.height + 5});
+            $(c).addClass('filebox_container').css({width:opt.width,height:opt.height});
             $(div).css({width:opt.width,height:opt.height}).addClass('filebox_div');
             $(btn).css({width:opt.width,height:opt.height}).appendTo(div);
-            $(img).css({width:opt.width,height:opt.height}).addClass('filebox_img');
-            $(liv).css({width:opt.width,height:opt.height,lineHeight:opt.height + 'px'}).addClass('filebox_liv');
+            $(img).css({width:opt.width,height:opt.height}).addClass('filebox_img').append('<div class="wrapper"></div>');
+            $(liv).addClass('filebox_liv').append('<div class="bgd"></div>').find('div').css({width:opt.width,height:opt.height,lineHeight:opt.height + 'px'});
             $(btn2).addClass('cancel_btn').html('<a href="javascript:;">x</a>');
             $(btn2).find('a').click(function(){
-                $(div).show();
                 $(img).hide();
                 $(liv).hide();
             })
@@ -60,7 +59,6 @@
             so.button_placeholder = btn;
             so.upload_start_handler = function() {
                 $(liv).show();
-                $(div).hide();
                 $(img).hide();
             }
             so.upload_success_handler = function(f,data,res) {
@@ -69,15 +67,14 @@
                     $(img).show().find('img').attr('src',data.path).css({maxHeight:opt.height,maxWidth:opt.width});
                 }
                 opt.callback && opt.callback(f,data,res);
-                $(div).hide();
                 $(liv).hide();
             }
             so.upload_progress_handler  = function(file,c,total) {
                 var rate = c/total * 100;
                 console.info('rate' + rate.toFixed(1));
-                $(liv).show().html(rate.toFixed(1) + '%');
+                $(liv).show().find('div').html(rate.toFixed(1) + '%');
             }
-            $(img).append(btn2).append('<img src="">');
+            $(img).find('div').css({width:opt.width,height:opt.height}).append(btn2).append('<img src="" class="img">');
             $(c).append(div).append(liv).append(img);
             $(self).hide().data('imgBox',c).before(c);
             new SWFUpload(so);

@@ -3,10 +3,20 @@
     background: #ffffff;
     padding: 5px;
     text-align: center;
+    position: relative;
 }
 
 .filebox_img {
+    top: 5px;
+    left: 5px;
+    position: absolute;
+    background: #ffffff;
+    opacity: 1;
+    margin: 0 auto;
     display: none;
+}
+
+.filebox_img .wrapper{
     position: relative;
     margin: 0 auto;
 }
@@ -17,14 +27,24 @@
 }
 
 .filebox_liv {
-    margin: 0 auto;
     display: none;
-    background: url('../img/uploading.gif') no-repeat center center;
+    top: 5px;
+    left: 5px;
+    position: absolute;
+    background: #ffffff;
+    opacity: 1;
+}
+
+.filebox_liv .bgd{
+    margin: 0 auto;
+    background: url('../img/uploading.gif') no-repeat center center transparent;
+    opacity: 1;
     text-align: center;
     overflow: hidden;
 }
 
-.filebox_img img {
+
+.filebox_img .img {
     margin: 0 auto;
 }
 
