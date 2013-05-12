@@ -56,6 +56,9 @@ module.exports = function (app) {
 
     var uploaddata = require('../app/controllers/uploaddata');
     app.all('/uploaddata',uploaddata.uploaddata);
+    //改良版本的upload
+    var svf = require('../app/controllers/svf');
+    app.all('/svf',svf.svf);
 
 
 };

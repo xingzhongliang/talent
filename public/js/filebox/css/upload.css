@@ -1,0 +1,45 @@
+.filebox_container {
+    border: 2px dashed #CCCCCC;
+    background: #ffffff;
+    padding: 5px;
+    text-align: center;
+}
+
+.filebox_img {
+    display: none;
+    position: relative;
+    margin: 0 auto;
+}
+
+.filebox_div {
+    margin: 0 auto;
+    background: url("../img/upload_img.png") no-repeat center center;
+}
+
+.filebox_liv {
+    margin: 0 auto;
+    display: none;
+    background: url('../img/uploading.gif') no-repeat center center;
+    text-align: center;
+    overflow: hidden;
+}
+
+.filebox_img img {
+    margin: 0 auto;
+}
+
+.cancel_btn {
+    background: #720000;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 0px;
+    right: 0px;
+}
+
+.cancel_btn a {
+    margin: 0 auto;
+    font-weight: bolder;
+    color: #ffffff;
+}
+

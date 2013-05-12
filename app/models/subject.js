@@ -30,6 +30,7 @@ var SubjectSchema = new Schema({
     , createTime: {type: Date, default: Date.now} //创建日期
     , round: {type: Number, default: 1} // 当前第几轮 默认1次 可以重新开启新一轮投票
     , yn: {type: Number, default: 1}  //是否可用
+    , votes: {type: Number, default: 0}  //本次活动的参与人数 注意：不一定等于 总票数
     , viewOpt: { // 页面展示选项
         templateName: String // 使用模板名称，隐含指定了模板路径
         , showType: {type: Number, default: 3}  // 候选项在前台的展示方式1、文本；2、图片；3、详情页
