@@ -10,6 +10,23 @@ var Scope = mongoose.model("Scope");
 var Group = mongoose.model("Group");
 var config = require("../../config/config");
 var uuid = require("node-uuid");
+var fs = require("fs");
+
+/**
+ * 按照选项id查找选项
+ * @param req
+ * @param res
+ * @param next
+ * @param id
+ */
+exports.candidate = function (req, res, next, id) {
+    Candidate.load(id, function (err, candidate) {
+        if (err) return next(err);
+        if (!candidate) return next('找不到该选项，选项值： ' + id);
+        req.candidate = candidate;
+        next()
+    });
+};
 
 /**
  * 新候选人
@@ -20,9 +37,11 @@ exports.add = function (req, res) {
     var subject = req.subject;
     // 查询主题下的域
     Scope.findBySubjectId(subject._id, function (err, scopes) {
+        if (err) throw err;
         subject.scopes = scopes;
         // 查询主题下的组
         Group.findBySubjectId(subject._id, function (err, groups) {
+            if (err) throw err;
             subject.groups = groups;
             res.render("candidate/add", {subject: subject});
         });
@@ -66,18 +85,58 @@ exports.doAdd = function (req, res) {
 exports.list = function (req, res) {
     var page = req.param('page') > 0 ? req.param('page') : 0;
     var pageSize = req.param('page') || config.app.pageSize;
-    Candidate.findBySubjectId(req.subject._id, function (err, candidates) {
+    var subject = req.subject;
+    // 查询主题下的域
+    Scope.findBySubjectId(subject._id, function (err, scopes) {
         if (err) throw err;
-        Candidate.count().exec(function (err, count) {
-            res.render("candidate/list", {
-                title: "选项管理 - " + req.subject.name,
-                subject: req.subject,
-                candidates: candidates,
-                pages: count / pageSize,
-                page: page
+        subject.scopes = scopes;
+        // 查询主题下的组
+        Group.findBySubjectId(subject._id, function (err, groups) {
+            if (err) throw err;
+            subject.groups = groups;
+            // 查询主题下的选项
+            Candidate.findBySubjectId(subject._id, function (err, candidates) {
+                if (err) throw err;
+                Candidate.count().exec(function (err, count) {
+                    res.render("candidate/list", {
+                        title: "选项管理 - " + subject.name,
+                        subject: subject,
+                        candidates: candidates,
+                        pages: count / pageSize,
+                        page: page
+                    });
+                });
             });
         });
     });
+
+};
+
+/**
+ * 选项前台查看页面
+ * @param req
+ * @param res
+ */
+exports.show = function (req, res) {
+    res.render("candidate/show", {title: req.candidate.name, candidate: req.candidate});
+};
+
+/**
+ * 删除选项
+ * @param req
+ * @param res
+ */
+exports.del = function (req, res) {
+    var candidate = req.candidate;
+    // 删除文件
+    if (candidate.avatar) {
+        fs.unlink(config.uploadDir + candidate.avatar, null);
+    }
+    candidate.del(function (err, c) {
+        if (err) throw err;
+        res.redirect("back");
+    });
+
 };
 
 

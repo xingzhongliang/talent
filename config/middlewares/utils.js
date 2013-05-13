@@ -36,6 +36,8 @@ function utils(name) {
         res.locals.fmt = fmt;
         res.locals.fmt2 = fmt2;
         res.locals.config = config;
+        res.locals.scopeName = _name;
+        res.locals.groupName = _name;
 
         if (typeof req.flash !== 'undefined') {
             res.locals.info = req.flash('info');
@@ -163,6 +165,18 @@ function fmt2(date,fmt) {
             throw new Error('date or format string  is undefined');
         }
         return moment(date).format(fmt);
+    } catch (err) {
+        return '';
+    }
+}
+
+function _name(id, arr){
+    try {
+        for(var i = 0; i<arr.length; i++) {
+            if(id == arr[i]._id){
+                return arr[i].name;
+            }
+        }
     } catch (err) {
         return '';
     }

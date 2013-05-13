@@ -36,6 +36,10 @@ CandidateSchema.methods = {
     create: function (cb) {
         this.save(cb);
     }
+
+    , del: function(cb) {
+        this.remove(cb)
+    }
 };
 /******************* 成员方法结束 ******************/
 

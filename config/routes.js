@@ -15,8 +15,6 @@ module.exports = function (app) {
     // 列表页
     app.get("/list/:area", show.list);
 
-
-
     var passport = require("../app/controllers/passport");
     // 登录登出
     app.get('/login', passport.login);
@@ -33,8 +31,8 @@ module.exports = function (app) {
     var subject = require("../app/controllers/subject");
     var candidate = require("../app/controllers/candidate");
     app.get('/subject/add', auth("admin"), subject.add); // 添加主题
-    app.post('/subject/do-add',auth("admin"), subject.doAdd);// 插入数据
-    app.get('/subject/:subjectId',  subject.show); // 前台展示主题首页
+    app.post('/subject/do-add', auth("admin"), subject.doAdd);// 插入数据
+    app.get('/subject/:subjectId', subject.show); // 前台展示主题首页
     app.get('/subject/:subjectId/edit', auth("admin"), subject.edit); // 编辑，管理主题
 
     // 选项管理
@@ -44,21 +42,22 @@ module.exports = function (app) {
 
     // 域管理
     var scope = require("../app/controllers/scope");
-    app.get('/scope/save',auth("admin"), scope.save);
+    app.get('/scope/save', auth("admin"), scope.save);
     // 分组管理
     var group = require("../app/controllers/group");
-    app.get('/group/save',auth("admin"), group.save);
+    app.get('/group/save', auth("admin"), group.save);
 
-
-    app.get("/candidate/:erpId", show.candidate); // 选项详情页
+    // 选项相关
+    app.get("/candidate/:candidateId", candidate.show); // 选项详情页
+    app.get("/candidate/:candidateId/del", auth("admin"), candidate.del); // 删除选项
 
     app.param("subjectId", subject.subject); // 处理带:subjectId参数的url中的:subjectId
+    app.param("candidateId", candidate.candidate); // 处理带:candidateId参数的url中的:candidateId
 
     var uploaddata = require('../app/controllers/uploaddata');
-    app.all('/uploaddata',uploaddata.uploaddata);
+    app.all('/uploaddata', uploaddata.uploaddata);
     //改良版本的upload
     var svf = require('../app/controllers/svf');
-    app.all('/svf',svf.svf);
-
+    app.all('/svf', svf.svf);
 
 };

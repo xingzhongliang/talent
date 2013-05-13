@@ -8,6 +8,7 @@ block sidebar
     li: a(href="/subject/#{subject._id}/edit") 管理主题
     li: a(href="/subject/#{subject._id}") 查看主题
     li: a(href="/subject/add") 新增主题
+    li: a(href="/subject/#{subject._id}/candidate/add") 新增选项
 
 block main
   table.table
@@ -15,12 +16,61 @@ block main
       tr
         th.span1 #
         th 名称
+        if subject.scopes.length > 1
+          th #{subject.viewOpt.newCandidatePage.scopeLabel}
+        if subject.groups.length > 1
+          th #{subject.viewOpt.newCandidatePage.groupLabel}
+        th 得票数
         th.span2 操作
     tbody
       tr.tmpl.hide
         td
         td
+        if subject.scopes.length > 1
+          td
+        if subject.groups.length > 1
+          td
+        td
         td
           .btn-group
-            button.btn.btn-small.msBtn 修改
-            button.btn.btn-small.btn-danger.dsBtn 删除
+            a.btn.btn-small.msBtn 查看
+            a.btn.btn-small.btn-danger.dsBtn 删除
+      each c,i in candidates
+        tr
+          td= i+1
+          td= c.name
+          if subject.scopes.length > 1
+            td(title=scopeName(c.scope, subject.scopes))= cut(scopeName(c.scope, subject.scopes), 5)
+          if subject.groups.length > 1
+            td(title=groupName(c.group, subject.groups))= cut(groupName(c.group, subject.groups), 5)
+          td= c.votes
+          td
+            .btn-group
+              a.btn.btn-small.msBtn(href="/candidate/#{c._id}") 查看
+              a.delModalBtn.btn.btn-small.btn-danger.dsBtn(candidate-id="#{c._id}",data-toggle="modal") 删除
+
+  // 删除提示框
+  #delModal.modal.hide.fade
+    .modal-header
+      button(data-dismiss="modal").close ×
+      h3 确定删除选项
+    .modal-body
+      p 删除选项将附带删除上传的相关文件，且不能回复！确定要删除？
+    .modal-footer
+      a(href="")#sbmDelbtn.btn.btn-danger 确定
+      button(data-dismiss="modal").btn 取消
+
+  // 分页条
+  if pages > 1
+    .pagination.pagination-centered
+      ul
+        != createPagination(pages, page)
+
+  script
+    $(function(){
+        // 显示删除警告
+        $(".delModalBtn").click(function(){
+          $("#sbmDelbtn").attr("href", "/candidate/" + $(this).attr("candidate-id") + "/del");
+          $("#delModal").modal();
+        });
+    });
