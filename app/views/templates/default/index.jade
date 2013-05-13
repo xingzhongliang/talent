@@ -6,13 +6,13 @@ extends layout
 block content
   .w
     .list-area
-      .list-area-title
+      #list-area-title.list-area-title
         table
           tr
             each scope,i in subject.scopes
               - var curr = (i==0) ? "curr" : ""
               td.scopeTitle(class="#{curr}")
-                h2: a(href="")= scope.name
+                h2: a(href="#list-area-title")= scope.name
       -var i = 0
       for a1, s_id in candidates
         - var hide = i>0 ? "hide" : ""
