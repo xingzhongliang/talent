@@ -38,9 +38,7 @@ exports.doAdd = function (req, res) {
     var candidate = new Candidate(req.body);
     var subject = req.subject;
     // 选项图片
-    var avatar = req.files.avatar.path;
-    avatar = avatar.substring(avatar.lastIndexOf("/"));
-    candidate.avatar = avatar;
+    console.info(candidate.avatar);
     // 所属主题
     candidate.subject = subject._id;
     // 根据选项是否“是人” 来决定value和department的值

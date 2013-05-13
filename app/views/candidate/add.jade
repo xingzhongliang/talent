@@ -3,6 +3,41 @@
     Date: 13-5-10
     Time: 下午11:54
 extends ../layouts/adminWithSideBar
+block head
+    script(src="/js/filebox/filebox.js")
+    script
+        $(function(){
+           $('#avatar').filebox({
+                width:140,
+                height:160,
+                callback:function(f,data,res) {
+                    $('#avatar').val(data.path);
+                }
+           });
+           $('#addImg').filebox({
+                width:120,
+                height:120,
+                set_result_handler:setImg
+           });
+           $('#addMedia').filebox({
+                width:120,
+                height:120,
+                type:'*.mp4',
+                callback:function(f,data,res) {
+                    console.info(data.path);
+                }
+           });
+           $('#addMusic').filebox({
+                width:120,
+                height:120,
+                callback:function(f,data,res) {
+                    console.info(data.path);
+                }
+           });
+        });
+
+
+
 block sidebar
   ul(data-spy="affix").nav.nav-tabs.nav-stacked
     li: a(href="/subject/#{subject._id}/edit") 管理主题
@@ -11,12 +46,12 @@ block sidebar
     li: a(href="/subject/#{subject._id}/candidate/list") 管理选项
 
 block main
-  .page-head
-    h1= subject.name
+  .page-header
+    h2= subject.name
       small #{subject.viewOpt.newCandidatePage.actionLabel}
   .row &nbsp;
   form(method="post",enctype="multipart/form-data", action="/subject/#{subject._id}/candidate/new").form-horizontal
-    .well
+    .span9
       //- 如果有组或域，显示备选
       if subject.scopes.length > 1 || subject.groups.length > 1
         fieldset
@@ -50,31 +85,82 @@ block main
           .control-group
             label.control-label #{subject.viewOpt.newCandidatePage.imgLabel}：
             .controls
-              input.span6(type="file",name="avatar")
+                input#avatar.span6(type="text",name="avatar")
           .control-group
             lebel.control-label #{subject.viewOpt.newCandidatePage.descriptionLabel}：
             .controls
-              textarea.span6(name="description",rows="5")
-    //- showType == 3 表示为有详情页，则至少需要提供一个文本，图片，音频或视频作为详情
-    if subject.viewOpt.showType == 3
-      .well
-        fieldset
-          legend #{subject.viewOpt.newCandidatePage.detailLegend}
-          .control-group
-            label.control-label 文字：
-            .controls
-              textarea.span6(rows="5")
-          .control-group
-            label.control-label 图片：
-            .controls
-              input.span6(type="file",name="")
-          .control-group
-            label.control-label 音频：
-            .controls
-              input.span6(type="file",name="")
-          .control-group
-            label.control-label 视频：
-            .controls
-              input.span6(type="file",name="")
-    .well
-      button.btn.btn-primary.btn-large.btn-block(type="submit") 提交报名
+              textarea.span6(name="description",rows="5",placeholder="简短描述")
+        //- showType == 3 表示为有详情页，则至少需要提供一个文本，图片，音频或视频作为详情
+        if subject.viewOpt.showType == 3
+          .well
+            fieldset
+              legend #{subject.viewOpt.newCandidatePage.detailLegend}
+            textarea.span9(rows="7",placeholder="详细描述")
+            div.row
+                .span9
+                    .btn-group
+                        a(href="javascript:;", title="上传图片",onclick="showPanel(1)").btn
+                            i.icon-camera
+                        a(href="javascript:;", title="上传视频",onclick="showPanel(2)").btn
+                            i.icon-film
+                        a(href="javascript:;", title="上传音频",onclick="showPanel(3)").btn
+                            i.icon-music
+                .span9 &nbsp;
+            div#imgPanel.row.hide
+                .span9.atvSpan
+                    .pull-left
+                        ul.thumbnails
+                    .pull-left &nbsp;
+                    .pull-left
+                        input#addImg(type="text")
+                    .clearfix
+                .span9 &nbsp;
+                    a(name='imgPanel')
+            div#mediaPanel.row.hide
+                .span9
+                    input#addMedia(type="text")
+                .span9 &nbsp;
+                    a(name='mediaPanel')
+            div#musicPanel.row.hide
+                .span9
+                    input#addMusic(type="text")
+                .span9 &nbsp;
+                    a(name='musicPanel')
+          .pull-right
+            button.btn.btn-success.btn-large(type="submit") 提交报名信息
+block footer
+    script
+        function showPanel(type) {
+            var target;
+            switch(type) {
+                case 1:
+                target = '#imgPanel';
+                break;
+                case 2:
+                target = '#mediaPanel';
+                break;
+                case 3:
+                target = '#musicPanel';
+                break;
+            }
+            $(target).slideDown('fast',function(){
+                var href = window.location;
+                window.location.href = href.toString().split('#')[0] + target;
+                console.info(window.location.href);
+            });
+        }
+
+        function setImg(f,data,res) {
+            //$('#imgPanel').find('.thumbnails').append('<li class="span2"><div class="thumbnail"><img src=""><div class="caption"><p><a class="btn btn-danger btn-mini"><i class="icon-remove"></i></a></p></div></div></li>');
+            var sp = $('#imgPanel').find('.atvSpan');
+            var ul = sp.find('ul');
+            if(sp.find('li').length >= 3) {
+                sp.before('<div class="span9"><ul class="thumbnails"></ul></div>');
+                ul = sp.prev().find('ul');
+                ul.append(sp.find('ul').html());
+                sp.find('ul').html('');
+            }
+            ul.append('<li class="span2"><div class="thumbnail"><img src=""><a><i class="icon-remove"></i></a></div></li>');
+            ul.find('li:last').find('img').attr('src',data.path);
+        }
+
