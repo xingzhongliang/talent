@@ -22,7 +22,7 @@ block content
             .list-category
               h3= groupName(g_id, subject.groups)
                 .more
-                  a(href=g_id) 更多&gt;
+                  a(href="/subject/#{subject._id}/candidate/?s_id=#{s_id}&g_id=#{g_id}") 更多&gt;
               for c in a2
                 .list-item
                   .portrait

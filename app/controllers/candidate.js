@@ -7,6 +7,8 @@
 var mongoose = require("mongoose");
 var Candidate = mongoose.model("Candidate");
 var Subject = mongoose.model("Subject");
+var Group = mongoose.model("Group");
+var Scope = mongoose.model("Scope");
 var config = require("../../config/config");
 var uuid = require("node-uuid");
 var fs = require("fs");
@@ -126,6 +128,50 @@ exports.del = function (req, res) {
         res.redirect("back");
     });
 
+};
+
+/**
+ * 前台频道页
+ * @param req
+ * @param res
+ */
+exports.channel = function (req, res) {
+    var groupId = req.param("g_id");
+    var scopeId = req.param("s_id");
+    var page = req.param('page') > 0 ? req.param('page') : 0;
+    var pageSize = req.param('page') || config.app.pageSize;
+    var options = {
+        pageSize: pageSize,
+        page: page
+    };
+    var subject = req.subject;
+    var template = subject.viewOpt.templateName || "default";
+    options.criteria = {
+        subject: subject._id,
+        scope: scopeId,
+        group: groupId
+    };
+    // 查询主题下的域和组
+    Scope.load(scopeId, function (err, scope) {
+        if (err) throw err;
+        Group.load(groupId, function (err, group) {
+            Candidate.list(options, function (err, candidates) {
+                if (err) throw err;
+                Candidate.count().exec(function (err, count) {
+                    res.render("templates/" + template + '/list', {
+                        title: group.name + " - " + scope.name,
+                        subject: subject,
+                        template: template,
+                        candidates: candidates,
+                        scope: scope,
+                        group: group,
+                        pages: count / pageSize,
+                        page: page
+                    });
+                });
+            });
+        });
+    });
 };
 
 
