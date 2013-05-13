@@ -8,6 +8,8 @@
  */
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var Scope = mongoose.model("Scope");
+var Group = mongoose.model("Group");
 /**
  * 主题
  * @type {*}
@@ -34,18 +36,17 @@ var SubjectSchema = new Schema({
     , viewOpt: { // 页面展示选项
         templateName: String // 使用模板名称，隐含指定了模板路径
         , showType: {type: Number, default: 3}  // 候选项在前台的展示方式1、文本；2、图片；3、详情页
-        , candidateIsEmployee:{type: Boolean, default: true}  // 选项是否为京东员工
+        , candidateIsEmployee: {type: Boolean, default: true}  // 选项是否为京东员工
         , newCandidatePage: { // 新增选项页面相关配置
-            actionLabel: {type: String, default:"报名"} // 新增选项动作名称
-            , scopeLabel: {type: String, default:"地区"} // 选项所属域表单label
-            , groupLabel: {type: String, default:"分组"} // 选项所属组表单label
-            , titleLabel: {type: String, default:"姓名"} // 选项标题表单label
-            , imgLabel: {type: String, default:"头像"} // 选项图片表单label
-            , descriptionLabel: {type: String, default:"简介"} // 选项详细介绍表单label
-            , detailLegend: {type: String, default:"才艺展示"} // 选项详情的表单legend
-            , actionBtnLabel: {type: String, default:"提交报名"} // 新增选项动作按钮名称
-        }
-        , actionBtnLabel: {type: String, default: "投票"} // 前台用户交互按钮名称
+            actionLabel: {type: String, default: "报名"} // 新增选项动作名称
+            , scopeLabel: {type: String, default: "地区"} // 选项所属域表单label
+            , groupLabel: {type: String, default: "分组"} // 选项所属组表单label
+            , titleLabel: {type: String, default: "姓名"} // 选项标题表单label
+            , imgLabel: {type: String, default: "头像"} // 选项图片表单label
+            , descriptionLabel: {type: String, default: "简介"} // 选项详细介绍表单label
+            , detailLegend: {type: String, default: "才艺展示"} // 选项详情的表单legend
+            , actionBtnLabel: {type: String, default: "提交报名"} // 新增选项动作按钮名称
+        }, actionBtnLabel: {type: String, default: "投票"} // 前台用户交互按钮名称
     }
 });
 
@@ -61,6 +62,21 @@ SubjectSchema.statics = {
             .limit(options.pageSize)
             .skip(options.pageSize * options.page)
             .exec(cb);
+    },
+
+    /**
+     * 查询主题下的所有scope和group
+     * @param id
+     * @param cb
+     * @private
+     */
+    scopesAndGroups: function (id, cb) {
+        Scope.findBySubjectId(id, function (err, scopes) {
+            // 查询主题下的组
+            Group.findBySubjectId(id, function (err, groups) {
+                cb.call(this, scopes, groups, err);
+            });
+        });
     }
 
 };

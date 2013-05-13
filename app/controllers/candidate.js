@@ -6,8 +6,7 @@
  */
 var mongoose = require("mongoose");
 var Candidate = mongoose.model("Candidate");
-var Scope = mongoose.model("Scope");
-var Group = mongoose.model("Group");
+var Subject = mongoose.model("Subject");
 var config = require("../../config/config");
 var uuid = require("node-uuid");
 var fs = require("fs");
@@ -35,17 +34,13 @@ exports.candidate = function (req, res, next, id) {
  */
 exports.add = function (req, res) {
     var subject = req.subject;
-    // 查询主题下的域
-    Scope.findBySubjectId(subject._id, function (err, scopes) {
-        if (err) throw err;
+    // 查询主题下的域和组
+    Subject.scopesAndGroups(subject._id, function (scopes, groups) {
         subject.scopes = scopes;
-        // 查询主题下的组
-        Group.findBySubjectId(subject._id, function (err, groups) {
-            if (err) throw err;
-            subject.groups = groups;
-            res.render("candidate/add", {subject: subject});
-        });
+        subject.groups = groups;
+        res.render("candidate/add", {subject: subject});
     });
+
 };
 
 /**
@@ -86,25 +81,19 @@ exports.list = function (req, res) {
     var page = req.param('page') > 0 ? req.param('page') : 0;
     var pageSize = req.param('page') || config.app.pageSize;
     var subject = req.subject;
-    // 查询主题下的域
-    Scope.findBySubjectId(subject._id, function (err, scopes) {
-        if (err) throw err;
+    // 查询主题下的域和组
+    Subject.scopesAndGroups(subject._id, function (scopes, groups) {
         subject.scopes = scopes;
-        // 查询主题下的组
-        Group.findBySubjectId(subject._id, function (err, groups) {
+        subject.groups = groups;
+        Candidate.findBySubjectId(subject._id, function (err, candidates) {
             if (err) throw err;
-            subject.groups = groups;
-            // 查询主题下的选项
-            Candidate.findBySubjectId(subject._id, function (err, candidates) {
-                if (err) throw err;
-                Candidate.count().exec(function (err, count) {
-                    res.render("candidate/list", {
-                        title: "选项管理 - " + subject.name,
-                        subject: subject,
-                        candidates: candidates,
-                        pages: count / pageSize,
-                        page: page
-                    });
+            Candidate.count().exec(function (err, count) {
+                res.render("candidate/list", {
+                    title: "选项管理 - " + subject.name,
+                    subject: subject,
+                    candidates: candidates,
+                    pages: count / pageSize,
+                    page: page
                 });
             });
         });
@@ -138,5 +127,6 @@ exports.del = function (req, res) {
     });
 
 };
+
 
 

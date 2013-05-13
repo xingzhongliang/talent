@@ -1,0 +1,51 @@
+//
+   User: laichendong
+   Date: 13-4-23
+   Time: 上午11:31
+extends layout
+block content
+  .w
+    .list-area
+      .list-area-title
+        table
+          tr
+            each scope,i in subject.scopes
+              - var curr = (i==0) ? "curr" : ""
+              td.scopeTitle(class="#{curr}")
+                h2: a(href="")= scope.name
+      -var i = 0
+      for a1, s_id in candidates
+        - var hide = i>0 ? "hide" : ""
+        - i++
+        .scopeBox(class=hide)
+          for a2, g_id in a1
+            .list-category
+              h3= groupName(g_id, subject.groups)
+                .more
+                  a(href=g_id) 更多&gt;
+              for c in a2
+                .list-item
+                  .portrait
+                    img(src=c.avatar, alt=c.name)
+                  dl
+                    dt 姓名：
+                    dd= c.name
+                    dt 部门：
+                    dd= c.department
+                    dt 介绍：
+                    dd= c.description
+                    dt.purple 票数
+                    dd.purple
+                      strong= c.votes
+                  .toupiao
+                    a(href="").btn.btn-r1 投票
+  script
+    $(function(){
+      $(".scopeTitle").css("cursor", "pointer").click(function(){
+        $(".scopeTitle").removeClass("curr");
+        $(this).addClass("curr");
+        var index = $(".list-area-title td").index($(this));
+        var scopes = $(".scopeBox");
+        scopes.hide().eq(index).show();;
+      });
+    });

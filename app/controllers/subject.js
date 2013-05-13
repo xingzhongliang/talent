@@ -2,8 +2,7 @@ var mongoose = require("mongoose");
 var moment = require("moment");
 var uuid = require("node-uuid");
 var Subject = mongoose.model("Subject");
-var Scope = mongoose.model("Scope");
-var Group = mongoose.model("Group");
+var Candidate = mongoose.model("Candidate");
 /**
  * 按Id查找主题，找到之后放到req里面
  * @param req
@@ -34,10 +33,9 @@ exports.add = function (req, res) {
  */
 exports.edit = function (req, res) {
     var subject = req.subject;
-    Scope.findBySubjectId(subject._id, function (err, scopes) {
-        !err && Group.findBySubjectId(subject._id, function (er, groups) {
-            !er && res.render('admin/editSubject', { title: '主题管理', subject: subject, scopes: scopes, groups: groups });
-        });
+    Subject.scopesAndGroups(subject._id, function (scopes, groups, err) {
+        if (err) throw err;
+        res.render('admin/editSubject', { title: '主题管理', subject: subject, scopes: scopes, groups: groups });
     });
 };
 
@@ -48,9 +46,41 @@ exports.edit = function (req, res) {
  */
 exports.show = function (req, res) {
     var subject = req.subject;
-    res.render('index', { title: subject.name, subject: subject });
-};
+    var template = subject.viewOpt.templateName || "default";
+    Subject.scopesAndGroups(subject._id, function (scopes, groups, err) {
+        if (err) throw err;
+        subject.scopes = scopes;
+        subject.groups = groups;
+        var cs = {};
+        Candidate.findBySubjectId(subject._id, function (err, candidates) {
+            for (var i = 0; i < candidates.length; i++) {
+                var s = candidates[i].scope;
+                var g = candidates[i].group;
+                if (!cs[s]) {
+                    cs[s] = {};
+                }
+                if (!cs[s][g]) {
+                    cs[s][g] = [];
+                }
+                cs[s][g].push(candidates[i]);
+            }
+            for (var arr in cs[s]) {
+                if ((arr instanceof Array) && arr) {
+                    arr.sort(function (e1, e2) {
+                        return e1.votes - e2.votes;
+                    });
+                }
+            }
+            res.render("templates/" + template + '/index', {
+                title: subject.name,
+                subject: subject,
+                template: template,
+                candidates: cs
+            });
+        });
 
+    });
+};
 
 /**
  * 插入主题到DB

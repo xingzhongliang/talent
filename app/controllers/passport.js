@@ -146,6 +146,7 @@ var loginNoErp = function (req, res, callBack) {
     var user = {};
     user.erpId = req.body.userName;
     user.name = req.body.userName;
+    user.department = "技术部";
     user.role = ["user"];
     // 如果登录者是管理员， 赋予用户管理员角色
     if (config.isAdmin(user.erpId)) {
