@@ -8,6 +8,7 @@ block sidebar
     li: a(href="/subject/#{subject._id}/edit") 管理主题
     li: a(href="/subject/#{subject._id}") 查看主题
     li: a(href="/subject/add") 新增主题
+    li: a(href="/subject/#{subject._id}/candidate/add") 新增选项
 
 block main
   table.table
@@ -45,11 +46,31 @@ block main
           td= c.votes
           td
             .btn-group
-              a(href="/candidate/#{c.value}").btn.btn-small.msBtn 查看
-              a(href="/candidate/#{c.value/del}").btn.btn-small.btn-danger.dsBtn 删除
+              a.btn.btn-small.msBtn(href="/candidate/#{c._id}") 查看
+              a.delModalBtn.btn.btn-small.btn-danger.dsBtn(candidate-id="#{c._id}",data-toggle="modal") 删除
+
+  // 删除提示框
+  #delModal.modal.hide.fade
+    .modal-header
+      button(data-dismiss="modal").close ×
+      h3 确定删除选项
+    .modal-body
+      p 删除选项将附带删除上传的相关文件，且不能回复！确定要删除？
+    .modal-footer
+      a(href="")#sbmDelbtn.btn.btn-danger 确定
+      button(data-dismiss="modal").btn 取消
 
   // 分页条
   if pages > 1
-      .pagination.pagination-centered
-          ul
-              != createPagination(pages, page)
+    .pagination.pagination-centered
+      ul
+        != createPagination(pages, page)
+
+  script
+    $(function(){
+        // 显示删除警告
+        $(".delModalBtn").click(function(){
+          $("#sbmDelbtn").attr("href", "/candidate/" + $(this).attr("candidate-id") + "/del");
+          $("#delModal").modal();
+        });
+    });

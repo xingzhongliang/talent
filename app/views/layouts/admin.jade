@@ -21,12 +21,7 @@ html
                 div.container
                     a.brand JD.com
                     ul.nav
-                        li.active
-                            a(href="/admin") 首页
-                        li
-                            a 首页
-                        li
-                            a 首页
+                        li.active: a(href="/admin") 首页
                     p.navbar-text.pull-right
                         if(req.session.user)
                             span 欢迎&nbsp;
