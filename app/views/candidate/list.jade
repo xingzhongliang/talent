@@ -15,12 +15,41 @@ block main
       tr
         th.span1 #
         th 名称
+        if subject.scopes.length > 1
+          th #{subject.viewOpt.newCandidatePage.scopeLabel}
+        if subject.groups.length > 1
+          th #{subject.viewOpt.newCandidatePage.groupLabel}
+        th 得票数
         th.span2 操作
     tbody
       tr.tmpl.hide
         td
         td
+        if subject.scopes.length > 1
+          td
+        if subject.groups.length > 1
+          td
+        td
         td
           .btn-group
-            button.btn.btn-small.msBtn 修改
-            button.btn.btn-small.btn-danger.dsBtn 删除
+            a.btn.btn-small.msBtn 查看
+            a.btn.btn-small.btn-danger.dsBtn 删除
+      each c,i in candidates
+        tr
+          td= i+1
+          td= c.name
+          if subject.scopes.length > 1
+            td(title=scopeName(c.scope, subject.scopes))= cut(scopeName(c.scope, subject.scopes), 5)
+          if subject.groups.length > 1
+            td(title=groupName(c.group, subject.groups))= cut(groupName(c.group, subject.groups), 5)
+          td= c.votes
+          td
+            .btn-group
+              a(href="/candidate/#{c.value}").btn.btn-small.msBtn 查看
+              a(href="/candidate/#{c.value/del}").btn.btn-small.btn-danger.dsBtn 删除
+
+  // 分页条
+  if pages > 1
+      .pagination.pagination-centered
+          ul
+              != createPagination(pages, page)

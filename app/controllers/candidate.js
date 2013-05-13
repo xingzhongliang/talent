@@ -20,9 +20,11 @@ exports.add = function (req, res) {
     var subject = req.subject;
     // 查询主题下的域
     Scope.findBySubjectId(subject._id, function (err, scopes) {
+        if (err) throw err;
         subject.scopes = scopes;
         // 查询主题下的组
         Group.findBySubjectId(subject._id, function (err, groups) {
+            if (err) throw err;
             subject.groups = groups;
             res.render("candidate/add", {subject: subject});
         });
@@ -66,18 +68,31 @@ exports.doAdd = function (req, res) {
 exports.list = function (req, res) {
     var page = req.param('page') > 0 ? req.param('page') : 0;
     var pageSize = req.param('page') || config.app.pageSize;
-    Candidate.findBySubjectId(req.subject._id, function (err, candidates) {
+    var subject = req.subject;
+    // 查询主题下的域
+    Scope.findBySubjectId(subject._id, function (err, scopes) {
         if (err) throw err;
-        Candidate.count().exec(function (err, count) {
-            res.render("candidate/list", {
-                title: "选项管理 - " + req.subject.name,
-                subject: req.subject,
-                candidates: candidates,
-                pages: count / pageSize,
-                page: page
+        subject.scopes = scopes;
+        // 查询主题下的组
+        Group.findBySubjectId(subject._id, function (err, groups) {
+            if (err) throw err;
+            subject.groups = groups;
+            // 查询主题下的选项
+            Candidate.findBySubjectId(subject._id, function (err, candidates) {
+                if (err) throw err;
+                Candidate.count().exec(function (err, count) {
+                    res.render("candidate/list", {
+                        title: "选项管理 - " + subject.name,
+                        subject: subject,
+                        candidates: candidates,
+                        pages: count / pageSize,
+                        page: page
+                    });
+                });
             });
         });
     });
+
 };
 
 
