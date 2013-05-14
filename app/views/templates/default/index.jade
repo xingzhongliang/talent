@@ -6,24 +6,26 @@ extends layout
 block content
   .w
     .list-area
+      - var init_s = ""
       #list-area-title.list-area-title
         table
           tr
             each scope,i in subject.scopes
-              - var curr = (i==0) ? "curr" : ""
-              td.scopeTitle(class="#{curr}")
+              - var curr = ""
+              - if(i==0)
+                - curr = "curr"
+                - init_s = scope._id
+              td.scopeTitle(class="#{curr}",s_id=scope._id)
                 h2: a(href="#list-area-title")= scope.name
-      -var i = 0
-      for a1, s_id in candidates
-        - var hide = i>0 ? "hide" : ""
-        - i++
-        .scopeBox(class=hide)
-          for a2, g_id in a1
+      - for (s_id in candidates)
+        - var hide = init_s == s_id ? "" : "hide"
+        .scopeBox(class=hide,s_id=s_id)
+          - for (g_id in candidates[s_id])
             .list-category
               h3= groupName(g_id, subject.groups)
                 .more
                   a(href="/subject/#{subject._id}/candidate/?s_id=#{s_id}&g_id=#{g_id}") 更多&gt;
-              for c in a2
+              for c in candidates[s_id][g_id]
                 .list-item
                   .portrait
                     img(src=c.avatar, alt=c.name)
@@ -43,9 +45,8 @@ block content
     $(function(){
       $(".scopeTitle").css("cursor", "pointer").click(function(){
         $(".scopeTitle").removeClass("curr");
-        $(this).addClass("curr");
-        var index = $(".list-area-title td").index($(this));
-        var scopes = $(".scopeBox");
-        scopes.hide().eq(index).show();;
+        var s_id = $(this).addClass("curr").attr("s_id");
+        $(".scopeBox").hide();
+        $(".scopeBox[s_id='"+s_id+"']").show();;
       });
     });

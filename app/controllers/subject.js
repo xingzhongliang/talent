@@ -3,6 +3,7 @@ var moment = require("moment");
 var uuid = require("node-uuid");
 var Subject = mongoose.model("Subject");
 var Candidate = mongoose.model("Candidate");
+var util = require("./util/util");
 /**
  * 按Id查找主题，找到之后放到req里面
  * @param req
@@ -51,25 +52,23 @@ exports.show = function (req, res) {
         if (err) throw err;
         subject.scopes = scopes;
         subject.groups = groups;
-        var cs = {};
+        var cs = [];
         Candidate.findBySubjectId(subject._id, function (err, candidates) {
             for (var i = 0; i < candidates.length; i++) {
                 var s = candidates[i].scope;
                 var g = candidates[i].group;
                 if (!cs[s]) {
-                    cs[s] = {};
+                    cs[s] = [];
                 }
                 if (!cs[s][g]) {
                     cs[s][g] = [];
                 }
                 cs[s][g].push(candidates[i]);
             }
-            for (var arr in cs[s]) {
-                if ((arr instanceof Array) && arr) {
-                    arr.sort(function (e1, e2) {
-                        return e1.votes - e2.votes;
-                    });
-                }
+            // 按key排序
+            cs = util.sortMap(cs);
+            for (var key in cs) {
+                cs[key] = util.sortMap(cs[key]);
             }
             res.render("templates/" + template + '/index', {
                 title: subject.name,
