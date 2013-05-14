@@ -18,7 +18,7 @@
 
     var fileType = {
         'img': '*.jpg;*.gif;*.png;*.jpeg;*.bmp'
-        ,'media': '*.mp4'
+        ,'video': '*.mp4'
         ,'music': '*.mp3'
     }
 
@@ -51,7 +51,7 @@
             var btn = document.createElement('div');
             var btn2 = document.createElement('div');
             $(c).addClass('filebox_container').css({width:opt.width,height:opt.height});
-            $(div).css({width:opt.width,height:opt.height}).addClass('filebox_div');
+            $(div).css({width:opt.width,height:opt.height}).addClass('filebox_div_' + (opt.bgType ? opt. bgType : opt.type));
             $(btn).css({width:opt.width,height:opt.height}).appendTo(div);
             $(img).css({width:opt.width,height:opt.height}).addClass('filebox_img').append('<div class="wrapper"></div>');
             $(liv).addClass('filebox_liv').append('<div class="bgd"></div>').find('div').css({width:opt.width,height:opt.height,lineHeight:opt.height + 'px'});
@@ -73,7 +73,7 @@
                     eval('data =' + data);
                     if(opt.set_result_handler) {
                         opt.set_result_handler(f,data,res);
-                    }else if(opt.type == 'img'){
+                    }else if(opt.type == 'img' || opt.type == 'video'){
                         $(img).show().find('img').attr('src',data.path).css({maxHeight:opt.height,maxWidth:opt.width});
                     }
                 }

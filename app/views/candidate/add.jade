@@ -4,12 +4,23 @@
     Time: 下午11:54
 extends ../layouts/adminWithSideBar
 block head
+    style
+        .muted {
+            background-color: #ffffff;
+            margin-bottom: 20px;
+            min-height: 20px;
+            padding: 19px;
+        }
+        .a_cursor {
+            cursor: pointer;
+        }
     script(src="/js/filebox/filebox.js")
     script
         $(function(){
            $('#avatar').filebox({
                 width:140,
                 height:160,
+                bgType:'head',
                 callback:function(f,data,res) {
                     $('#avatar').val(data.path);
                 }
@@ -20,16 +31,15 @@ block head
                 set_result_handler:setImg
            });
            $('#addMedia').filebox({
-                width:120,
-                height:120,
-                type:'*.mp4',
-                callback:function(f,data,res) {
-                    console.info(data.path);
-                }
+                width:286,
+                height:179,
+                type:'video',
+                set_result_handler:setVideo
            });
            $('#addMusic').filebox({
-                width:120,
-                height:120,
+                width:50,
+                height:50,
+                type:'music',
                 callback:function(f,data,res) {
                     console.info(data.path);
                 }
@@ -92,12 +102,12 @@ block main
               textarea.span6(name="description",rows="5",placeholder="简短描述")
         //- showType == 3 表示为有详情页，则至少需要提供一个文本，图片，音频或视频作为详情
         if subject.viewOpt.showType == 3
-          .well
+          .well.span8
             fieldset
               legend #{subject.viewOpt.newCandidatePage.detailLegend}
-            textarea.span9(rows="7",placeholder="详细描述")
+            textarea.span8(rows="7",placeholder="详细描述")
             div.row
-                .span9
+                .span8
                     .btn-group
                         a(href="javascript:;", title="上传图片",onclick="showPanel(1)").btn
                             i.icon-camera
@@ -105,29 +115,35 @@ block main
                             i.icon-film
                         a(href="javascript:;", title="上传音频",onclick="showPanel(3)").btn
                             i.icon-music
-                .span9 &nbsp;
+                .span8 &nbsp;
             div#imgPanel.row.hide
-                .span9.atvSpan
+                .span8.atvSpan
                     .pull-left
                         ul.thumbnails
                     .pull-left &nbsp;
                     .pull-left
                         input#addImg(type="text")
                     .clearfix
-                .span9 &nbsp;
+                .span8 &nbsp;
                     a(name='imgPanel')
             div#mediaPanel.row.hide
-                .span9
-                    input#addMedia(type="text")
-                .span9 &nbsp;
+                .span8.atvSpan
+                    .pull-left
+                        ul.thumbnails
+                    .pull-left &nbsp;
+                    .pull-left
+                        input#addMedia(type="text")
+                    .clearfix
+                .span8 &nbsp;
                     a(name='mediaPanel')
             div#musicPanel.row.hide
-                .span9
+                .span8
                     input#addMusic(type="text")
-                .span9 &nbsp;
+                .span8 &nbsp;
                     a(name='musicPanel')
-          .pull-right
-            button.btn.btn-success.btn-large(type="submit") 提交报名信息
+          .span8.muted
+             .pull-right
+                button.btn.btn-success.btn-large(type="submit") 提交报名信息
 block footer
     script
         function showPanel(type) {
@@ -151,7 +167,6 @@ block footer
         }
 
         function setImg(f,data,res) {
-            //$('#imgPanel').find('.thumbnails').append('<li class="span2"><div class="thumbnail"><img src=""><div class="caption"><p><a class="btn btn-danger btn-mini"><i class="icon-remove"></i></a></p></div></div></li>');
             var sp = $('#imgPanel').find('.atvSpan');
             var ul = sp.find('ul');
             if(sp.find('li').length >= 3) {
@@ -160,7 +175,28 @@ block footer
                 ul.append(sp.find('ul').html());
                 sp.find('ul').html('');
             }
-            ul.append('<li class="span2"><div class="thumbnail"><img src=""><a><i class="icon-remove"></i></a></div></li>');
-            ul.find('li:last').find('img').attr('src',data.path);
+            ul.append('<li class="span2"><div class="thumbnail"><img src=""><div class="pull-left"><i class="icon-camera"></i></div><div class="pull-right"><a><i class="icon-remove"></i></a></div><div class="clearfix"></div></div></li>');
+            var li =  ul.find('li:last');
+            li.find('img').attr('src',data.path);
+            li.find('a').click(function(){
+                $(this).parents('li').remove();
+            }).addClass('a_cursor');
+        }
+
+        function setVideo(f,data,res) {
+            var sp = $('#mediaPanel').find('.atvSpan');
+            var ul = sp.find('ul');
+            if(sp.find('li').length >= 1) {
+                sp.before('<div class="span9"><ul class="thumbnails"></ul></div>');
+                ul = sp.prev().find('ul');
+                ul.append(sp.find('ul').html());
+                sp.find('ul').html('');
+            }
+            ul.append('<li class="span4"><div class="thumbnail"><img src=""><div class="pull-left"><i class="icon-film"></i></div><div class="pull-right"><a><i class="icon-remove"></i></a></div><div class="clearfix"></div></div></li>');
+            var li =  ul.find('li:last');
+            li.find('img').attr('src',data.path);
+            li.find('a').click(function(){
+                $(this).parents('li').remove();
+            }).addClass('a_cursor');
         }
 

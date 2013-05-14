@@ -21,9 +21,23 @@
     margin: 0 auto;
 }
 
-.filebox_div {
+.filebox_div_img {
     margin: 0 auto;
-    background: url("../img/upload_img.png") no-repeat center center;
+    background: url("../img/pic.png") no-repeat center center;
+}
+.filebox_div_video {
+    margin: 0 auto;
+    background: url("../img/video.png") no-repeat center center;
+}
+
+.filebox_div_head {
+    margin: 0 auto;
+    background: url("../img/upload_placeholder.png") no-repeat center center;
+}
+
+.filebox_div_music {
+    margin: 0 auto;
+    background: url("../img/mp3.png") no-repeat center center;
 }
 
 .filebox_liv {
