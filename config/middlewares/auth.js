@@ -17,7 +17,7 @@ module.exports = function (role, url) {
                     returnNeedLogin(req, res, targetUrl);
                 } else { // 有登录，检查登录的用户是否有相应的角色，有则放过，无则继续登录去
                     var hasRole = false;
-                    for (var i = 0; i < req.session.user.role; i++) {
+                    for (var i = 0; i < req.session.user.role.length; i++) {
                         if (role == req.session.user.role[i]) hasRole = true;
                     }
                     if (!hasRole) {
