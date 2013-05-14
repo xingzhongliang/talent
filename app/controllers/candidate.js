@@ -205,13 +205,16 @@ exports.vote = function (req, res) {
                 vote = new Vote({
                     voter_erp: voter.erpId, voter_name: voter.name, voter_department: voter.department, subject: candidate.subject, candidate: candidate._id, round: subject.round
                 }).save(function (err) {
-                        if (err) {
-                            req.flash("errors", "服务器错误");
-                            res.redirect("/subject/" + candidate.subject);
-                        } else {
-                            req.flash("info", "投票成功");
-                            res.redirect("/subject/" + candidate.subject);
-                        }
+                        Candidate.update({_id: candidate._id}, {$inc: { votes: 1}}, function (err, i) {
+                            if (err) {
+                                req.flash("errors", "服务器错误");
+                                res.redirect("/subject/" + candidate.subject);
+                            } else {
+                                req.flash("info", "投票成功");
+                                res.redirect("/subject/" + candidate.subject);
+                            }
+                        });
+
                     });
             }
         });
