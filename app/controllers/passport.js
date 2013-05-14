@@ -5,7 +5,7 @@ var Subject = mongoose.model("Subject");
  * login page.
  */
 exports.login = function (req, res) {
-    res.render('login', { target: req.flash("target")});
+    res.render('login', { target: req.param("target") || req.flash("target")});
 };
 
 /**
