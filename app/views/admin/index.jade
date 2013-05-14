@@ -17,11 +17,12 @@ block content
               p.pull-right!=subject.owner
             p.subjectComment!=cut(subject.comment, 100)
             div.pull-right=fmt2(subject.createTime,'YYYY-MM-DD HH:mm')
-          p
+          .btn-group
             a.btn.btn-info(href="/subject/#{subject._id}/edit") &nbsp;管&nbsp;&nbsp;理&nbsp;
-            span &nbsp;&nbsp;
+            a.btn(href="/subject/#{subject._id}/data") &nbsp;数&nbsp;&nbsp;据&nbsp;
             a.btn(href="/subject/#{subject._id}") &nbsp;查&nbsp;&nbsp;看&nbsp;
-            br
+          p
+
 
   // 分页条
   if pages > 1
