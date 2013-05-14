@@ -16,7 +16,10 @@ html
         p= subject.comment
           span.more
             a(href="") 更多
-        a.btn.btn-r2.login(href="/login") 立即登录
+        if req.session.user
+          a.btn.btn-r2.login(href="/do-logout") 退出登录
+        else
+          a.btn.btn-r2.login(href="/login") 立即登录
     block content
 
     script(src="/js/vote.js")
