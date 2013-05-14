@@ -49,7 +49,7 @@ exports.doLogin = function (req, res) {
  */
 exports.doLogout = function (req, res) {
     req.session.user = null;
-    res.redirect('/');
+    res.redirect('back');
 };
 
 /**
