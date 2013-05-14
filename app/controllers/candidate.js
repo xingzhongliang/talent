@@ -9,6 +9,7 @@ var Candidate = mongoose.model("Candidate");
 var Subject = mongoose.model("Subject");
 var Group = mongoose.model("Group");
 var Scope = mongoose.model("Scope");
+var Vote = mongoose.model("Vote");
 var config = require("../../config/config");
 var uuid = require("node-uuid");
 var fs = require("fs");
@@ -145,7 +146,7 @@ exports.channel = function (req, res) {
     var options = {
         pageSize: pageSize,
         page: page,
-        criteria : {
+        criteria: {
             subject: subject._id,
             scope: scopeId,
             group: groupId
@@ -172,6 +173,53 @@ exports.channel = function (req, res) {
             });
         });
     });
+};
+
+/**
+ * 投票动作
+ * @param req
+ * @param res
+ */
+exports.vote = function (req, res) {
+    var voter = req.session.user;
+    var candidate = req.candidate;
+    // 检查是否参与过本主题的本轮投票
+    Subject.load(candidate.subject, function (err, subject) {
+        Vote.voted(voter.erpId, subject, function (err, vote) {
+            if (err) throw err;
+            if (vote) {
+                // 投过，给出提示
+                res.send({
+                    success: false,
+                    code: -1,
+                    msg: "重复投票",
+                    vote: vote
+                });
+            } else {
+                var vote = new Vote({
+                    voter_erp: voter.erpId, voter_name: voter.name, voter_department: voter.department, subject: candidate.subject, candidate: candidate._id, round: subject.round
+                });
+                vote.save(function (err) {
+                    if (err) {
+                        res.send({
+                            success: false,
+                            code: -2,
+                            msg: "服务器错误",
+                            vote: null
+                        });
+                    } else {
+                        res.send({
+                            success: true,
+                            code: 0,
+                            msg: "投票成功",
+                            vote: vote
+                        });
+                    }
+                });
+            }
+        });
+    });
+
 };
 
 

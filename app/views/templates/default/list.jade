@@ -27,10 +27,11 @@ block content
               dd.purple
                 strong= c.votes
             .toupiao
-              a(href="").btn.btn-r1 投票
+              a(href="/candidate/#{c._id}/vote").btn.btn-r1 投票
 
   // 分页条
   if pages > 1
     .pagination.pagination-centered
       ul
         != createPagination(pages, page)
+

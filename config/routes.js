@@ -48,6 +48,7 @@ module.exports = function (app) {
     // 选项相关
     app.get("/candidate/:candidateId", candidate.show); // 选项详情页
     app.get("/candidate/:candidateId/del", auth("admin"), candidate.del); // 删除选项
+    app.get("/candidate/:candidateId/vote", auth("user"), candidate.vote); // 删除选项
 
     app.param("subjectId", subject.subject); // 处理带:subjectId参数的url中的:subjectId
     app.param("candidateId", candidate.candidate); // 处理带:candidateId参数的url中的:candidateId

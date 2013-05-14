@@ -4,19 +4,19 @@
    Time: 下午1:43
 !!! 5
 html
-    head
-        title=title
-        meta(name="viewport",content="width=device-width, initial-scale=1.0")
-        link(href="/skin/#{template}/css/style.css",rel="stylesheet",media="screen")
-        script(src="/js/jquery.js")
-    body
-        .w
-            .roles
-                h3 活动规则及公告
-                p= subject.comment
-                    span.more
-                        a(href="") 更多
-                a.btn.btn-r2.login(href="/login") 立即登录
-        block content
+  head
+    title=title
+    meta(name="viewport",content="width=device-width, initial-scale=1.0")
+    link(href="/skin/#{template}/css/style.css",rel="stylesheet",media="screen")
+    script(src="/js/jquery.js")
+  body
+    .w
+      .roles
+        h3 活动规则及公告
+        p= subject.comment
+          span.more
+            a(href="") 更多
+        a.btn.btn-r2.login(href="/login") 立即登录
+    block content
 
-
+    script(src="/js/vote.js")
