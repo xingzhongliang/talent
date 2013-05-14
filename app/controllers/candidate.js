@@ -117,12 +117,15 @@ exports.list = function (req, res) {
 exports.show = function (req, res) {
     var candidate = req.candidate;
     Subject.load(candidate.subject, function (err, subject) {
-        var template = subject.viewOpt.templateName || "default";
-        res.render("templates/" + template + '/detail', {
-            title: req.candidate.name,
-            template: template,
-            subject: subject,
-            candidate: candidate
+        Scope.load(candidate.scope, function (err, scope) {
+            var template = subject.viewOpt.templateName || "default";
+            res.render("templates/" + template + '/detail', {
+                title: req.candidate.name,
+                template: template,
+                subject: subject,
+                candidate: candidate,
+                scope: scope
+            });
         });
     });
 
