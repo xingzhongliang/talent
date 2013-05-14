@@ -34,15 +34,15 @@ block head
                 width:286,
                 height:179,
                 type:'video',
+                loadingType:'bar',
                 set_result_handler:setVideo
            });
            $('#addMusic').filebox({
-                width:50,
-                height:50,
+                width:286,
+                height:30,
                 type:'music',
-                callback:function(f,data,res) {
-                    console.info(data.path);
-                }
+                loadingType:'bar',
+                set_result_handler:setMusic
            });
         });
 
@@ -60,7 +60,7 @@ block main
     h2= subject.name
       small #{subject.viewOpt.newCandidatePage.actionLabel}
   .row &nbsp;
-  form(method="post",enctype="multipart/form-data", action="/subject/#{subject._id}/candidate/new").form-horizontal
+  form(id='dataForm',method="post",enctype="multipart/form-data", action="/subject/#{subject._id}/candidate/new").form-horizontal
     .span9
       //- 如果有组或域，显示备选
       if subject.scopes.length > 1 || subject.groups.length > 1
@@ -105,12 +105,15 @@ block main
           .well.span8
             fieldset
               legend #{subject.viewOpt.newCandidatePage.detailLegend}
-            textarea.span8(rows="7",placeholder="详细描述")
+            input(name='witOfImg',type="hidden")
+            input(name='witOfVideo',type="hidden")
+            input(name='witOfAudio',type="hidden")
+            textarea.span8(rows="7",placeholder="详细描述",name="witOfText")
             div.row
                 .span8
                     .btn-group
                         a(href="javascript:;", title="上传图片",onclick="showPanel(1)").btn
-                            i.icon-camera
+                            i.icon-picture
                         a(href="javascript:;", title="上传视频",onclick="showPanel(2)").btn
                             i.icon-film
                         a(href="javascript:;", title="上传音频",onclick="showPanel(3)").btn
@@ -137,15 +140,22 @@ block main
                 .span8 &nbsp;
                     a(name='mediaPanel')
             div#musicPanel.row.hide
-                .span8
-                    input#addMusic(type="text")
+                .span8.atvSpan
+                    .pull-left
+                        ul.thumbnails
+                    .pull-left &nbsp;
+                    .pull-left
+                        input#addMusic(type="text")
+                    .clearfix
                 .span8 &nbsp;
                     a(name='musicPanel')
+
           .span8.muted
              .pull-right
-                button.btn.btn-success.btn-large(type="submit") 提交报名信息
+                button.btn.btn-success.btn-large(type="button",onclick="sbmt()") 提交报名信息
 block footer
     script
+        var witOfImg=[],witOfAudio=[],witOfVideo=[];
         function showPanel(type) {
             var target;
             switch(type) {
@@ -162,41 +172,97 @@ block footer
             $(target).slideDown('fast',function(){
                 var href = window.location;
                 window.location.href = href.toString().split('#')[0] + target;
-                console.info(window.location.href);
             });
         }
 
         function setImg(f,data,res) {
+            witOfImg.push(data.path);
             var sp = $('#imgPanel').find('.atvSpan');
             var ul = sp.find('ul');
             if(sp.find('li').length >= 3) {
                 sp.before('<div class="span9"><ul class="thumbnails"></ul></div>');
                 ul = sp.prev().find('ul');
                 ul.append(sp.find('ul').html());
+                ul.find('a').click(bind).addClass('a_cursor');
                 sp.find('ul').html('');
             }
-            ul.append('<li class="span2"><div class="thumbnail"><img src=""><div class="pull-left"><i class="icon-camera"></i></div><div class="pull-right"><a><i class="icon-remove"></i></a></div><div class="clearfix"></div></div></li>');
+            ul.append('<li class="span2"><div class="thumbnail"><img src=""><div class="pull-left"><i class="icon-picture"></i></div><div class="pull-right"><a><i class="icon-remove"></i></a></div><div class="clearfix"></div></div></li>');
             var li =  ul.find('li:last');
-            li.find('img').attr('src',data.path);
-            li.find('a').click(function(){
+            li.find('img').attr('src',data.path).attr('id',data.path);
+            li.find('a').click(bind).addClass('a_cursor');
+
+            function bind() {
+                var val =$(this).parents('li').find('img').attr('id');
+                witOfImg = remove(val,witOfImg);
                 $(this).parents('li').remove();
-            }).addClass('a_cursor');
+            }
         }
 
         function setVideo(f,data,res) {
+            witOfVideo.push(data.video);
             var sp = $('#mediaPanel').find('.atvSpan');
             var ul = sp.find('ul');
             if(sp.find('li').length >= 1) {
                 sp.before('<div class="span9"><ul class="thumbnails"></ul></div>');
                 ul = sp.prev().find('ul');
                 ul.append(sp.find('ul').html());
+                ul.find('a').click(bind).addClass('a_cursor');
                 sp.find('ul').html('');
             }
             ul.append('<li class="span4"><div class="thumbnail"><img src=""><div class="pull-left"><i class="icon-film"></i></div><div class="pull-right"><a><i class="icon-remove"></i></a></div><div class="clearfix"></div></div></li>');
             var li =  ul.find('li:last');
-            li.find('img').attr('src',data.path);
-            li.find('a').click(function(){
+            li.find('img').attr('src',data.path).attr('id',data.video);
+            li.find('a').click(bind).addClass('a_cursor');
+
+            function bind() {
+                var val =$(this).parents('li').find('img').attr('id');
+                witOfVideo = remove(val,witOfVideo);
                 $(this).parents('li').remove();
-            }).addClass('a_cursor');
+            }
+        }
+
+        function setMusic(f,data,res) {
+            witOfAudio.push(data.path);
+            var sp = $('#musicPanel').find('.atvSpan');
+            var ul = sp.find('ul');
+            if(sp.find('li').length >= 1) {
+                sp.before('<div class="span9"><ul class="thumbnails"></ul></div>');
+                ul = sp.prev().find('ul');
+                var val = sp.find('ul input').val();
+                ul.append(sp.find('ul').html());
+                ul.find('.a_btn').click(bind).addClass('a_cursor');
+                ul.find('input').val(val);
+                sp.find('ul').html('');
+            }
+            ul.append('<li class="span4"><div class="input-append input-prepend"><button class="btn" type="button"><i class="icon-music"></i></button><input type="text" class="span3" readonly="readonly"/><button class="btn a_btn" type="button"><i class="icon-remove"></i></button></div></li>');
+            var li =  ul.find('li:last');
+            li.find('input').val(f.name).attr('id',data.path);
+            li.find('.a_btn').click(bind).addClass('a_cursor');
+
+            function bind() {
+                var val = $(this).siblings('input').attr('id');
+                witOfAudio = remove(val,witOfAudio);
+                $(this).parents('li').remove()
+            }
+        }
+
+        function remove(elem,arr) {
+            var c = [];
+            for(var i in arr) {
+                if(arr[i] != elem) {
+                    c.push(arr[i]);
+                }
+            }
+            return c;
+        }
+
+        function sbmt() {
+            $('[name="witOfImg"]').val(witOfImg.join(','));
+            $('[name="witOfAudio"]').val(witOfAudio.join(','));
+            $('[name="witOfVideo"]').val(witOfVideo.join(','));
+            console.info($('[name="witOfImg"]').val());
+            console.info($('[name="witOfAudio"]').val());
+            console.info($('[name="witOfVideo"]').val());
+            $('#dataForm').submit();
         }
 
