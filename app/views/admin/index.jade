@@ -14,10 +14,10 @@ block content
           .well.well-small.clearfix
             h3(title!=subject.name)!=cut(subject.name, 9)
             .clearfix
-            p.pull-right!=subject.owner
+              p.pull-right!=subject.owner
             p.subjectComment!=cut(subject.comment, 100)
             div.pull-right=fmt2(subject.createTime,'YYYY-MM-DD HH:mm')
-            p
+          p
             a.btn.btn-info(href="/subject/#{subject._id}/edit") &nbsp;管&nbsp;&nbsp;理&nbsp;
             span &nbsp;&nbsp;
             a.btn(href="/subject/#{subject._id}") &nbsp;查&nbsp;&nbsp;看&nbsp;
