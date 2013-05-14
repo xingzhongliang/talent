@@ -139,17 +139,17 @@ exports.channel = function (req, res) {
     var groupId = req.param("g_id");
     var scopeId = req.param("s_id");
     var page = req.param('page') > 0 ? req.param('page') : 0;
-    var pageSize = req.param('page') || config.app.pageSize;
-    var options = {
-        pageSize: pageSize,
-        page: page
-    };
+    var pageSize = req.param('pageSize') || config.app.pageSize;
     var subject = req.subject;
     var template = subject.viewOpt.templateName || "default";
-    options.criteria = {
-        subject: subject._id,
-        scope: scopeId,
-        group: groupId
+    var options = {
+        pageSize: pageSize,
+        page: page,
+        criteria : {
+            subject: subject._id,
+            scope: scopeId,
+            group: groupId
+        }
     };
     // 查询主题下的域和组
     Scope.load(scopeId, function (err, scope) {
@@ -157,7 +157,7 @@ exports.channel = function (req, res) {
         Group.load(groupId, function (err, group) {
             Candidate.list(options, function (err, candidates) {
                 if (err) throw err;
-                Candidate.count().exec(function (err, count) {
+                Candidate.count(options.criteria).exec(function (err, count) {
                     res.render("templates/" + template + '/list', {
                         title: group.name + " - " + scope.name,
                         subject: subject,

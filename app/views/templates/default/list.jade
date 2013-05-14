@@ -29,3 +29,8 @@ block content
             .toupiao
               a(href="").btn.btn-r1 投票
 
+  // 分页条
+  if pages > 1
+    .pagination.pagination-centered
+      ul
+        != createPagination(pages, page)
