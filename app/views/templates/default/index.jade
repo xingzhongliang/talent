@@ -28,7 +28,8 @@ block content
               for c in candidates[s_id][g_id]
                 .list-item
                   .portrait
-                    img(src=c.avatar, alt=c.name)
+                    a(href="/candidate/#{c._id}")
+                      img(src=c.avatar, alt=c.name)
                   dl
                     dt 姓名：
                     dd= c.name
@@ -36,7 +37,7 @@ block content
                     dd= c.department
                     dt 介绍：
                     dd= c.description
-                    dt.purple 票数
+                    dt.purple 票数：
                     dd.purple
                       strong= c.votes
                   .toupiao

@@ -110,7 +110,17 @@ exports.list = function (req, res) {
  * @param res
  */
 exports.show = function (req, res) {
-    res.render("candidate/show", {title: req.candidate.name, candidate: req.candidate});
+    var candidate = req.candidate;
+    Subject.load(candidate.subject, function (err, subject) {
+        var template = subject.viewOpt.templateName || "default";
+        res.render("templates/" + template + '/detail', {
+            title: req.candidate.name,
+            template: template,
+            subject: subject,
+            candidate: candidate
+        });
+    });
+
 };
 
 /**
@@ -195,14 +205,14 @@ exports.vote = function (req, res) {
                 vote = new Vote({
                     voter_erp: voter.erpId, voter_name: voter.name, voter_department: voter.department, subject: candidate.subject, candidate: candidate._id, round: subject.round
                 }).save(function (err) {
-                    if (err) {
-                        req.flash("errors", "服务器错误");
-                        res.redirect("/subject/" + candidate.subject);
-                    } else {
-                        req.flash("info", "投票成功");
-                        res.redirect("/subject/" + candidate.subject);
-                    }
-                });
+                        if (err) {
+                            req.flash("errors", "服务器错误");
+                            res.redirect("/subject/" + candidate.subject);
+                        } else {
+                            req.flash("info", "投票成功");
+                            res.redirect("/subject/" + candidate.subject);
+                        }
+                    });
             }
         });
     });
