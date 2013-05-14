@@ -35,9 +35,7 @@ var CandidateSchema = new Schema({
 CandidateSchema.methods = {
     create: function (cb) {
         this.save(cb);
-    }
-
-    , del: function(cb) {
+    }, del: function (cb) {
         this.remove(cb)
     }
 };
@@ -65,7 +63,7 @@ CandidateSchema.statics = {
     },
 
     findBySubjectId: function (sid, cb) {
-        _list.call(this, {subject: sid}, cb);
+        _list.call(this, {criteria: {subject: sid}}, cb);
     },
 
     /**
@@ -79,6 +77,7 @@ CandidateSchema.statics = {
     list: function (options, cb) {
         _list.call(this, options, cb);
     }
+
 
 };
 

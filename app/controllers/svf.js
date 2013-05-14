@@ -6,7 +6,6 @@
  * Time: 上午5:15
  * To change this template use File | Settings | File Templates.
  */
-require('./extend_fn.js');
 var fs = require('fs');
 var uuid = require("node-uuid");
 var config = require('../../config/config');

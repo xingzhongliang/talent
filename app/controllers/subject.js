@@ -2,8 +2,8 @@ var mongoose = require("mongoose");
 var moment = require("moment");
 var uuid = require("node-uuid");
 var Subject = mongoose.model("Subject");
-var Scope = mongoose.model("Scope");
-var Group = mongoose.model("Group");
+var Candidate = mongoose.model("Candidate");
+var util = require("./util/util");
 /**
  * 按Id查找主题，找到之后放到req里面
  * @param req
@@ -34,10 +34,9 @@ exports.add = function (req, res) {
  */
 exports.edit = function (req, res) {
     var subject = req.subject;
-    Scope.findBySubjectId(subject._id, function (err, scopes) {
-        !err && Group.findBySubjectId(subject._id, function (er, groups) {
-            !er && res.render('admin/editSubject', { title: '主题管理', subject: subject, scopes: scopes, groups: groups });
-        });
+    Subject.scopesAndGroups(subject._id, function (scopes, groups, err) {
+        if (err) throw err;
+        res.render('admin/editSubject', { title: '主题管理', subject: subject, scopes: scopes, groups: groups });
     });
 };
 
@@ -48,9 +47,39 @@ exports.edit = function (req, res) {
  */
 exports.show = function (req, res) {
     var subject = req.subject;
-    res.render('index', { title: subject.name, subject: subject });
-};
+    var template = subject.viewOpt.templateName || "default";
+    Subject.scopesAndGroups(subject._id, function (scopes, groups, err) {
+        if (err) throw err;
+        subject.scopes = scopes;
+        subject.groups = groups;
+        var cs = [];
+        Candidate.findBySubjectId(subject._id, function (err, candidates) {
+            for (var i = 0; i < candidates.length; i++) {
+                var s = candidates[i].scope;
+                var g = candidates[i].group;
+                if (!cs[s]) {
+                    cs[s] = [];
+                }
+                if (!cs[s][g]) {
+                    cs[s][g] = [];
+                }
+                cs[s][g].push(candidates[i]);
+            }
+            // 按key排序
+            cs = util.sortMap(cs);
+            for (var key in cs) {
+                cs[key] = util.sortMap(cs[key]);
+            }
+            res.render("templates/" + template + '/index', {
+                title: subject.name,
+                subject: subject,
+                template: template,
+                candidates: cs
+            });
+        });
 
+    });
+};
 
 /**
  * 插入主题到DB
@@ -89,5 +118,37 @@ exports.doAdd = function (req, res) {
 
 };
 
+exports.list = function (req, res) {
+    var page = req.param('page') > 0 ? req.param('page') : 0;
+    var pageSize = 6;
+    var options = {
+        pageSize: pageSize,
+        page: page
+    };
 
+    Subject.list(options, function (err, subjects) {
+        if (err) return res.status(500).render('500', {title: "500", error: err.stack });
+        Subject.count().exec(function (err, count) {
+            res.render("admin/index", {
+                title: "管理控制台",
+                subjects: subjects,
+                pages: count / pageSize,
+                page: page
+            });
+        });
+    });
+};
+
+/**
+ * 首页 显示最新活动的首页
+ * @param req
+ * @param res
+ */
+exports.index = function (req, res) {
+    Subject.findOne()
+        .sort({createTime: '-1'})
+        .exec(function (err, subject) {
+            res.redirect("/subject/" + subject._id);
+        });
+};
 

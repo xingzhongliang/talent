@@ -6,8 +6,10 @@
  */
 var mongoose = require("mongoose");
 var Candidate = mongoose.model("Candidate");
-var Scope = mongoose.model("Scope");
+var Subject = mongoose.model("Subject");
 var Group = mongoose.model("Group");
+var Scope = mongoose.model("Scope");
+var Vote = mongoose.model("Vote");
 var config = require("../../config/config");
 var uuid = require("node-uuid");
 var fs = require("fs");
@@ -35,17 +37,13 @@ exports.candidate = function (req, res, next, id) {
  */
 exports.add = function (req, res) {
     var subject = req.subject;
-    // 查询主题下的域
-    Scope.findBySubjectId(subject._id, function (err, scopes) {
-        if (err) throw err;
+    // 查询主题下的域和组
+    Subject.scopesAndGroups(subject._id, function (scopes, groups) {
         subject.scopes = scopes;
-        // 查询主题下的组
-        Group.findBySubjectId(subject._id, function (err, groups) {
-            if (err) throw err;
-            subject.groups = groups;
-            res.render("candidate/add", {subject: subject});
-        });
+        subject.groups = groups;
+        res.render("candidate/add", {subject: subject});
     });
+
 };
 
 /**
@@ -84,27 +82,26 @@ exports.doAdd = function (req, res) {
  */
 exports.list = function (req, res) {
     var page = req.param('page') > 0 ? req.param('page') : 0;
-    var pageSize = req.param('page') || config.app.pageSize;
+    var pageSize = req.param('pageSize') || config.app.pageSize;
     var subject = req.subject;
-    // 查询主题下的域
-    Scope.findBySubjectId(subject._id, function (err, scopes) {
-        if (err) throw err;
+    // 查询主题下的域和组
+    Subject.scopesAndGroups(subject._id, function (scopes, groups) {
         subject.scopes = scopes;
-        // 查询主题下的组
-        Group.findBySubjectId(subject._id, function (err, groups) {
+        subject.groups = groups;
+        var options = {
+            pageSize: pageSize,
+            page: page,
+            criteria: {subject: subject._id}
+        };
+        Candidate.list(options, function (err, candidates) {
             if (err) throw err;
-            subject.groups = groups;
-            // 查询主题下的选项
-            Candidate.findBySubjectId(subject._id, function (err, candidates) {
-                if (err) throw err;
-                Candidate.count().exec(function (err, count) {
-                    res.render("candidate/list", {
-                        title: "选项管理 - " + subject.name,
-                        subject: subject,
-                        candidates: candidates,
-                        pages: count / pageSize,
-                        page: page
-                    });
+            Candidate.count(options.criteria).exec(function (err, count) {
+                res.render("candidate/list", {
+                    title: "选项管理 - " + subject.name,
+                    subject: subject,
+                    candidates: candidates,
+                    pages: count / pageSize,
+                    page: page
                 });
             });
         });
@@ -118,7 +115,17 @@ exports.list = function (req, res) {
  * @param res
  */
 exports.show = function (req, res) {
-    res.render("candidate/show", {title: req.candidate.name, candidate: req.candidate});
+    var candidate = req.candidate;
+    Subject.load(candidate.subject, function (err, subject) {
+        var template = subject.viewOpt.templateName || "default";
+        res.render("templates/" + template + '/detail', {
+            title: req.candidate.name,
+            template: template,
+            subject: subject,
+            candidate: candidate
+        });
+    });
+
 };
 
 /**
@@ -138,5 +145,101 @@ exports.del = function (req, res) {
     });
 
 };
+
+/**
+ * 前台频道页
+ * @param req
+ * @param res
+ */
+exports.channel = function (req, res) {
+    var groupId = req.param("g_id");
+    var scopeId = req.param("s_id");
+    var page = req.param('page') > 0 ? req.param('page') : 0;
+    var pageSize = req.param('pageSize') || 18;
+    var subject = req.subject;
+    var template = subject.viewOpt.templateName || "default";
+    var options = {
+        pageSize: pageSize,
+        page: page,
+        criteria: {
+            subject: subject._id,
+            scope: scopeId,
+            group: groupId
+        }
+    };
+    // 查询主题下的域和组
+    Scope.load(scopeId, function (err, scope) {
+        if (err) throw err;
+        Group.load(groupId, function (err, group) {
+            Candidate.list(options, function (err, candidates) {
+                if (err) throw err;
+                Candidate.count(options.criteria).exec(function (err, count) {
+                    res.render("templates/" + template + '/list', {
+                        title: group.name + " - " + scope.name,
+                        subject: subject,
+                        template: template,
+                        candidates: candidates,
+                        scope: scope,
+                        group: group,
+                        pages: count / pageSize,
+                        page: page
+                    });
+                });
+            });
+        });
+    });
+};
+
+/**
+ * 投票动作
+ * @param req
+ * @param res
+ */
+exports.vote = function (req, res) {
+    // 是否来自登录页
+    var fromLogin = /\/login$/.test(req.get("Referer").toString());
+    var voter = req.session.user;
+    var candidate = req.candidate;
+    // 检查是否参与过本主题的本轮投票
+    Subject.load(candidate.subject, function (err, subject) {
+        Vote.voted(voter.erpId, subject, function (err, vote) {
+            if (err) throw err;
+            if (vote) {
+                // 投过，给出提示
+                req.flash("errors", "重复投票");
+                if (fromLogin) {
+                    res.redirect("/subject/" + candidate.subject);
+                } else {
+                    res.redirect("back");
+                }
+            } else {
+                vote = new Vote({
+                    voter_erp: voter.erpId, voter_name: voter.name, voter_department: voter.department, subject: candidate.subject, candidate: candidate._id, round: subject.round
+                });
+                vote.save(function (err) {
+                    Candidate.update({_id: candidate._id}, {$inc: { votes: 1}}, function (err, i) {
+                        if (err) {
+                            req.flash("errors", "服务器错误");
+                            if (fromLogin) {
+                                res.redirect("/subject/" + candidate.subject);
+                            } else {
+                                res.redirect("back");
+                            }
+                        } else {
+                            req.flash("info", "投票成功");
+                            if (fromLogin) {
+                                res.redirect("/subject/" + candidate.subject);
+                            } else {
+                                res.redirect("back");
+                            }
+                        }
+                    });
+                });
+            }
+        });
+    });
+
+};
+
 
 

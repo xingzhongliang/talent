@@ -5,7 +5,7 @@ var Subject = mongoose.model("Subject");
  * login page.
  */
 exports.login = function (req, res) {
-    res.render('login', { target: req.flash("target")});
+    res.render('login', { target: req.param("target") || req.flash("target")});
 };
 
 /**
@@ -48,8 +48,10 @@ exports.doLogin = function (req, res) {
  * @param res
  */
 exports.doLogout = function (req, res) {
+    req.flash("target", undefined);
+    req.flash("subjectId", undefined);
     req.session.user = null;
-    res.redirect('/');
+    res.redirect('back');
 };
 
 /**
@@ -146,6 +148,7 @@ var loginNoErp = function (req, res, callBack) {
     var user = {};
     user.erpId = req.body.userName;
     user.name = req.body.userName;
+    user.department = "技术部";
     user.role = ["user"];
     // 如果登录者是管理员， 赋予用户管理员角色
     if (config.isAdmin(user.erpId)) {
@@ -162,6 +165,8 @@ var loginNoErp = function (req, res, callBack) {
  * @param res
  */
 var gotoTarget = function (req, res) {
+    req.flash("target", undefined);
+    req.flash("subjectId", undefined);
     var target = req.body.target;
     if (target) {
         res.redirect(decodeURIComponent(target));
