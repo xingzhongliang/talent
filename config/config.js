@@ -22,7 +22,7 @@ module.exports = {
     admins: ['bjlaichendong', 'ghost'], // 系统管理员erp列表 存到表里？
     isAdmin: function (userName) { // 判断一个erp是否是管理员
         for (var i = 0; i < this.admins; i++) {
-            if (userName == this.admin[i]) return true;
+            if (userName == this.admins[i]) return true;
         }
         return false;
     }
