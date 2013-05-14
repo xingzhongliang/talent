@@ -48,6 +48,8 @@ exports.doLogin = function (req, res) {
  * @param res
  */
 exports.doLogout = function (req, res) {
+    req.flash("target", undefined);
+    req.flash("subjectId", undefined);
     req.session.user = null;
     res.redirect('back');
 };
@@ -163,6 +165,8 @@ var loginNoErp = function (req, res, callBack) {
  * @param res
  */
 var gotoTarget = function (req, res) {
+    req.flash("target", undefined);
+    req.flash("subjectId", undefined);
     var target = req.body.target;
     if (target) {
         res.redirect(decodeURIComponent(target));
