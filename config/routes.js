@@ -9,14 +9,14 @@
 var auth = require("../config/middlewares/auth");
 
 module.exports = function (app) {
-    var show = require("../app/controllers/show");
-    // 首页
-    app.get('/', show.index);
-    // 列表页
-    app.get("/list/:area", show.list);
+    var subject = require("../app/controllers/subject");
+    var candidate = require("../app/controllers/candidate");
+    var passport = require("../app/controllers/passport");
+
+    app.get('/', subject.index);// 首页
+    app.get("/admin", auth("admin"), subject.list);// 管理控制台
 
     // 登录登出
-    var passport = require("../app/controllers/passport");
     app.get('/login', passport.login);
     app.post('/do-login', passport.doLogin);
     app.get('/do-logout', passport.doLogout);
@@ -24,9 +24,6 @@ module.exports = function (app) {
     app.post('/verify-token', passport.verifyToken);
 
     // 主题相关
-    var subject = require("../app/controllers/subject");
-    var candidate = require("../app/controllers/candidate");
-    app.get("/admin", auth("admin"), subject.list);// 管理控制台
     app.get('/subject/add', auth("admin"), subject.add); // 添加主题
     app.post('/subject/do-add', auth("admin"), subject.doAdd);// 插入数据
     app.get('/subject/:subjectId', subject.show); // 前台展示主题首页

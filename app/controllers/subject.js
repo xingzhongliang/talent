@@ -139,4 +139,16 @@ exports.list = function (req, res) {
     });
 };
 
+/**
+ * 首页 显示最新活动的首页
+ * @param req
+ * @param res
+ */
+exports.index = function (req, res) {
+    Subject.findOne()
+        .sort({createTime: '-1'})
+        .exec(function (err, subject) {
+            res.redirect("/subject/" + subject._id);
+        });
+};
 
