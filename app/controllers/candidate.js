@@ -82,15 +82,20 @@ exports.doAdd = function (req, res) {
  */
 exports.list = function (req, res) {
     var page = req.param('page') > 0 ? req.param('page') : 0;
-    var pageSize = req.param('page') || config.app.pageSize;
+    var pageSize = req.param('pageSize') || config.app.pageSize;
     var subject = req.subject;
     // 查询主题下的域和组
     Subject.scopesAndGroups(subject._id, function (scopes, groups) {
         subject.scopes = scopes;
         subject.groups = groups;
-        Candidate.findBySubjectId(subject._id, function (err, candidates) {
+        var options = {
+            pageSize: pageSize,
+            page: page,
+            criteria: {subject: subject._id}
+        };
+        Candidate.list(options, function (err, candidates) {
             if (err) throw err;
-            Candidate.count().exec(function (err, count) {
+            Candidate.count(options.criteria).exec(function (err, count) {
                 res.render("candidate/list", {
                     title: "选项管理 - " + subject.name,
                     subject: subject,
@@ -202,7 +207,7 @@ exports.vote = function (req, res) {
             if (vote) {
                 // 投过，给出提示
                 req.flash("errors", "重复投票");
-                if(fromLogin) {
+                if (fromLogin) {
                     res.redirect("/subject/" + candidate.subject);
                 } else {
                     res.redirect("back");
@@ -215,14 +220,14 @@ exports.vote = function (req, res) {
                     Candidate.update({_id: candidate._id}, {$inc: { votes: 1}}, function (err, i) {
                         if (err) {
                             req.flash("errors", "服务器错误");
-                            if(fromLogin) {
+                            if (fromLogin) {
                                 res.redirect("/subject/" + candidate.subject);
                             } else {
                                 res.redirect("back");
                             }
                         } else {
                             req.flash("info", "投票成功");
-                            if(fromLogin) {
+                            if (fromLogin) {
                                 res.redirect("/subject/" + candidate.subject);
                             } else {
                                 res.redirect("back");

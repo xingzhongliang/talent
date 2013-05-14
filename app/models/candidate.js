@@ -63,7 +63,7 @@ CandidateSchema.statics = {
     },
 
     findBySubjectId: function (sid, cb) {
-        _list.call(this, {subject: sid}, cb);
+        _list.call(this, {criteria: {subject: sid}}, cb);
     },
 
     /**
