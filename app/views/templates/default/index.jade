@@ -40,7 +40,7 @@ block content
                     dd.purple
                       strong= c.votes
                   .toupiao
-                    a(href="javascript:vote('#{c._id}');").btn.btn-r1 投票
+                    a(href="/candidate/#{c._id}/vote").btn.btn-r1 投票
   script
     $(function(){
       $(".scopeTitle").css("cursor", "pointer").click(function(){

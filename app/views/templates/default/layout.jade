@@ -22,4 +22,11 @@ html
           a.btn.btn-r2.login(href="/login") 立即登录
     block content
 
-    script(src="/js/vote.js")
+    // 弹出info和error
+    if locals.errors.length > 0
+      script
+        alert("#{errors}")
+
+    if locals.info.length > 0
+      script
+        alert("#{info}")

@@ -140,7 +140,7 @@ exports.channel = function (req, res) {
     var groupId = req.param("g_id");
     var scopeId = req.param("s_id");
     var page = req.param('page') > 0 ? req.param('page') : 0;
-    var pageSize = req.param('pageSize') || config.app.pageSize;
+    var pageSize = req.param('pageSize') || 18;
     var subject = req.subject;
     var template = subject.viewOpt.templateName || "default";
     var options = {
@@ -189,31 +189,18 @@ exports.vote = function (req, res) {
             if (err) throw err;
             if (vote) {
                 // 投过，给出提示
-                res.send({
-                    success: false,
-                    code: -1,
-                    msg: "重复投票",
-                    vote: vote
-                });
+                req.flash("errors", "重复投票");
+                res.redirect("/subject/" + candidate.subject);
             } else {
-                var vote = new Vote({
+                vote = new Vote({
                     voter_erp: voter.erpId, voter_name: voter.name, voter_department: voter.department, subject: candidate.subject, candidate: candidate._id, round: subject.round
-                });
-                vote.save(function (err) {
+                }).save(function (err) {
                     if (err) {
-                        res.send({
-                            success: false,
-                            code: -2,
-                            msg: "服务器错误",
-                            vote: null
-                        });
+                        req.flash("errors", "服务器错误");
+                        res.redirect("/subject/" + candidate.subject);
                     } else {
-                        res.send({
-                            success: true,
-                            code: 0,
-                            msg: "投票成功",
-                            vote: vote
-                        });
+                        req.flash("info", "投票成功");
+                        res.redirect("/subject/" + candidate.subject);
                     }
                 });
             }
