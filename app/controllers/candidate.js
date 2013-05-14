@@ -191,6 +191,8 @@ exports.channel = function (req, res) {
  * @param res
  */
 exports.vote = function (req, res) {
+    // 是否来自登录页
+    var fromLogin = /\/login$/.test(req.get("Referer").toString());
     var voter = req.session.user;
     var candidate = req.candidate;
     // 检查是否参与过本主题的本轮投票
@@ -200,22 +202,34 @@ exports.vote = function (req, res) {
             if (vote) {
                 // 投过，给出提示
                 req.flash("errors", "重复投票");
-                res.redirect("/subject/" + candidate.subject);
+                if(fromLogin) {
+                    res.redirect("/subject/" + candidate.subject);
+                } else {
+                    res.redirect("back");
+                }
             } else {
                 vote = new Vote({
                     voter_erp: voter.erpId, voter_name: voter.name, voter_department: voter.department, subject: candidate.subject, candidate: candidate._id, round: subject.round
-                }).save(function (err) {
-                        Candidate.update({_id: candidate._id}, {$inc: { votes: 1}}, function (err, i) {
-                            if (err) {
-                                req.flash("errors", "服务器错误");
+                });
+                vote.save(function (err) {
+                    Candidate.update({_id: candidate._id}, {$inc: { votes: 1}}, function (err, i) {
+                        if (err) {
+                            req.flash("errors", "服务器错误");
+                            if(fromLogin) {
                                 res.redirect("/subject/" + candidate.subject);
                             } else {
-                                req.flash("info", "投票成功");
-                                res.redirect("/subject/" + candidate.subject);
+                                res.redirect("back");
                             }
-                        });
-
+                        } else {
+                            req.flash("info", "投票成功");
+                            if(fromLogin) {
+                                res.redirect("/subject/" + candidate.subject);
+                            } else {
+                                res.redirect("back");
+                            }
+                        }
                     });
+                });
             }
         });
     });
