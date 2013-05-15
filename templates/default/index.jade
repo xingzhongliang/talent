@@ -36,7 +36,9 @@ block content
                     dt 部门：
                     dd= c.department
                     dt 介绍：
-                    dd= c.description
+                    dd
+                      .intro
+                        = c.description
                     dt.purple 票数：
                     dd.purple
                       strong= c.votes

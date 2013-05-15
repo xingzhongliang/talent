@@ -471,7 +471,7 @@ table {
 }
 
 .disabled {
-    filter: alpha(opacity=30);
+    filter: alpha(opacity = 30);
     -moz-opacity: .3;
     opacity: .3;
     cursor: default;
@@ -531,147 +531,147 @@ a.btn:link, a.btn:visited, a.btn:hover, a.btn:active {
 
 .btn s {
     padding-left: 8px;
-    background: url(../img/btn.gif) no-repeat 0 0
+    background: url(i/btn.gif) no-repeat 0 0
 }
 
 .btn s b {
     padding-right: 8px;
-    background: url(../img/btn.gif) no-repeat right 0
+    background: url(i/btn.gif) no-repeat right 0
 }
 
 .btn s b span {
-    background: url(../img/btn.gif) repeat 0 -28px;
+    background: url(i/btn.gif) repeat 0 -28px;
     color: #555;
     font-size: 12px;
     font-weight: normal
 }
 
 .btn.hover s, .btn:hover s {
-    background: url(../img/btn.gif) no-repeat 0 -56px
+    background: url(i/btn.gif) no-repeat 0 -56px
 }
 
 .btn.hover s b, .btn:hover s b {
-    background: url(../img/btn.gif) no-repeat right -56px
+    background: url(i/btn.gif) no-repeat right -56px
 }
 
 .btn.hover s b span, .btn:hover s b span {
-    background: url(../img/btn.gif) repeat 0 -84px
+    background: url(i/btn.gif) repeat 0 -84px
 }
 
 .btn-s s {
     padding-left: 8px;
-    background: url(../img/btn.gif) no-repeat 0 -112px
+    background: url(i/btn.gif) no-repeat 0 -112px
 }
 
 .btn-s s b {
     padding-right: 8px;
-    background: url(../img/btn.gif) no-repeat right -112px
+    background: url(i/btn.gif) no-repeat right -112px
 }
 
 .btn-s s b span {
-    background: url(../img/btn.gif) repeat 0 -140px;
+    background: url(i/btn.gif) repeat 0 -140px;
     color: #335786;
     font-size: 12px;
     font-style: normal
 }
 
 .btn-s.shover s, .btn-s:hover s {
-    background: url(../img/btn.gif) no-repeat 0 -168px
+    background: url(i/btn.gif) no-repeat 0 -168px
 }
 
 .btn-s.shover s b, .btn-s:hover s b {
-    background: url(../img/btn.gif) no-repeat right -168px
+    background: url(i/btn.gif) no-repeat right -168px
 }
 
 .btn-s.shover s b span, .btn-s:hover s b span {
-    background: url(../img/btn.gif) repeat 0 -196px
+    background: url(i/btn.gif) repeat 0 -196px
 }
 
 .btn-m s {
     padding-left: 8px;
-    background: url(../img/btn.gif) no-repeat 0 -224px
+    background: url(i/btn.gif) no-repeat 0 -224px
 }
 
 .btn-m s b {
     padding-right: 8px;
-    background: url(../img/btn.gif) no-repeat right -224px
+    background: url(i/btn.gif) no-repeat right -224px
 }
 
 .btn-m s b span {
-    background: url(../img/btn.gif) repeat 0 -252px;
+    background: url(i/btn.gif) repeat 0 -252px;
     color: #fff;
     font-size: 12px;
     font-style: normal
 }
 
 .btn-m.mhover s, .btn-m:hover s {
-    background: url(../img/btn.gif) no-repeat 0 -280px
+    background: url(i/btn.gif) no-repeat 0 -280px
 }
 
 .btn-m.mhover s b, .btn-m:hover s b {
-    background: url(../img/btn.gif) no-repeat right -280px
+    background: url(i/btn.gif) no-repeat right -280px
 }
 
 .btn-m.mhover s b span, .btn-m:hover s b span {
-    background: url(../img/btn.gif) repeat 0 -308px
+    background: url(i/btn.gif) repeat 0 -308px
 }
 
 .btn-l s {
     padding-left: 8px;
-    background: url(../img/btn.gif) no-repeat 0 -336px
+    background: url(i/btn.gif) no-repeat 0 -336px
 }
 
 .btn-l s b {
     padding-right: 8px;
-    background: url(../img/btn.gif) no-repeat right -336px
+    background: url(i/btn.gif) no-repeat right -336px
 }
 
 .btn-l s b span {
-    background: url(../img/btn.gif) repeat 0 -364px;
+    background: url(i/btn.gif) repeat 0 -364px;
     font-size: 12px;
     font-style: normal;
     color: #fff
 }
 
 .btn-l.lhover s, .btn-l:hover s {
-    background: url(../img/btn.gif) no-repeat 0 -392px
+    background: url(i/btn.gif) no-repeat 0 -392px
 }
 
 .btn-l.lhover s b, .btn-l:hover s b {
-    background: url(../img/btn.gif) no-repeat right -392px
+    background: url(i/btn.gif) no-repeat right -392px
 }
 
 .btn-l.lhover s b span, .btn-l:hover s b span {
-    background: url(../img/btn.gif) repeat 0 -420px
+    background: url(i/btn.gif) repeat 0 -420px
 }
 
 .btn-x s {
     padding-left: 8px;
-    background: url(../img/btn.gif) no-repeat 0 -448px
+    background: url(i/btn.gif) no-repeat 0 -448px
 }
 
 .btn-x s b {
     padding-right: 8px;
-    background: url(../img/btn.gif) no-repeat right -448px
+    background: url(i/btn.gif) no-repeat right -448px
 }
 
 .btn-x s b span {
-    background: url(../img/btn.gif) repeat 0 -476px;
+    background: url(i/btn.gif) repeat 0 -476px;
     font-size: 12px;
     font-style: normal;
     color: #fff
 }
 
 .btn-x.xhover s, .btn-x:hover s {
-    background: url(../img/btn.gif) no-repeat 0 -504px
+    background: url(i/btn.gif) no-repeat 0 -504px
 }
 
 .btn-x.xhover s b, .btn-x:hover s b {
-    background: url(../img/btn.gif) no-repeat right -504px
+    background: url(i/btn.gif) no-repeat right -504px
 }
 
 .btn-x.xhover s b span, .btn-x:hover s b span {
-    background: url(../img/btn.gif) repeat 0 -532px
+    background: url(i/btn.gif) repeat 0 -532px
 }
 
 .btn i {
@@ -679,91 +679,91 @@ a.btn:link, a.btn:visited, a.btn:hover, a.btn:active {
 }
 
 .btn.btn-edit i {
-    background: url(../../../img/btnIco.png) 0 0 no-repeat
+    background: url(../../i/btnIco.png) 0 0 no-repeat
 }
 
 .btn.btn-save i {
-    background: url(../../../img/btnIco.png) -28px 0 no-repeat
+    background: url(../../i/btnIco.png) -28px 0 no-repeat
 }
 
 .btn.btn-del i {
-    background: url(../../../img/btnIco.png) -56px 0 no-repeat
+    background: url(../../i/btnIco.png) -56px 0 no-repeat
 }
 
 .btn.btn-search i {
-    background: url(../../../img/btnIco.png) -84px 0 no-repeat
+    background: url(../../i/btnIco.png) -84px 0 no-repeat
 }
 
 .btn.btn-modify i {
-    background: url(../../../img/btnIco.png) -112px 0 no-repeat
+    background: url(../../i/btnIco.png) -112px 0 no-repeat
 }
 
 .btn.btn-add i {
-    background: url(../../../img/btnIco.png) -140px 0 no-repeat
+    background: url(../../i/btnIco.png) -140px 0 no-repeat
 }
 
 .btn.btn-subtract i {
-    background: url(../../../img/btnIco.png) -168px 0 no-repeat
+    background: url(../../i/btnIco.png) -168px 0 no-repeat
 }
 
 .btn.btn-debug i {
-    background: url(../../../img/btnIco.png) -196px 0 no-repeat
+    background: url(../../i/btnIco.png) -196px 0 no-repeat
 }
 
 .btn.btn-rating i {
-    background: url(../../../img/btnIco.png) -224px 0 no-repeat
+    background: url(../../i/btnIco.png) -224px 0 no-repeat
 }
 
 .btn.btn-toTop i {
-    background: url(../../../img/btnIco.png) -252px 0 no-repeat
+    background: url(../../i/btnIco.png) -252px 0 no-repeat
 }
 
 .btn.btn-submit i {
-    background: url(../../../img/btnIco.png) 0 -28px no-repeat
+    background: url(../../i/btnIco.png) 0 -28px no-repeat
 }
 
 .btn.btn-cancel i {
-    background: url(../../../img/btnIco.png) -28px -28px no-repeat
+    background: url(../../i/btnIco.png) -28px -28px no-repeat
 }
 
 .btn.btn-addfolder i {
-    background: url(../../../img/btnIco.png) -56px -28px no-repeat
+    background: url(../../i/btnIco.png) -56px -28px no-repeat
 }
 
 .btn.btn-import i {
-    background: url(../../../img/btnIco.png) -84px -28px no-repeat
+    background: url(../../i/btnIco.png) -84px -28px no-repeat
 }
 
 .btn.btn-hidden i {
-    background: url(../../../img/btnIco.png) -112px -28px no-repeat
+    background: url(../../i/btnIco.png) -112px -28px no-repeat
 }
 
 .btn.btn-reply i {
-    background: url(../../../img/btnIco.png) -140px -28px no-repeat
+    background: url(../../i/btnIco.png) -140px -28px no-repeat
 }
 
 .btn.btn-post i {
-    background: url(../../../img/btnIco.png) -168px -28px no-repeat
+    background: url(../../i/btnIco.png) -168px -28px no-repeat
 }
 
 .btn.btn-checkout i {
-    background: url(../../../img/btnIco.png) -196px -28px no-repeat
+    background: url(../../i/btnIco.png) -196px -28px no-repeat
 }
 
 .btn.btn-favorite i {
-    background: url(../../../img/btnIco.png) -224px -28px no-repeat
+    background: url(../../i/btnIco.png) -224px -28px no-repeat
 }
 
 .btn.btn-apply i {
-    background: url(../../../img/btnIco.png) -252px -28px no-repeat
+    background: url(../../i/btnIco.png) -252px -28px no-repeat
 }
 
 .btn.btn-enter i {
-    background: url(../../../img/btnIco.png) 0 -56px no-repeat
+    background: url(../../i/btnIco.png) 0 -56px no-repeat
 }
 
 .btn.btn-upload i {
-    background: url(../../../img/btnIco.png) -28px -56px no-repeat
+    background: url(../../i/btnIco.png) -28px -56px no-repeat
 }
 
 .fieldset {
@@ -1014,7 +1014,7 @@ a.btn:link, a.btn:visited, a.btn:hover, a.btn:active {
 }
 
 .grid thead {
-    background: url(../img/img-w-1px.png) 0 -40px repeat-x #ececec
+    background: url(i/img-w-1px.png) 0 -40px repeat-x #ececec
 }
 
 .grid thead th, .grid thead td {
@@ -1062,7 +1062,7 @@ a.btn:link, a.btn:visited, a.btn:hover, a.btn:active {
     border: 1px solid #d7d7d7;
     margin-left: -1px;
     color: #0095cd;
-    background: url(../img/img-w-1px.png) 0 -80px repeat-x
+    background: url(i/img-w-1px.png) 0 -80px repeat-x
 }
 
 .page .pre {
@@ -1098,7 +1098,7 @@ a.btn:link, a.btn:visited, a.btn:hover, a.btn:active {
 
 .page a.current {
     color: #f60;
-    background: url(../img/img-w-1px.png) 0 -106px repeat-x
+    background: url(i/img-w-1px.png) 0 -106px repeat-x
 }
 
 .page-top {
@@ -1134,31 +1134,31 @@ a.btn:link, a.btn:visited, a.btn:hover, a.btn:active {
     position: relative;
     padding-left: 15px;
     margin-right: 2px;
-    background: url(../img/tab-bg.png) no-repeat left 0;
+    background: url(i/tab-bg.png) no-repeat left 0;
     text-decoration: none;
     cursor: pointer
 }
 
 .tab ul li span {
     padding-right: 15px;
-    background: url(../img/tab-bg.png) no-repeat right -28px;
+    background: url(i/tab-bg.png) no-repeat right -28px;
     color: #347dbb
 }
 
 .tab ul li a:hover {
-    background: url(../img/tab-bg.png) no-repeat left -112px
+    background: url(i/tab-bg.png) no-repeat left -112px
 }
 
 .tab ul li a:hover span {
-    background: url(../img/tab-bg.png) no-repeat right -140px
+    background: url(i/tab-bg.png) no-repeat right -140px
 }
 
 .tab ul li a.selected {
-    background: url(../img/tab-bg.png) no-repeat left -56px
+    background: url(i/tab-bg.png) no-repeat left -56px
 }
 
 .tab ul li a.selected span {
-    background: url(../img/tab-bg.png) no-repeat right -84px
+    background: url(i/tab-bg.png) no-repeat right -84px
 }
 
 .tab-con {
@@ -1236,7 +1236,7 @@ a.btn:link, a.btn:visited, a.btn:hover, a.btn:active {
     background: -o-linear-gradient(top, #d0456d 0, #b42748 100%);
     background: -ms-linear-gradient(top, #d0456d 0, #b42748 100%);
     background: linear-gradient(to bottom, #d0456d 0, #b42748 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#d0456d, endColorstr=#b42748)
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType = 0, startColorstr = #d0456d, endColorstr = #b42748)
 }
 
 .btn:hover {
@@ -1247,13 +1247,13 @@ a.btn:link, a.btn:visited, a.btn:hover, a.btn:active {
     background: -o-linear-gradient(top, #b42748 0, #d0456d 100%);
     background: -ms-linear-gradient(top, #b42748 0, #d0456d 100%);
     background: linear-gradient(to bottom, #b42748 0, #d0456d 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#b42748, endColorstr=#d0456d)
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType = 0, startColorstr = #b42748, endColorstr = #d0456d)
 }
 
 .btn:active {
     opacity: .9;
-    -ms-filter: alpha(opacity=(90) );
-    filter: alpha(opacity=(90) )
+    -ms-filter: alpha(opacity =(90) );
+    filter: alpha(opacity =(90) )
 }
 
 .btn-r2 {
@@ -1283,11 +1283,10 @@ a:hover {
 }
 
 body {
-    background: #3a172f
+    background: url(i/bg.jpg) top center no-repeat #3a172f
 }
 
 .roles {
-    background: url(../../../img/bg-header.jpg);
     height: 300px;
     padding-right: 88px
 }
@@ -1340,7 +1339,7 @@ body {
     background: -o-linear-gradient(top, #d0456d 0, #b42748 100%);
     background: -ms-linear-gradient(top, #d0456d 0, #b42748 100%);
     background: linear-gradient(to bottom, #d0456d 0, #b42748 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#d0456d, endColorstr=#b42748);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType = 0, startColorstr = #d0456d, endColorstr = #b42748);
     margin-bottom: 10px;
     border-bottom: 1px solid #fff;
     -webkit-box-shadow: 0 6px 14px #aaa;
@@ -1447,7 +1446,11 @@ body {
 .list-area .list-category .list-item dl dd strong {
     font-weight: bold
 }
-
+.list-area .list-category .list-item dl dd .intro{
+    height:42px;
+    line-height: 21px;
+    overflow: hidden;
+}
 .list-area .list-category .list-item .toupiao {
     margin-left: 150px
 }

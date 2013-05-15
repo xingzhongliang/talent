@@ -126,7 +126,7 @@ exports.show = function (req, res) {
         Scope.load(candidate.scope, function (err, scope) {
             Group.load(candidate.group, function (err, group) {
                 var template = subject.viewOpt.templateName || "default";
-                res.render("templates/" + template + '/detail', {
+                res.render(config.templateDir + "/" + template + '/detail', {
                     title: req.candidate.name,
                     template: template,
                     subject: subject,
@@ -186,7 +186,7 @@ exports.channel = function (req, res) {
             Candidate.list(options, function (err, candidates) {
                 if (err) throw err;
                 Candidate.count(options.criteria).exec(function (err, count) {
-                    res.render("templates/" + template + '/list', {
+                    res.render(config.templateDir + "/" + template + '/list', {
                         title: group.name + " - " + scope.name,
                         subject: subject,
                         template: template,
