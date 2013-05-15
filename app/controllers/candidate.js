@@ -124,14 +124,17 @@ exports.show = function (req, res) {
     var candidate = req.candidate;
     Subject.load(candidate.subject, function (err, subject) {
         Scope.load(candidate.scope, function (err, scope) {
-            var template = subject.viewOpt.templateName || "default";
-            res.render("templates/" + template + '/detail', {
-                title: req.candidate.name,
-                template: template,
-                subject: subject,
-                candidate: candidate,
-                scope: scope
-            });
+            Group.load(candidate.group, function (err, group) {
+                var template = subject.viewOpt.templateName || "default";
+                res.render("templates/" + template + '/detail', {
+                    title: req.candidate.name,
+                    template: template,
+                    subject: subject,
+                    candidate: candidate,
+                    scope: scope,
+                    group: group
+                });
+            })
         });
     });
 
