@@ -328,6 +328,8 @@ block footer
             var tds = tr.find('td');
             tds.eq(0).html(tab.find('tbody').find('tr').size() - 1);
             tds.eq(1).html(data.name);
+            // 不能调两遍？ 直接使按钮失效了
+            msBtnInit(tr.find('.msBtn').get(0),data.name,data._id);
         }
 
         function svGroup(res) {
@@ -347,13 +349,13 @@ block footer
             tds.eq(0).html(tab.find('tbody').find('tr').size() - 1);
             tds.eq(1).html(data.name);
             tds.eq(2).html(data.max);
+            mgBtnInit(tr.find('.mgBtn').get(0),data.name,data.max,data._id);
         }
 
-        // 删除域
+        // 删除域或组
         function delSG(id, sg){
           if(!id) return;
           $('#' + id).parent("table").loading('/'+sg+'/'+id+'/del',{},function(res){
-
             if(res && res.deleted) {
               $('#delModal').modal('hide');
               var tr = $("#" + id);
@@ -373,6 +375,7 @@ block footer
                 html:true,
                 content:$('#sp').html().replace('SN',name).replace('SI',id)
             }).click(function(){
+                // 莫非是这有问题？
                 this.pop = !this.pop;
                 this.pop ? $(this).popover('show') : $(this).popover('hide');
             });
