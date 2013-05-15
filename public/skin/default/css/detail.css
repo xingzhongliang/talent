@@ -1,0 +1,67 @@
+.detail_face {
+     position: relative;
+     padding: 20px;
+     float: left;
+     margin-left: 20px;
+     height: 100%;
+     /*width: 30%;*/
+ }
+.detail_face img{
+    max-width: 120px;
+}
+
+.detail_content {
+    width: 640px;
+    padding: 20px;
+    float: left;
+    /*width: 70%;*/
+}
+
+.detail_name {
+    font-weight: bolder;
+    font-size: 50px;
+}
+
+.detail_scope {
+    font-size: 30px;
+}
+
+.detail_group {
+    font-size: 30px;
+}
+
+.detail_text {
+    font-size: 14px;
+}
+
+.detail_btn {
+    padding: 5px;
+    text-align: center;
+}
+
+.detail_vote {
+    margin: 20px;
+    float: right;
+}
+
+.detail_vote .vote_num {
+    padding: 15px;
+    text-align: center;
+    font-size: 50px;
+    color: white;
+    background: orange;
+}
+
+.detail_wit {
+    border: 1px solid #bcbcbc;
+    border-radius: 3px;
+    background: #f4f4f4;
+    overflow: hidden;
+    padding: 10px;
+    width: 600px;
+}
+
+.detail_wit img {
+    width: 320px;
+    height: 320px;
+}

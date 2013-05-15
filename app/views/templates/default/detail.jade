@@ -4,26 +4,34 @@
     Date: 13-5-3
     Time: 下午8:03
 extends layout
+block head
+    link(href="/skin/#{template}/css/detail.css",rel="stylesheet",media="screen")
 block content
   .w
-    .list-area
-      .list-area-title
-        h2= scope.name
-      .details
-        .description
-          dl
-            dt 姓名：
-            dd= candidate.name
-            dt 部门：
-            dd= candidate.department
-            dt 介绍：
-            dd= candidate.description
-            dt.purple 票数：
-            dd.purple
-              strong= candidate.votes
-            .toupiao
-              a(href="/candidate/#{candidate._id}/vote").btn.btn-r1 投票
-        .portraits
-          -for(var i=0; i<6; i++)
-            .portrait
-              img(src="", alt="达人的姓名")
+        .list-area
+              .list-area-title
+                    h2 北京赛区
+                  .details
+                       .detail_face
+                            div
+                                img(src="#{candidate.avatar}", alt="达人的姓名")
+                            .detail_btn
+                                a(href="/candidate/#{candidate._id}/vote").btn.btn-r1 投票
+                       .detail_content
+                            span.detail_name #{candidate.name}
+                            span.detail_scope  / AA
+                            span.detail_group  / BB
+                            p.detail_description  #{candidate.description}
+                            p.detail_text  #{candidate.witOfText}
+                            .detail_wit
+                                each item in candidate.witOfImg
+                                    img(src="#{item}", alt="img")
+
+                       .detail_vote
+                           .vote_num #{candidate.votes}
+
+
+
+
+
+
