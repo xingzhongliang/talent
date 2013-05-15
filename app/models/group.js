@@ -30,6 +30,10 @@ GroupSchema.statics = {
 
     list: function (conditon, cb) {
         _list.call(this, conditon, cb);
+    },
+
+    del: function (cb) {
+        this.remove(cb)
     }
 };
 

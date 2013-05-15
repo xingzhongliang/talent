@@ -151,7 +151,7 @@ exports.del = function (req, res) {
     if (candidate.avatar) {
         fs.unlink(config.uploadDir + candidate.avatar, null);
     }
-    candidate.del(function (err, c) {
+    candidate.del(function (err, candidate) {
         if (err) throw err;
         res.redirect("back");
     });

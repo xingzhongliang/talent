@@ -38,9 +38,11 @@ module.exports = function (app) {
     // 域管理
     var scope = require("../app/controllers/scope");
     app.get('/scope/save', auth("admin"), scope.save);
+    app.get('/scope/:scopeId/del', auth("admin"), scope.del);
     // 分组管理
     var group = require("../app/controllers/group");
     app.get('/group/save', auth("admin"), group.save);
+    app.get('/group/:groupId/del', auth("admin"), group.del);
 
     // 选项相关
     app.get("/candidate/:candidateId", candidate.show); // 选项详情页
@@ -49,6 +51,8 @@ module.exports = function (app) {
 
     app.param("subjectId", subject.subject); // 处理带:subjectId参数的url中的:subjectId
     app.param("candidateId", candidate.candidate); // 处理带:candidateId参数的url中的:candidateId
+    app.param("scopeId", scope.scope);
+    app.param("groupId", group.group);
 
     //改良版本的upload
     var svf = require('../app/controllers/svf');

@@ -7,6 +7,15 @@ var mongoose = require("mongoose");
 var Subject = mongoose.model("Subject");
 var Group = mongoose.model("Group");
 
+exports.group = function (req, res, next, id) {
+    Group.load(id, function (err, group) {
+        if (err) return next(err);
+        if (!group) return next('找不到数据，id： ' + id);
+        req.group = group;
+        next()
+    });
+};
+
 /**
  * 保存分组信息
  * @param req
@@ -38,4 +47,21 @@ exports.save = function (req, res) {
             }
         });
     }
+};
+
+/**
+ * 删除
+ * @param req
+ * @param res
+ */
+exports.del = function (req, res) {
+    var group = req.group;
+    group.remove(function (err, group) {
+        res.set('Content-Type', 'text/plain');
+        if (err) {
+            res.send({deleted: false});
+        } else {
+            res.send({deleted: true});
+        }
+    });
 };
