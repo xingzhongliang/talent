@@ -24,6 +24,7 @@ module.exports = function (app, config) {
         app.use(require('less-middleware')({ src: config.root + '/public' }));
         app.use(express.static(config.root + '/public'));
         app.use(express.static(config.uploadDir));
+        app.use(express.static(config.templateDir));
 
         // 全局错误处理 404 和 500
         app.use(function (err, req, res, next) {

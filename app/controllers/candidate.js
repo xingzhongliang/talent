@@ -123,12 +123,18 @@ exports.list = function (req, res) {
 exports.show = function (req, res) {
     var candidate = req.candidate;
     Subject.load(candidate.subject, function (err, subject) {
-        var template = subject.viewOpt.templateName || "default";
-        res.render("templates/" + template + '/detail', {
-            title: req.candidate.name,
-            template: template,
-            subject: subject,
-            candidate: candidate
+        Scope.load(candidate.scope, function (err, scope) {
+            Group.load(candidate.group, function (err, group) {
+                var template = subject.viewOpt.templateName || "default";
+                res.render(config.templateDir + "/" + template + '/detail', {
+                    title: req.candidate.name,
+                    template: template,
+                    subject: subject,
+                    candidate: candidate,
+                    scope: scope,
+                    group: group
+                });
+            })
         });
     });
 
@@ -145,7 +151,7 @@ exports.del = function (req, res) {
     if (candidate.avatar) {
         fs.unlink(config.uploadDir + candidate.avatar, null);
     }
-    candidate.del(function (err, c) {
+    candidate.del(function (err, candidate) {
         if (err) throw err;
         res.redirect("back");
     });
@@ -180,7 +186,7 @@ exports.channel = function (req, res) {
             Candidate.list(options, function (err, candidates) {
                 if (err) throw err;
                 Candidate.count(options.criteria).exec(function (err, count) {
-                    res.render("templates/" + template + '/list', {
+                    res.render(config.templateDir + "/" + template + '/list', {
                         title: group.name + " - " + scope.name,
                         subject: subject,
                         template: template,

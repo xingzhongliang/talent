@@ -29,6 +29,7 @@ ScopeSchema.statics = {
     list: function (conditon, cb) {
         _list.call(this, conditon, cb);
     }
+
 };
 
 function _list(condition, cb) {

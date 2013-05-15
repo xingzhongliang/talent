@@ -1,0 +1,47 @@
+//
+    个人详情页
+    User: laichendong
+    Date: 13-5-3
+    Time: 下午8:03
+extends layout
+block head
+  link(href="/#{template}/skin/detail.css",rel="stylesheet",media="screen")
+  script(src="/js/ckplayer/ck.js?57")
+  script(src="/js/dewplayer/dewplayer.js")
+block content
+  .w
+    .list-area
+      .list-area-title
+        h2= scope.name
+        .details
+          .detail_face
+            div
+              img(src="#{candidate.avatar}", alt="达人的姓名")
+            .detail_btn
+              a(href="/candidate/#{candidate._id}/vote").btn.btn-r1 投票
+          .detail_content
+            span.detail_name #{candidate.name}
+            span.detail_scope= scope.name
+            span.detail_group= group.name
+            p.detail_description  #{candidate.description}
+            p.detail_text  #{candidate.witOfText}
+            .detail_wit
+              each item in candidate.witOfImg
+                img(src="#{item}", alt="img")
+              div#v
+                script
+                  C.K({f:"/1.flv", p:0}, "v");
+
+                div#mp3
+                  script
+                    dewplayer("/test1.mp3");
+
+          .detail_vote
+            .vote_num #{candidate.votes}
+
+
+
+
+
+
+

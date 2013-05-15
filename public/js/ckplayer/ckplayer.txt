@@ -1,0 +1,1 @@
+{v->85}{p->0}{f->http://www.fufuok.com/demo/ckplayer/yk.php?u=[$pat]}{s->1}{i->}{d->}{u->}{l->}{r->}{t->0}{e->3}{b->0x000000}{h->0}{m->0}{g->0}{j->0}{x->http://www.fufuok.com/demo/ckplayer/ck.xml}

@@ -4,6 +4,7 @@ var uuid = require("node-uuid");
 var Subject = mongoose.model("Subject");
 var Candidate = mongoose.model("Candidate");
 var util = require("./util/util");
+var config = require("../../config/config");
 /**
  * 按Id查找主题，找到之后放到req里面
  * @param req
@@ -70,7 +71,7 @@ exports.show = function (req, res) {
             for (var key in cs) {
                 cs[key] = util.sortMap(cs[key]);
             }
-            res.render("templates/" + template + '/index', {
+            res.render(config.templateDir + "/" + template + '/index', {
                 title: subject.name,
                 subject: subject,
                 template: template,

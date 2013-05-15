@@ -1,0 +1,33 @@
+//
+   User: laichendong
+   Date: 13-4-23
+   Time: 下午1:43
+!!! 5
+html
+  head
+    title=title
+    meta(name="viewport",content="width=device-width, initial-scale=1.0")
+    link(href="/#{template}/skin/style.css",rel="stylesheet",media="screen")
+    script(src="/js/jquery.js")
+    block head
+  body
+    .w
+      .roles
+        h3 活动规则及公告
+        p= subject.comment
+          span.more
+            a(href="/#{template}/intro.html") 更多
+        if req.session.user
+          a.btn.btn-r2.login(href="/do-logout") 退出登录
+        else
+          a.btn.btn-r2.login(href="/login") 立即登录
+    block content
+
+    // 弹出info和error
+    if locals.errors.length > 0
+      script
+        alert("#{errors}")
+
+    if locals.info.length > 0
+      script
+        alert("#{info}")

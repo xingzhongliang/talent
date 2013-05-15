@@ -8,6 +8,15 @@ var mongoose = require("mongoose");
 var Subject = mongoose.model("Subject");
 var Scope = mongoose.model("Scope");
 
+exports.scope = function (req, res, next, id) {
+    Scope.load(id, function (err, scope) {
+        if (err) return next(err);
+        if (!scope) return next('找不到数据，id： ' + id);
+        req.scope = scope;
+        next()
+    });
+};
+
 /**
  * 保存域的信息
  * @param req
@@ -38,4 +47,21 @@ exports.save = function (req, res) {
             }
         });
     }
+};
+
+/**
+ * 删除
+ * @param req
+ * @param res
+ */
+exports.del = function (req, res) {
+    var scope = req.scope;
+    scope.remove(function (err, scope) {
+        res.set('Content-Type', 'text/plain');
+        if (err) {
+            res.send({deleted: false});
+        } else {
+            res.send({deleted: true});
+        }
+    });
 };
