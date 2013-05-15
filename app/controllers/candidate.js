@@ -61,7 +61,7 @@ exports.doAdd = function (req, res) {
     var witOfVideo = req.body.witOfVideo;
     witOfAudio && witOfAudio.trim() && (candidate.witOfAudio = witOfAudio.split(','));
     witOfImg && witOfImg.trim() && (candidate.witOfImg = witOfImg.split(','));
-    witOfVideo && witOfVideo.trim() && (candidate.witOfAudio = witOfVideo.split(','));
+    witOfVideo && witOfVideo.trim() && (candidate.witOfVideo = witOfVideo.split(','));
     // 所属主题
     candidate.subject = subject._id;
     // 根据选项是否“是人” 来决定value和department的值
