@@ -50,8 +50,6 @@ module.exports = function (app) {
     app.param("subjectId", subject.subject); // 处理带:subjectId参数的url中的:subjectId
     app.param("candidateId", candidate.candidate); // 处理带:candidateId参数的url中的:candidateId
 
-    var uploaddata = require('../app/controllers/uploaddata');
-    app.all('/uploaddata', uploaddata.uploaddata);
     //改良版本的upload
     var svf = require('../app/controllers/svf');
     app.all('/svf', svf.svf);

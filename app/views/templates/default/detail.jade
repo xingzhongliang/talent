@@ -6,6 +6,8 @@
 extends layout
 block head
     link(href="/skin/#{template}/css/detail.css",rel="stylesheet",media="screen")
+  script(src="/js/ckplayer/ck.js?57")
+  script(src="/js/dewplayer/dewplayer.js")
 block content
   .w
         .list-area
@@ -30,6 +32,14 @@ block content
                        .detail_vote
                            .vote_num #{candidate.votes}
 
+			// 视频
+          div#v
+            script
+              C.K({f:"/1.flv", p:0}, "v");
+
+          div#mp3
+            script
+              dewplayer("/test1.mp3");
 
 
 
