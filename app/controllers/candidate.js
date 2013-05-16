@@ -218,7 +218,7 @@ exports.vote = function (req, res) {
             if (err) throw err;
             if (vote) {
                 // 投过，给出提示
-                req.flash("errors", "重复投票");
+                req.flash("errors", "请不要重复投票！");
                 if (fromLogin) {
                     res.redirect("/subject/" + candidate.subject);
                 } else {
@@ -238,7 +238,7 @@ exports.vote = function (req, res) {
                                 res.redirect("back");
                             }
                         } else {
-                            req.flash("info", "投票成功");
+                            req.flash("info", "投票成功！");
                             if (fromLogin) {
                                 res.redirect("/subject/" + candidate.subject);
                             } else {
