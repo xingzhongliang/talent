@@ -16,7 +16,7 @@
     }
 
     var fileType = {
-        'img': '*.jpg;*.gif;*.png;*.jpeg;*.bmp', 'video': '*.mp4', 'music': '*.mp3'
+        'img': '*.jpg;*.gif;*.png;*.jpeg;*.bmp', 'video': '*.mp4;*.flv', 'music': '*.mp3'
     }
 
     var sw_def = {
