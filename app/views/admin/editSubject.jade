@@ -4,16 +4,32 @@ block head
     link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
     script(src="/js/bootstrap-sniper.js")
     script(src="/js/load/load.js")
+    script(src="/js/popover/popover.js")
+    script(src="/js/bootstrapSwitch.js")
     style
         .muted {
             background: #F5F5F5;
         }
+        .span-4 {
+            width: 340px;;
+        }
     script(src="/js/datepicker/js/bootstrap-datepicker.js")
     script
         $(function(){
-            $('#voteMax').sniper();
-            $('#regMax').sniper();
+
+            $('#modSetBtn').zpop({
+                position:'left',
+                target:$('#set').get(0)
+            }).click(function(){
+                this.pop = !this.pop;
+                this.pop ? $(this).showCover() : $(this).hideCover();
+            });
+
+            $('.voteMax').sniper();
+            $('.regMax').sniper();
+            $('.b2-switch')['bootstrapSwitch']();
             $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
+            $('.datepicker ').css({zIndex:1020});
 
             msBtnInit($('#addScopeBtn').get(0),'','');
             mgBtnInit($('#addGroupBtn').get(0),'','','');
@@ -75,7 +91,7 @@ block main
                 span.label.label-info.label-large 开放报名
             else
                 span.label.label-large 不开放报名
-            if subject.token
+            if subject.token != 0
                 span.label.label-important.label-large 使用令牌
             else
                 span.label.label-large  禁用令牌
@@ -84,7 +100,7 @@ block main
                     .input-prepend
                         span.add-on 报名链接
                         input.span7(type="text",value="http://#{config.app.domain}/subject/#{subject._id}/candidate/add")
-                if subject.token
+                if subject.token != 0
                     .input-prepend
                         span.add-on 报名令牌
                         input.span7(type="text",value="#{subject.token}")
@@ -93,7 +109,7 @@ block main
                 p 投票窗口期：#{fmt(subject.voteStart)} 到 #{fmt(subject.voteEnd)}
                 p 报名窗口期：#{fmt(subject.regStart)} 到 #{fmt(subject.regEnd)}
     .pull-right
-        a.btn.btn-primary 修改
+        button#modSetBtn.btn.btn-primary 修改
     .clearfix
     hr
 
@@ -176,68 +192,71 @@ block main
             btn#addGroupBtn.btn.btn-block.btn-success  添加分组
     hr
 
+    .hide
+        div#set
+            form#dataForm(method='post',action='/subject/do-add')
+                fieldset
+                    legend 活动设置
+                    div.row
+                        .span10
+                            .span3
+                                if subject.isPrivate == 1
+                                    div.b2-switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
+                                        input(name='sub[isPrivate]',type='checkbox',checked='true',value='1')
+                                else
+                                    div.b2-switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
+                                        input(name='sub[isPrivate]',type='checkbox',checked='false',value='1')
+                            .span3
+                                if subject.canReg == 1
+                                    div.b2-switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
+                                        input(name='sub[canReg]',type='checkbox',checked='true',value='1')
+                                else
+                                    div.b2-switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
+                                        input(name='sub[canReg]',type='checkbox',checked='false',value='1')
+                            .span3
+                                if subject.token != 0
+                                    div.b2-switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
+                                        input(name='sub[token]',type='checkbox',value='1',checked='true')
+                                else
+                                    div.b2-switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
+                                        input(name='sub[token]',type='checkbox',value='1')
+                    div.row &nbsp;
+                    div.row
+                        .span10
+                            div.span-4
+                                div.well
+                                    h5 投票设置
+                                    p 每个人在这次活动中能投多少票
+                                    input.voteMax(type='text',name='sub[voteChance]',value="#{subject.voteChance}")
+                                    p 投票的窗口期：
+                                    div.input-append
+                                        input.dpInpt.input-block-level(name='voteStart',type="text",value='#{fmt(subject.voteStart)}')
+                                        span.add-on
+                                            i.icon-th
+                                    div.input-append
+                                        input.dpInpt.input-block-level(name='voteEnd',type="text",value='#{fmt(subject.voteEnd)}')
+                                        span.add-on
+                                            i.icon-th
+                            div.span-4.fl-right
+                                div.well
+                                    h5 报名设置
+                                    p 每个人在这次活动中能报名几次
+                                    input.regMax(type='text',name='sub[regChance]',value='#{subject.regChance}')
+                                    p 报名的窗口期：
+                                    div.input-append
+                                        input.dpInpt.input-block-level(name='regStart',type="text",value='#{fmt(subject.regStart)}')
+                                        span.add-on
+                                            i.icon-th
+                                    div.input-append
+                                        input.dpInpt.input-block-level(name='regEnd',type="text",value='#{fmt(subject.regEnd)}')
+                                        span.add-on
+                                            i.icon-th
+            div.row
+                div.span10
+                    div(style="margin-bottom:15px;height:30px").div-center
+                        a#cfrmEdit(href='javascript:;',onclick='sbmt()').btn.btn-success.btn-large   确认修改
+                        a(href='javascript:;',onclick='cancelModify()',style="margin-left:15px").btn  取消
 
-    div#set.hide
-        h3 活动设置
-        div.row
-            .span3
-                if subject.isPrivate == 1
-                    div.switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
-                        input(name='sub[isPrivate]',type='checkbox',checked='true',value='1')
-                else
-                    div.switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
-                        input(name='sub[isPrivate]',type='checkbox',checked='false',value='1')
-            .span3
-                if subject.canReg == 1
-                    div.switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
-                        input(name='sub[canReg]',type='checkbox',checked='true',value='1')
-                else
-                    div.switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
-                        input(name='sub[canReg]',type='checkbox',checked='false',value='1')
-            .span3
-                if subject.token
-                    div.switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
-                        input(name='sub[token]',type='checkbox',value='1',checked='true')
-                else
-                    div.switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
-                        input(name='sub[token]',type='checkbox',value='1')
-        div.row &nbsp;
-        div.row
-            div.span4
-                div.well
-                    h5 投票设置
-                    p 每个人在这次活动中能投多少票
-                    input#voteMax(type='text',name='sub[voteChance]',value="#{subject.voteChance}")
-                    p 投票的窗口期：
-                    div.input-append
-                        input.dpInpt.input-block-level(name='sub[voteStart]',type="text",value='#{fmt(subject.voteStart)}')
-                        span.add-on
-                            i.icon-th
-                    div.input-append
-                        input.dpInpt.input-block-level(name='sub[voteEnd]',type="text",value='#{fmt(subject.voteEnd)}')
-                        span.add-on
-                            i.icon-th
-            div.span4.fl-right
-                div.well
-                    h5 报名设置
-                    p 每个人在这次活动中能报名几次
-                    input#regMax(type='text',name='sub[regChance]',value='#{subject.regChance}')
-                    p 报名的窗口期：
-                    div.input-append
-                        input.dpInpt.input-block-level(name='sub[regStart]',type="text",value='#{fmt(subject.regStart)}')
-                        span.add-on
-                            i.icon-th
-                    div.input-append
-                        input.dpInpt.input-block-level(name='sub[regEnd]',type="text",value='#{fmt(subject.regEnd)}')
-                        span.add-on
-                            i.icon-th
-        br
-        br
-        br
-        div.row
-            div.span8
-                div.div-center
-                    a(href='javascript:;',onclick='sbmt()').btn.btn-primary  修改活动设置
         hr
     div#sp.hide
         .input-append
@@ -268,11 +287,17 @@ block main
             button(data-dismiss="modal").btn 取消
 
 
+
 block footer
     script(src="/js/bootstrapSwitch.js")
     script
         function sbmt() {
-            //
+            $('#cfrmEdit').siblings('a').hide();
+            $('#cfrmEdit').loading('/subject/#{subject._id}/do-edit',$('#dataForm').serialize()
+                ,{method:'post',hide:true}
+                ,function(res){
+                window.location.reload();
+            });
         }
         //新增域
         function addScope(obj) {
@@ -405,6 +430,12 @@ block footer
             var si = $(obj).parent().siblings(':hidden').val();
             var it = !si ? $('#addGroupBtn').popover('hide').get(0) : $('#' + si).find('.mgBtn').popover('hide').get(0);
             it.pop = !it.pop;
+        }
+
+        function cancelModify() {
+            var obj = $('#modSetBtn').get(0);
+            obj.pop = !obj.pop;
+            $('#modSetBtn').hideCover();
         }
 
 

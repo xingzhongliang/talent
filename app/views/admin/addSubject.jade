@@ -2,6 +2,10 @@ extends ../layouts/adminWithSideBar
 block head
   link(href="/css/bootstrapSwitch.css",rel="stylesheet",media="screen")
   link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
+  style
+      .span-4 {
+          width: 340px;;
+      }
   script(src="/js/bootstrap-sniper.js")
   script(src="/js/datepicker/js/bootstrap-datepicker.js")
   script(src="/js/filebox/filebox.js")
@@ -53,7 +57,7 @@ block main
             input(name='token',type='checkbox',value='1')
       div.row &nbsp;
       div.row
-        div.span4
+        div.span-4
           div.well
             h5 投票设置
             p 每个人在这次活动中能投多少票
@@ -70,7 +74,7 @@ block main
                 input.dpInpt.input-block-level(name='voteEnd',type="text")
                 span.add-on
                   i.icon-th
-        div.span4.pull-right
+        div.span-4.pull-right
           div.well
             h5 报名设置
             p 每个人在这次活动中能报名几次
@@ -167,7 +171,7 @@ block main
             label.checkbox
                 input(type="checkbox")
                 span 其他人往这个主题添加的选项必须由我审核之后才能生效
-            a(href='javascript:;',onclick='sbmt()').btn.btn-success 提交新主题
+            a(href='javascript:;',onclick='sbmt()').btn.btn-success.btn-large 提交新主题
             span &nbsp;
             a(href="javascript:window.location='/admin';").btn 取消
 

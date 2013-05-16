@@ -95,7 +95,7 @@ exports.doAdd = function (req, res) {
         subject.token = uuid.v4();
     }
     // 给主题赋值owner
-    subject.owner = req.session.user.name;
+    subject.owner = req.session.user.erpId;
 
     //日期属性处理
     var fmt = 'YYYY-MM-DD';
@@ -103,9 +103,9 @@ exports.doAdd = function (req, res) {
     var voteEnd = req.param['voteEnd'];
     var regBegin = req.param['regBegin'];
     var regEnd = req.param['regEnd'];
-    voteBegin && (subject.voteBegin = moment(voteBegin, fmt));
+    voteBegin && (subject.voteStart = moment(voteBegin, fmt));
     voteEnd && (subject.voteEnd = moment(voteEnd, fmt));
-    regBegin && (subject.regBegin = moment(regBegin, fmt));
+    regBegin && (subject.regStart = moment(regBegin, fmt));
     regEnd && (subject.regEnd = moment(regEnd, fmt));
 
     subject.save(function (err) {
@@ -118,6 +118,59 @@ exports.doAdd = function (req, res) {
     });
 
 };
+
+/**
+ * MODIFY
+ * @param req
+ * @param res
+ */
+exports.doEdit = function (req, res) {
+    var subject = req.body.sub;
+    var erpId = req.session.user.erpId;
+    var sub = req.subject;
+    if(!sub) {                         //Subject check
+        res.send({code:-1})
+    }
+    if(sub.owner != erpId && !config.isAdmin(erpId)) {   //User check,Admin can modify any subject
+        res.send({code:-2})
+    }
+    // 如果设置为使用令牌，则生成令牌
+    if (subject.token == 1) {
+        subject.token = uuid.v4();
+    }else{
+        subject.token = 0;    //else set token to null
+    }
+//    var fmt = 'YYYY-MM-DD';
+//    var voteBegin = req.body['voteStart'];
+//    var voteEnd = req.body['voteEnd'];
+//    var regBegin = req.body['regStart'];
+//    var regEnd = req.body['regEnd'];
+//    voteBegin && (subject.voteStart = moment(voteBegin, fmt));
+//    voteEnd && (subject.voteEnd = moment(voteEnd, fmt));
+//    regBegin && (subject.regStart = moment(regBegin, fmt));
+//    regEnd && (subject.regEnd = moment(regEnd, fmt));
+
+    Subject.update({_id:sub._id},
+        {$set:{
+            token:subject.token,
+            voteStart:req.body['voteStart'],
+            voteEnd:req.body['voteEnd'],
+            regStart:req.body['regStart'],
+            regEnd:req.body['regEnd'],
+            voteChance:subject.voteChance,
+            regChance:subject.regChance,
+            isPrivate:subject.isPrivate ? true : false,
+            canReg:subject.canReg ? true : false
+        }},function (err) {
+        if (err) {
+            console.error(err);
+            throw err;
+        }
+        res.send({code:1});
+    });
+
+};
+
 
 exports.list = function (req, res) {
     var page = req.param('page') > 0 ? req.param('page') : 0;
