@@ -307,7 +307,7 @@ block footer
                 if(gi) {
                     $('#' + gi).find('.mgBtn').loading('/group/save',data,svGroup);
                 }else{
-                    $('#addScopeBtn').loading('/group/save',data,svGroup);
+                    $('#addGroupBtn').loading('/group/save',data,svGroup);
                 }
             }
         }
@@ -370,18 +370,21 @@ block footer
 
 
         function msBtnInit(obj,name,id) {
+            obj.pop = null;
+            $(obj).popover('destroy').unbind('click');
             $(obj).popover({   //init edit pop
                 placement:'top',
                 html:true,
                 content:$('#sp').html().replace('SN',name).replace('SI',id)
             }).click(function(){
-                // 莫非是这有问题？
                 this.pop = !this.pop;
                 this.pop ? $(this).popover('show') : $(this).popover('hide');
             });
         }
 
         function mgBtnInit(obj,name,max,id) {
+             obj.pop = null;
+             $(obj).popover('destroy').unbind('click');
              $(obj).popover({   //init edit pop
                  placement:'top',
                  html:true,
