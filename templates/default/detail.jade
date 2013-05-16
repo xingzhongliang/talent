@@ -6,8 +6,8 @@
 extends layout
 block head
   link(href="/#{template}/skin/detail.css",rel="stylesheet",media="screen")
-  script(src="/js/ckplayer/ck.js?57")
   script(src="/js/dewplayer/dewplayer.js")
+
 block content
   .w
     .list-area
@@ -21,24 +21,34 @@ block content
               a(href="/candidate/#{candidate._id}/vote").btn.btn-r1 投票
           .detail_content
             span.detail_name #{candidate.name}
-            span.detail_scope= scope.name
-            span.detail_group= group.name
-            p.detail_description  #{candidate.description}
-            p.detail_text  #{candidate.witOfText}
-            .detail_wit
-              each item in candidate.witOfImg
-                img(src="#{item}", alt="img")
-              div#v
-                script
-                  C.K({f:"/1.flv", p:0}, "v");
-
-                div#mp3
-                  script
-                    dewplayer("/test1.mp3");
+            span.detail_scope  / #{scope.name}
+            span.detail_group / #{group.name}
+            p.detail_description  &nbsp;&nbsp;&nbsp;&nbsp;#{candidate.description}
+            p.detail_text  &nbsp;&nbsp;&nbsp;&nbsp;#{candidate.witOfText}
+              //img
+            each item in candidate.witOfImg
+                if item
+                    .detail_wit
+                        img(src="#{item}", alt="img")
+              //video
+            each video,i in candidate.witOfVideo
+                if video
+                    -var img = video.replace('.mp4','.png');
+                    .detail_wit
+                        object(id="v#{i}",classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000",name="player",width="608",height="504")
+                            param(name="movie",value="pl.swf")
+                            param(name="allowfullscreen",value="true")
+                            param(name="allowscriptaccess",value="always")
+                            param(name="flashvars",value="file=#{video}&image=#{img}")
+                            embed(type="application/x-shockwave-flash",id="ve#{i}",name="ve#{i}",src="/js/pl.swf",width="608",height="504",allowscriptaccess="always",allowfullscreen="true",flashvars="file=#{video}&image=#{img}")
+              //mp3
+            each item in candidate.witOfImg
+                .detail_wit
+                    script
+                        dewplayer("/test1.mp3");
 
           .detail_vote
             .vote_num #{candidate.votes}
-
 
 
 

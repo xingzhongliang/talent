@@ -34,6 +34,12 @@
     font-size: 14px;
 }
 
+.detail_description {
+    font-family: 微软雅黑;
+    font-size: 13px;
+    color: #808080;
+}
+
 .detail_btn {
     padding: 5px;
     text-align: center;
@@ -58,10 +64,10 @@
     background: #f4f4f4;
     overflow: hidden;
     padding: 10px;
-    width: 600px;
+    width: 608px;
+    margin-top: 15px;
 }
 
 .detail_wit img {
-    width: 320px;
-    height: 320px;
+    max-width: 604px;
 }
