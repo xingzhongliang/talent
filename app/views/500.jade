@@ -6,7 +6,12 @@ extends layouts/bootstrap
 
 block content
     div.container
-        h1 500
-        p Oops something went wrong
-        pre
-            code!=error
+        .page-header
+            h1 500
+                small 出错了
+        .alert.alert-block
+            p 抱歉，系统貌似开小差了。
+        if error
+            pre
+                p=error
+

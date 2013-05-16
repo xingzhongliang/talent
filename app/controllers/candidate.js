@@ -24,7 +24,7 @@ var fs = require("fs");
 exports.candidate = function (req, res, next, id) {
     Candidate.load(id, function (err, candidate) {
         if (err) return next(err);
-        if (!candidate) return next('找不到该选项，选项值： ' + id);
+        if (!candidate) return next(new Error('找不到该选项，选项id： ' + id));
         req.candidate = candidate;
         next()
     });
@@ -133,8 +133,11 @@ exports.list = function (req, res) {
 exports.show = function (req, res) {
     var candidate = req.candidate;
     Subject.load(candidate.subject, function (err, subject) {
+        if(err) throw err;
         Scope.load(candidate.scope, function (err, scope) {
+            if(err) throw err;
             Group.load(candidate.group, function (err, group) {
+                if(err) throw err;
                 var template = subject.viewOpt.templateName || "default";
                 res.render(config.templateDir + "/" + template + '/detail', {
                     title: req.candidate.name,
@@ -193,9 +196,11 @@ exports.channel = function (req, res) {
     Scope.load(scopeId, function (err, scope) {
         if (err) throw err;
         Group.load(groupId, function (err, group) {
+            if(err) throw err;
             Candidate.list(options, function (err, candidates) {
                 if (err) throw err;
                 Candidate.count(options.criteria).exec(function (err, count) {
+                    if(err) throw err;
                     res.render(config.templateDir + "/" + template + '/list', {
                         title: group.name + " - " + scope.name,
                         subject: subject,
@@ -232,6 +237,7 @@ exports.vote = function (req, res) {
     };
     // 检查是否参与过本主题的本轮投票
     Subject.load(candidate.subject, function (err, subject) {
+        if(err) return response("errors", "服务器错误");
         var now = new Date().getTime();
         if (subject.voteStart && now < subject.voteStart.getTime()) { // 还没到投票时间
             response("errors", "还没到投票时间！");
@@ -239,7 +245,7 @@ exports.vote = function (req, res) {
             response("errors", "投票时间已结束")
         } else {
             Vote.voted(voter.erpId, subject, function (err, vote) {
-                if (err) throw err;
+                if(err) return response("errors", "服务器错误");
                 if (vote) { // 投过，给出提示
                     response("errors", "请不要重复投票！");
                 } else {
@@ -247,6 +253,7 @@ exports.vote = function (req, res) {
                         voter_erp: voter.erpId, voter_name: voter.name, voter_department: voter.department, subject: candidate.subject, candidate: candidate._id, round: subject.round
                     });
                     vote.save(function (err) {
+                        if(err) return response("errors", "服务器错误");
                         Candidate.update({_id: candidate._id}, {$inc: { votes: 1}}, function (err, i) {
                             if (err) {
                                 response("errors", "服务器错误");
