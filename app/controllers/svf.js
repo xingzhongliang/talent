@@ -12,6 +12,7 @@ var config = require('../../config/config');
 var path = require("path");
 var child_process = require('child_process');
 var mime = require('mime-magic');
+var iconv = require('iconv-lite');
 
 exports.svf = function (req, res) {
     var file = req.files.fn;
@@ -67,10 +68,35 @@ function getSnapShot(videoPath, tp, callback) {
     var cmd = 'ffmpeg -i "INPUT" -ss 00:00:02.435 -f image2 -vframes 1 "OUT"';
     var path = videoPath.replace("." + tp, '.png');
     var rm = cmd.replace('INPUT', videoPath).replace('OUT', path);
-    console.info(rm);
+    while(rm.indexOf('\\') != -1)  {
+        rm = rm.replace('\\','/');
+    }
     child_process.exec(rm, function (err, out, code) {
         callback(err, path);
     });
+
+
+//    var opt = [
+//        '-i ',
+//        videoPath,
+//        '-ss 00:00:02.435',
+//        '-f image2',
+//        '-vframes 1 '+ path
+//    ];
+//    var ffm = child_process.spawn('D:\\tools\\ffmpeg\\bin\\ffmpeg.exe',opt);
+//    ffm.stderr.on('data',function(line){
+//        console.info('err:' + line);
+//    });
+//    ffm.stdout.on('data',function(line){
+//        console.info(line.toString());
+//    });
+//    ffm.stdout.on('end',function(e){
+//        console.info('================End=========');
+//        console.info(e);
+//    });
+//   ffm.on('exit',function(code){
+//       callback(code,path);
+//   });
 }
 
 function mkdirSync(url, mode, cb) {
