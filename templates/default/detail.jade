@@ -11,8 +11,8 @@ block head
 block content
   .w
     .list-area
-      .list-area-title
-        h2= scope.name
+        .list-area-title
+            h2= scope.name
         .details
           .detail_face
             div
@@ -21,8 +21,10 @@ block content
               a(href="/candidate/#{candidate._id}/vote").btn.btn-r1 投票
           .detail_content
             span.detail_name #{candidate.name}
-            span.detail_scope  / #{scope.name}
-            span.detail_group / #{group.name}
+            if(scope && scope.name)
+                span.detail_scope  / #{scope.name}
+            if(group && group.name)
+                span.detail_group / #{group.name}
             p.detail_description  &nbsp;&nbsp;&nbsp;&nbsp;#{candidate.description}
             p.detail_text  &nbsp;&nbsp;&nbsp;&nbsp;#{candidate.witOfText}
               //img
@@ -36,11 +38,11 @@ block content
                     -var img = video.replace('.mp4','.png');
                     .detail_wit
                         object(id="v#{i}",classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000",name="player",width="608",height="504")
-                            param(name="movie",value="pl.swf")
+                            param(name="movie",value="/js/pl.swf")
                             param(name="allowfullscreen",value="true")
                             param(name="allowscriptaccess",value="always")
                             param(name="flashvars",value="file=#{video}&image=#{img}")
-                            embed(type="application/x-shockwave-flash",id="ve#{i}",name="ve#{i}",src="/js/pl.swf",width="608",height="504",allowscriptaccess="always",allowfullscreen="true",flashvars="file=#{video}&image=#{img}")
+                            embed(type="application/x-shockwave-flash",id="ve#{i}",name="ve#{i}",src="http://localhost:3000/js/pl.swf",width="608",height="504",allowscriptaccess="always",allowfullscreen="true",flashvars="file=#{video}&image=#{img}")
               //mp3
             each item in candidate.witOfImg
                 .detail_wit
