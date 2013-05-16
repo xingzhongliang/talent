@@ -6,7 +6,7 @@ extends ../layouts/adminWithSideBar
 block sidebar
   ul(data-spy="affix").nav.nav-tabs.nav-stacked
     li: a(href="/subject/#{subject._id}/edit") 管理主题
-    li: a(href="/subject/#{subject._id}") 查看主题
+    li: a(href="/subject/#{subject._id}",target="_blank") 查看主题
     li: a(href="/subject/add") 新增主题
     li: a(href="/subject/#{subject._id}/candidate/add") 新增选项
 
@@ -33,7 +33,7 @@ block main
         td
         td
           .btn-group
-            a.btn.btn-small.msBtn 查看
+            a(target="_blank").btn.btn-small.msBtn 查看
             a.btn.btn-small.btn-danger.dsBtn 删除
       each c,i in candidates
         tr
@@ -46,7 +46,7 @@ block main
           td= c.votes
           td
             .btn-group
-              a.btn.btn-small.msBtn(href="/candidate/#{c._id}") 查看
+              a.btn.btn-small.msBtn(href="/candidate/#{c._id}",target="_blank") 查看
               a.delModalBtn.btn.btn-small.btn-danger.dsBtn(candidate-id="#{c._id}",data-toggle="modal") 删除
 
   // 删除提示框
