@@ -212,43 +212,42 @@ exports.vote = function (req, res) {
     var fromLogin = /\/login$/.test(req.get("Referer").toString());
     var voter = req.session.user;
     var candidate = req.candidate;
+    var response = function (type, msg) {
+        req.flash(type, msg);
+        if (fromLogin) {
+            res.redirect("/subject/" + candidate.subject);
+        } else {
+            res.redirect("back");
+        }
+    };
     // 检查是否参与过本主题的本轮投票
     Subject.load(candidate.subject, function (err, subject) {
-        Vote.voted(voter.erpId, subject, function (err, vote) {
-            if (err) throw err;
-            if (vote) {
-                // 投过，给出提示
-                req.flash("errors", "请不要重复投票！");
-                if (fromLogin) {
-                    res.redirect("/subject/" + candidate.subject);
+        var now = new Date().getTime();
+        if (subject.voteStart && now < subject.voteStart.getTime()) { // 还没到投票时间
+            response("errors", "还没到投票时间！");
+        } else if (subject.voteEnd && now > subject.voteEnd.getTime()) { // 投票时间已结束
+            response("errors", "投票时间已结束")
+        } else {
+            Vote.voted(voter.erpId, subject, function (err, vote) {
+                if (err) throw err;
+                if (vote) { // 投过，给出提示
+                    response("errors", "请不要重复投票！");
                 } else {
-                    res.redirect("back");
-                }
-            } else {
-                vote = new Vote({
-                    voter_erp: voter.erpId, voter_name: voter.name, voter_department: voter.department, subject: candidate.subject, candidate: candidate._id, round: subject.round
-                });
-                vote.save(function (err) {
-                    Candidate.update({_id: candidate._id}, {$inc: { votes: 1}}, function (err, i) {
-                        if (err) {
-                            req.flash("errors", "服务器错误");
-                            if (fromLogin) {
-                                res.redirect("/subject/" + candidate.subject);
-                            } else {
-                                res.redirect("back");
-                            }
-                        } else {
-                            req.flash("info", "投票成功！");
-                            if (fromLogin) {
-                                res.redirect("/subject/" + candidate.subject);
-                            } else {
-                                res.redirect("back");
-                            }
-                        }
+                    vote = new Vote({
+                        voter_erp: voter.erpId, voter_name: voter.name, voter_department: voter.department, subject: candidate.subject, candidate: candidate._id, round: subject.round
                     });
-                });
-            }
-        });
+                    vote.save(function (err) {
+                        Candidate.update({_id: candidate._id}, {$inc: { votes: 1}}, function (err, i) {
+                            if (err) {
+                                response("errors", "服务器错误");
+                            } else {
+                                response("info", "恭喜，投票成功！");
+                            }
+                        });
+                    });
+                }
+            });
+        }
     });
 
 };
