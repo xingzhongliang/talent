@@ -1,0 +1,51 @@
+.subject {
+    /*border: 1px solid #bcbcbc;*/
+    background: #f4f4f4;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.subject-name {
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.subject-desc {
+    font-size: 14px;
+}
+
+.subject-img {
+    max-height: 84px;
+}
+
+.subject-vote {
+    /*height: 70px;*/
+    line-height: 20px;;
+    padding: 15px;
+    text-align: center;
+    font-size: 40px;
+    color: white;
+    background: #87cc6e;
+}
+
+.subject-hot {
+    line-height: 15px;;
+    padding: 2px;
+    text-align: center;
+    font-size: 15px;
+    font-family: 微软雅黑;
+    font-weight: bolder;
+    color: white;
+    background: #ff6928;
+}
+
+.subject-top {
+    line-height: 15px;;
+    padding: 2px;
+    text-align: center;
+    font-size: 15px;
+    font-family: 微软雅黑;
+    font-weight: bolder;
+    color: white;
+    background: #7aa2df;
+}

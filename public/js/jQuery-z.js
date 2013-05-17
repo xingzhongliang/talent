@@ -37,28 +37,51 @@
     $.fn.addCover = function (opt) {
         //default option
         var def = {
-            position: 'bottom'
+            position: 'bottom',
+            floor:null,
+//            of:{left..top}  offset
         };
         opt = merge(def, opt);
         return this.each(function () {
             var self = this, $self = $(this);
             var pos = $self.getPosAndSize();
-            var $d = $(create('DIV')).css({
+            var $d = opt.floor ? $(opt.floor) : $(create('DIV')).css({
                 position: 'absolute',
                 display: 'block',
                 maxWidth: '2560',
-                maxHeight: '1440'
-            }).append(opt.content);
+                maxHeight: '1440',
+                zIndex:1010
+            })
+            !opt.floor && $d.append(opt.content);
             self == document.body && (opt.container = self);
             opt.container ? $d.appendTo(opt.container) : $d.insertAfter(self);
             var w = $d.get(0).offsetWidth;
             var h = $d.get(0).offsetHeight;
             $d.hide();
             var tp;
-            console.info('top:' + pos.top);
-            console.info('left:' + pos.left);
-            console.info('width:' + pos.width);
-            console.info('height:' + pos.height);
+//            console.info('top:' + pos.top);
+//            console.info('left:' + pos.left);
+//            console.info('width:' + pos.width);
+//            console.info('height:' + pos.height);
+            var l = 0,t = 0;
+            if(!opt.container) {
+                var p = self;
+                while(p.parentNode && p.parentNode != document.body) {
+                    p = p.parentNode;
+                    if($(p).css('position') == 'absolute') {
+                        console.info($(p).offset());
+                        var of = $(p).offset();
+                        l += of.left;
+                        t += of.top;
+                    }
+                }
+            }
+
+//            if(opt.as) {
+//                opt.as.width && (pos.width += opt.as.width);
+//                opt.as.height && (pos.height += opt.as.height);
+//            }
+
             if (opt.pla) {
                 tp = {left: pos.left + opt.pla.x, top: pos.top + opt.pla.y};
             } else {
@@ -85,7 +108,13 @@
                         break;
                 }
             }
-            $d.css({left: tp.left, top: tp.top});
+            if(opt.of) {
+                opt.of.left && (tp.left += opt.of.left);
+                opt.of.top && (tp.top += opt.of.top);
+
+            }
+//            $d.css({left: tp.left, top: tp.top});
+            $d.css({left: tp.left - l, top: tp.top - t});
             $self.data(opt.id ? co + opt.id : co, $d.get(0));
         });
     };

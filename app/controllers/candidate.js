@@ -64,8 +64,8 @@ exports.add = function (req, res) {
 exports.doAdd = function (req, res) {
     var candidate = new Candidate(req.body);
     var subject = req.subject;
-
     // 选项图片
+
     var witOfAudio = req.body.witOfAudio;
     var witOfImg = req.body.witOfImg;
     var witOfVideo = req.body.witOfVideo;

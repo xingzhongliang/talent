@@ -31,6 +31,8 @@ var SubjectSchema = new Schema({
     , owner: String // 创建者erp账号
     , createTime: {type: Date, default: Date.now} //创建日期
     , round: {type: Number, default: 1} // 当前第几轮 默认1次 可以重新开启新一轮投票
+    , topStartTime:Date  // 置顶开始时间
+    , topEndTime:Date  // 置顶结束时间
     , yn: {type: Number, default: 1}  //是否可用
     , votes: {type: Number, default: 0}  //本次活动的参与人数 注意：不一定等于 总票数
     , viewOpt: { // 页面展示选项

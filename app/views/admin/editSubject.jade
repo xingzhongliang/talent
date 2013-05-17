@@ -4,45 +4,52 @@ block head
     link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
     script(src="/js/bootstrap-sniper.js")
     script(src="/js/load/load.js")
+    script(src="/js/popover/popover.js")
+    script(src="/js/bootstrapSwitch.js")
     style
         .muted {
             background: #F5F5F5;
         }
+        .span-4 {
+            width: 340px;;
+        }
     script(src="/js/datepicker/js/bootstrap-datepicker.js")
     script
         $(function(){
-            $('#voteMax').sniper();
-            $('#regMax').sniper();
+
+            $('#modSetBtn').zpop({
+                position:'left',
+                target:$('#set').get(0)
+            }).click(function(){
+                this.pop = !this.pop;
+                this.pop ? $(this).showCover() : $(this).hideCover();
+            });
+
+            $('.voteMax').sniper();
+            $('.regMax').sniper();
+            $('.b2-switch')['bootstrapSwitch']();
             $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
+            $('.datepicker ').css({zIndex:1020});
 
-
-            $(".msBtn").popover({   //init edit pop
-                 placement:'top',
-                 html:true,
-                 content:function(){
-                    var tr = $(this).parents("tr");
-                    var name = tr.find("td:eq(1)").text();
-                    var id = tr.attr("id");
-                    return $('#sp').html().replace('SN',name).replace('SI',id);
-                 }
+            msBtnInit($('#addScopeBtn').get(0),'','');
+            mgBtnInit($('#addGroupBtn').get(0),'','','');
+            $('.msBtn').each(function(){
+                var tr = $(this).parents('tr');
+                var sn =  tr.find('td').eq(1).html();
+                msBtnInit(this,sn,tr.attr('id'));
             });
-            $(".mgBtn").popover({   //init edit pop
-                 placement:'top',
-                 html:true,
-                 content:function(){
-                    var tr = $(this).parents("tr");
-                    var name = tr.find("td:eq(1)").text();
-                    var id = tr.attr("id");
-                    var max = tr.find("td:eq(2)").text();
-                    return $('#gp').html().replace('GN',name).replace('GI',id).replace('GM',max);
-                 }
+            $('.mgBtn').each(function(){
+                var tr = $(this).parents('tr');
+                var gn =  tr.find('td').eq(1).html();
+                var gm =  tr.find('td').eq(2).html();
+                mgBtnInit(this,gn,gm,tr.attr('id'));
             });
-            $("#scope").delegate(".dsBtn","click",function(){ // 删除域
+            $("#scope").delegate(".dsBtn","click",function(){
                 var id = $(this).parents("tr").attr("id");
                 // 显示删除警告
                 $("#sbmDelbtn").attr("href", "javascript:delSG('"+id+"','scope');");
                 $("#delModal").find(".modal-body p").html("您确定删除这个域吗？").end().modal();
-            })
+            });
             $("#group").delegate(".dgBtn","click",function(){
                 var id = $(this).parents("tr").attr("id");
                 // 显示删除警告
@@ -93,7 +100,7 @@ block main
                     .input-prepend
                         span.add-on 报名链接
                         input.span7(type="text",value="http://#{config.app.domain}/subject/#{subject._id}/candidate/add")
-                if subject.token
+                if subject.token != 0
                     .input-prepend
                         span.add-on 报名令牌
                         input.span7(type="text",value="#{subject.token}")
@@ -102,7 +109,7 @@ block main
                 p 投票窗口期：#{fmt(subject.voteStart)} 到 #{fmt(subject.voteEnd)}
                 p 报名窗口期：#{fmt(subject.regStart)} 到 #{fmt(subject.regEnd)}
     .pull-right
-        a.btn.btn-primary 修改
+        button#modSetBtn.btn.btn-primary 修改
     .clearfix
     hr
 
@@ -185,6 +192,70 @@ block main
             btn#addGroupBtn.btn.btn-block.btn-success  添加分组
     hr
 
+    .hide
+        div#set
+            form#dataForm(method='post',action='/subject/do-add')
+                fieldset
+                    legend 活动设置
+                    div.row
+                        .span10
+                            .span3
+                                if subject.isPrivate == 1
+                                    div.b2-switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
+                                        input(name='sub[isPrivate]',type='checkbox',checked='true',value='1')
+                                else
+                                    div.b2-switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
+                                        input(name='sub[isPrivate]',type='checkbox',checked='false',value='1')
+                            .span3
+                                if subject.canReg == 1
+                                    div.b2-switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
+                                        input(name='sub[canReg]',type='checkbox',checked='true',value='1')
+                                else
+                                    div.b2-switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
+                                        input(name='sub[canReg]',type='checkbox',checked='false',value='1')
+                            .span3
+                                if subject.token != 0
+                                    div.b2-switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
+                                        input(name='sub[token]',type='checkbox',value='1',checked='true')
+                                else
+                                    div.b2-switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
+                                        input(name='sub[token]',type='checkbox',value='1')
+                    div.row &nbsp;
+                    div.row
+                        .span10
+                            div.span-4
+                                div.well
+                                    h5 投票设置
+                                    p 每个人在这次活动中能投多少票
+                                    input.voteMax(type='text',name='sub[voteChance]',value="#{subject.voteChance}")
+                                    p 投票的窗口期：
+                                    div.input-append
+                                        input.dpInpt.input-block-level(name='voteStart',type="text",value='#{fmt(subject.voteStart)}')
+                                        span.add-on
+                                            i.icon-th
+                                    div.input-append
+                                        input.dpInpt.input-block-level(name='voteEnd',type="text",value='#{fmt(subject.voteEnd)}')
+                                        span.add-on
+                                            i.icon-th
+                            div.span-4.fl-right
+                                div.well
+                                    h5 报名设置
+                                    p 每个人在这次活动中能报名几次
+                                    input.regMax(type='text',name='sub[regChance]',value='#{subject.regChance}')
+                                    p 报名的窗口期：
+                                    div.input-append
+                                        input.dpInpt.input-block-level(name='regStart',type="text",value='#{fmt(subject.regStart)}')
+                                        span.add-on
+                                            i.icon-th
+                                    div.input-append
+                                        input.dpInpt.input-block-level(name='regEnd',type="text",value='#{fmt(subject.regEnd)}')
+                                        span.add-on
+                                            i.icon-th
+            div.row
+                div.span10
+                    div(style="margin-bottom:15px;height:30px").div-center
+                        a#cfrmEdit(href='javascript:;',onclick='sbmt()').btn.btn-success.btn-large   确认修改
+                        a(href='javascript:;',onclick='cancelModify()',style="margin-left:15px").btn  取消
 
     div#set.hide
         h3 活动设置
@@ -277,11 +348,17 @@ block main
             button(data-dismiss="modal").btn 取消
 
 
+
 block footer
     script(src="/js/bootstrapSwitch.js")
     script
         function sbmt() {
-            //
+            $('#cfrmEdit').siblings('a').hide();
+            $('#cfrmEdit').loading('/subject/#{subject._id}/do-edit',$('#dataForm').serialize()
+                ,{method:'post',hide:true}
+                ,function(res){
+                window.location.reload();
+            });
         }
         //新增域
         function addScope(obj) {
@@ -332,10 +409,13 @@ block footer
                 tab.append('<tr>' + tab.find('.tmpl').html() + '</tr>').show();
                 var tr = tab.find('tr:last');
                 tr.attr('id',data._id);  //使用scope的id
+                msBtnInit(tr.find('.msBtn').get(0),data.name,data._id);
             }
             var tds = tr.find('td');
             tds.eq(0).html(tab.find('tbody').find('tr').size() - 1);
             tds.eq(1).html(data.name);
+            // 不能调两遍？ 直接使按钮失效了
+            msBtnInit(tr.find('.msBtn').get(0),data.name,data._id);
         }
 
         function svGroup(res) {
@@ -349,11 +429,13 @@ block footer
                 tab.append('<tr>' + tab.find('.tmpl').html() + '</tr>').show();
                 var tr = tab.find('tr:last');
                 tr.attr('id',data._id);  //使用group的id
+                mgBtnInit(tr.find('.mgBtn').get(0),data.name,data.max,data._id);
             }
             var tds = tr.find('td');
             tds.eq(0).html(tab.find('tbody').find('tr').size() - 1);
             tds.eq(1).html(data.name);
             tds.eq(2).html(data.max);
+            mgBtnInit(tr.find('.mgBtn').get(0),data.name,data.max,data._id);
         }
 
         // 删除域或组
@@ -372,6 +454,33 @@ block footer
           });
         }
 
+
+        function msBtnInit(obj,name,id) {
+            obj.pop = null;
+            $(obj).popover('destroy').unbind('click');
+            $(obj).popover({   //init edit pop
+                placement:'top',
+                html:true,
+                content:$('#sp').html().replace('SN',name).replace('SI',id)
+            }).click(function(){
+                this.pop = !this.pop;
+                this.pop ? $(this).popover('show') : $(this).popover('hide');
+            });
+        }
+
+        function mgBtnInit(obj,name,max,id) {
+             obj.pop = null;
+             $(obj).popover('destroy').unbind('click');
+             $(obj).popover({   //init edit pop
+                 placement:'top',
+                 html:true,
+                 content:$('#gp').html().replace('GN',name).replace('GI',id).replace('GM',max)
+             }).click(function(){
+                 this.pop = !this.pop;
+                 this.pop ? $(this).popover('show') : $(this).popover('hide');
+             });
+         }
+
         function closeAS(obj) {
             var si = $(obj).siblings(':hidden').val();
             var it = !si ? $('#addScopeBtn').popover('hide').get(0) : $('#' + si).find('.msBtn').popover('hide').get(0);
@@ -382,6 +491,12 @@ block footer
             var si = $(obj).parent().siblings(':hidden').val();
             var it = !si ? $('#addGroupBtn').popover('hide').get(0) : $('#' + si).find('.mgBtn').popover('hide').get(0);
             it.pop = !it.pop;
+        }
+
+        function cancelModify() {
+            var obj = $('#modSetBtn').get(0);
+            obj.pop = !obj.pop;
+            $('#modSetBtn').hideCover();
         }
 
 

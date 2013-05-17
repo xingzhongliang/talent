@@ -3,6 +3,7 @@
     text-align: center;
     opacity: 1;
     background: #ffffff;
+    z-index: 9999;
 }
 
 .load_div .img {
