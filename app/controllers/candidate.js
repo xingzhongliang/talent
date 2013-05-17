@@ -97,6 +97,11 @@ exports.doAdd = function (req, res) {
  * @param res
  */
 exports.list = function (req, res) {
+    var votes = req.param("votes") || "-1";
+    var scope = req.param("scope") || "all";
+    var group = req.param("group") || "all";
+    scope = (scope == "all") ? "" : scope;
+    group = (group == "all") ? "" : group;
     var page = req.param('page') > 0 ? req.param('page') : 0;
     var pageSize = req.param('pageSize') || config.app.pageSize;
     var subject = req.subject;
@@ -109,18 +114,30 @@ exports.list = function (req, res) {
             page: page,
             criteria: {subject: subject._id}
         };
-        Candidate.list(options, function (err, candidates) {
-            if (err) throw err;
-            Candidate.count(options.criteria).exec(function (err, count) {
-                res.render("candidate/list", {
-                    title: "选项管理 - " + subject.name,
-                    subject: subject,
-                    candidates: candidates,
-                    pages: count / pageSize,
-                    page: page
+        if (scope) options.criteria.scope = scope;
+        if (group) options.criteria.group = group;
+        var dataOptions = {
+            scope: scope,
+            group: group,
+            votes: votes
+        };
+        Candidate.find(options.criteria)
+            .sort({votes:votes})
+            .limit(options.pageSize)
+            .skip(options.pageSize * options.page)
+            .exec(function (err, candidates) {
+                if (err) throw err;
+                Candidate.count(options.criteria).exec(function (err, count) {
+                    res.render("candidate/list", {
+                        title: "选项管理 - " + subject.name,
+                        subject: subject,
+                        candidates: candidates,
+                        pages: count / pageSize,
+                        page: page,
+                        dataOptions: dataOptions
+                    });
                 });
             });
-        });
     });
 
 };
@@ -133,11 +150,11 @@ exports.list = function (req, res) {
 exports.show = function (req, res) {
     var candidate = req.candidate;
     Subject.load(candidate.subject, function (err, subject) {
-        if(err) throw err;
+        if (err) throw err;
         Scope.load(candidate.scope, function (err, scope) {
-            if(err) throw err;
+            if (err) throw err;
             Group.load(candidate.group, function (err, group) {
-                if(err) throw err;
+                if (err) throw err;
                 var template = subject.viewOpt.templateName || "default";
                 res.render(config.templateDir + "/" + template + '/detail', {
                     title: req.candidate.name,
@@ -196,11 +213,11 @@ exports.channel = function (req, res) {
     Scope.load(scopeId, function (err, scope) {
         if (err) throw err;
         Group.load(groupId, function (err, group) {
-            if(err) throw err;
+            if (err) throw err;
             Candidate.list(options, function (err, candidates) {
                 if (err) throw err;
                 Candidate.count(options.criteria).exec(function (err, count) {
-                    if(err) throw err;
+                    if (err) throw err;
                     res.render(config.templateDir + "/" + template + '/list', {
                         title: group.name + " - " + scope.name,
                         subject: subject,
@@ -237,7 +254,7 @@ exports.vote = function (req, res) {
     };
     // 检查是否参与过本主题的本轮投票
     Subject.load(candidate.subject, function (err, subject) {
-        if(err) return response("errors", "服务器错误");
+        if (err) return response("errors", "服务器错误");
         var now = new Date().getTime();
         if (subject.voteStart && now < subject.voteStart.getTime()) { // 还没到投票时间
             response("errors", "还没到投票时间！");
@@ -245,7 +262,7 @@ exports.vote = function (req, res) {
             response("errors", "投票时间已结束")
         } else {
             Vote.voted(voter.erpId, subject, function (err, vote) {
-                if(err) return response("errors", "服务器错误");
+                if (err) return response("errors", "服务器错误");
                 if (vote) { // 投过，给出提示
                     response("errors", "请不要重复投票！");
                 } else {
@@ -253,7 +270,7 @@ exports.vote = function (req, res) {
                         voter_erp: voter.erpId, voter_name: voter.name, voter_department: voter.department, subject: candidate.subject, candidate: candidate._id, round: subject.round
                     });
                     vote.save(function (err) {
-                        if(err) return response("errors", "服务器错误");
+                        if (err) return response("errors", "服务器错误");
                         Candidate.update({_id: candidate._id}, {$inc: { votes: 1}}, function (err, i) {
                             if (err) {
                                 response("errors", "服务器错误");
