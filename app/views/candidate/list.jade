@@ -1,76 +1,132 @@
-//
+//-
   User: laichendong
   Date: 13-5-11
   Time: 下午7:57
 extends ../layouts/adminWithSideBar
 block sidebar
-  ul(data-spy="affix").nav.nav-tabs.nav-stacked
-    li: a(href="/subject/#{subject._id}/edit") 管理主题
-    li: a(href="/subject/#{subject._id}",target="_blank") 查看主题
-    li: a(href="/subject/add") 新增主题
-    li: a(href="/subject/#{subject._id}/candidate/add") 新增选项
+    ul(data-spy="affix").nav.nav-tabs.nav-stacked
+        li: a(href="/subject/#{subject._id}/edit") 管理主题
+        li: a(href="/subject/#{subject._id}",target="_blank") 查看主题
+        li: a(href="/subject/add") 新增主题
+        li: a(href="/subject/#{subject._id}/candidate/add") 新增选项
 
 block main
-  table.table
-    thead
-      tr
-        th.span1 #
-        th 名称
-        if subject.scopes.length > 1
-          th #{subject.viewOpt.newCandidatePage.scopeLabel}
-        if subject.groups.length > 1
-          th #{subject.viewOpt.newCandidatePage.groupLabel}
-        th 得票数
-        th.span2 操作
-    tbody
-      tr.tmpl.hide
-        td
-        td
-        if subject.scopes.length > 1
-          td
-        if subject.groups.length > 1
-          td
-        td
-        td
-          .btn-group
-            a(target="_blank").btn.btn-small.msBtn 查看
-            a.btn.btn-small.btn-danger.dsBtn 删除
-      each c,i in candidates
-        tr
-          td= i+1
-          td= c.name
-          if subject.scopes.length > 1
-            td(title=scopeName(c.scope, subject.scopes))= cut(scopeName(c.scope, subject.scopes), 5)
-          if subject.groups.length > 1
-            td(title=groupName(c.group, subject.groups))= cut(groupName(c.group, subject.groups), 5)
-          td= c.votes
-          td
-            .btn-group
-              a.btn.btn-small.msBtn(href="/candidate/#{c._id}",target="_blank") 查看
-              a.delModalBtn.btn.btn-small.btn-danger.dsBtn(candidate-id="#{c._id}",data-toggle="modal") 删除
+    table.table
+        thead
+            tr
+                th.span1 #
+                th 名称
+                if subject.scopes.length > 1
+                    th
+                        .dropdown
+                            .btn-group
+                                a.scopeSelector.btn(_id="all") #{subject.viewOpt.newCandidatePage.scopeLabel}
+                                a.btn.dropdown-toggle(data-toggle="dropdown")
+                                    i.icon-chevron-down
+                                ul.dropdown-menu
+                                    each scope in subject.scopes
+                                        li: a.scopeSelector(_id="#{scope.id}") #{scope.name}
+                if subject.groups.length > 1
+                    th
+                        .dropdown
+                            .btn-group
+                                a.btn.groupSelector(_id="all") #{subject.viewOpt.newCandidatePage.groupLabel}
+                                a.btn.dropdown-toggle(data-toggle="dropdown")
+                                    i(sort="-1").icon-chevron-down
+                                ul.dropdown-menu
+                                    each group in subject.groups
+                                        li: a.groupSelector(_id="#{group.id}") #{group.name}
 
-  // 删除提示框
-  #delModal.modal.hide.fade
-    .modal-header
-      button(data-dismiss="modal").close ×
-      h3 确定删除选项
-    .modal-body
-      p 删除选项将附带删除上传的相关文件，且不能回复！确定要删除？
-    .modal-footer
-      a(href="")#sbmDelbtn.btn.btn-danger 确定
-      button(data-dismiss="modal").btn 取消
+                th
+                    #sortByVotes.btn 得票数
+                        i.icon-arrow-down
+                th.span2 操作
+        tbody
+            tr.tmpl.hide
+                td
+                td
+                if subject.scopes.length > 1
+                    td
+                if subject.groups.length > 1
+                    td
+                td
+                td
+                    .btn-group
+                        a(target="_blank").btn.btn-small.msBtn 查看
+                        a.btn.btn-small.btn-danger.dsBtn 删除
+            if(candidates.length <= 0)
+                - var numTd = 4
+                - if (subject.scopes.length > 1)
+                    - numTd++
+                - if (subject.groups.length > 1)
+                    - numTd++
+                tr: td(colspan="#{numTd}")
+                    p.text-center.text-warning 没有数据
+            each c,i in candidates
+                tr
+                    td= i+1
+                    td= c.name
+                    if subject.scopes.length > 1
+                        td(title=scopeName(c.scope, subject.scopes))= cut(scopeName(c.scope, subject.scopes), 5)
+                    if subject.groups.length > 1
+                        td(title=groupName(c.group, subject.groups))= cut(groupName(c.group, subject.groups), 5)
+                    td= c.votes
+                    td
+                        .btn-group
+                            a.btn.btn-small.msBtn(href="/candidate/#{c._id}",target="_blank") 查看
+                            a.delModalBtn.btn.btn-small.btn-danger.dsBtn(candidate-id="#{c._id}",data-toggle="modal") 删除
 
-  // 分页条
-  if pages > 1
-    .pagination.pagination-centered
-      ul
-        != createPagination(pages, page)
+    // 删除提示框
+    #delModal.modal.hide.fade
+        .modal-header
+            button(data-dismiss="modal").close ×
+            h3 确定删除选项
+        .modal-body
+            p 删除选项将附带删除上传的相关文件，且不能回复！确定要删除？
+        .modal-footer
+            a(href="")#sbmDelbtn.btn.btn-danger 确定
+            button(data-dismiss="modal").btn 取消
 
-  script
-    $(function(){
-        // 显示删除警告
-        $(".delModalBtn").click(function(){
-          $("#sbmDelbtn").attr("href", "/candidate/" + $(this).attr("candidate-id") + "/del");
-          $("#delModal").modal();
+    // 分页条
+    if pages > 1
+        .pagination.pagination-centered
+            ul
+                != createPagination(pages, page)
+
+    script
+        $(function(){
+            // 显示删除警告
+            $(".delModalBtn").click(function(){
+              $("#sbmDelbtn").attr("href", "/candidate/" + $(this).attr("candidate-id") + "/del");
+              $("#delModal").modal();
+            });
+
+
+            var dataOptions = !{JSON.stringify(dataOptions)};
+            if(dataOptions.votes == "-1") {
+                $("#sortByVotes").find("i").removeClass("icon-arrow-up").addClass("icon-arrow-down")
+            } else {
+                $("#sortByVotes").find("i").removeClass("icon-arrow-down").addClass("icon-arrow-up")
+            }
+
+            // 按票数排序
+            $("#sortByVotes").click(function(){
+                var sort = $(this).find("i")
+                    .toggleClass("icon-arrow-down")
+                    .toggleClass("icon-arrow-up")
+                    .hasClass("icon-arrow-down") ? "-1" : "1";
+                $.extend(dataOptions, {votes : sort})
+                window.location = "?" + $.param(dataOptions)
+            });
+            //
+            $(".scopeSelector").click(function(){
+                var scope = $(this).attr("_id");
+                $.extend(dataOptions, {scope : scope})
+                window.location = "?" + $.param(dataOptions)
+            })
+            $(".groupSelector").click(function(){
+                var group = $(this).attr("_id");
+                $.extend(dataOptions, {group : group})
+                window.location = "?" + $.param(dataOptions)
+            });
         });
-    });

@@ -86,7 +86,7 @@ CandidateSchema.statics = {
 function _list(options, cb) {
     var criteria = options.criteria || {};
     this.find(criteria)
-        .sort({createTime: '-1'})
+        .sort({votes: '-1'})
         .limit(options.pageSize)
         .skip(options.pageSize * options.page)
         .exec(cb);
