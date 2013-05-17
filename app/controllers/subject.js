@@ -15,7 +15,7 @@ var config = require("../../config/config");
 exports.subject = function (req, res, next, id) {
     Subject.load(id, function (err, subject) {
         if (err) return next(err);
-        if (!subject) return next('找不到该主题，主题ID： ' + id);
+        if (!subject) return next(new Error('找不到该主题，主题ID： ' + id));
         req.subject = subject;
         next()
     });
@@ -55,6 +55,7 @@ exports.show = function (req, res) {
         subject.groups = groups;
         var cs = [];
         Candidate.findBySubjectId(subject._id, function (err, candidates) {
+            if(err) throw err;
             for (var i = 0; i < candidates.length; i++) {
                 var s = candidates[i].scope;
                 var g = candidates[i].group;
@@ -109,10 +110,7 @@ exports.doAdd = function (req, res) {
     regEnd && (subject.regEnd = moment(regEnd, fmt));
 
     subject.save(function (err) {
-        if (err) {
-            console.error(err);
-            throw err;
-        }
+        if(err) throw err;
         res.redirect('/admin');
         console.info('[doAddSub]end>>');
     });
@@ -181,8 +179,9 @@ exports.list = function (req, res) {
     };
 
     Subject.list(options, function (err, subjects) {
-        if (err) return res.status(500).render('500', {title: "500", error: err.stack });
+        if(err) throw err;
         Subject.count().exec(function (err, count) {
+            if(err) throw err;
             res.render("admin/index", {
                 title: "管理控制台",
                 subjects: subjects,
@@ -202,6 +201,7 @@ exports.index = function (req, res) {
     Subject.findOne()
         .sort({createTime: '-1'})
         .exec(function (err, subject) {
+            if(err) throw err;
             res.redirect("/subject/" + subject._id);
         });
 };

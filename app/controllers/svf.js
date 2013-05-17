@@ -12,7 +12,7 @@ var config = require('../../config/config');
 var path = require("path");
 var child_process = require('child_process');
 var mime = require('mime-magic');
-
+var iconv = require('iconv-lite');
 
 exports.svf = function (req, res) {
     var file = req.files.fn;
@@ -23,10 +23,10 @@ exports.svf = function (req, res) {
         }
         console.info(type);
         var typeSize = {
-            'image/jpg': 1048576, 'image/jpeg': 1048576, 'image/png': 1048576, 'image/pjpeg': 1048576, 'image/bmp': 1048576, 'image/x-png': 1048576, 'audio/mpeg': 1048576 * 50, 'video/mp4': 1048576 * 200
+            'image/jpg': 1048576, 'image/jpeg': 1048576, 'image/png': 1048576, 'image/pjpeg': 1048576, 'image/bmp': 1048576, 'image/x-png': 1048576, 'audio/mpeg': 1048576 * 50, 'video/mp4': 1048576 * 200, 'video/x-flv': 1048576 * 200
         };
         var target_path = config.uploadDir;
-        if(type == unkonwn) {
+        if (type == unkonwn) {
             type = req.body.mime;
         }
         if (!typeSize[type]) {
@@ -35,7 +35,7 @@ exports.svf = function (req, res) {
         if (file.size > typeSize[type]) {
             return res.send({err: 'file size is too large', code: -2});
         }
-        var tp = type.indexOf('png') != -1 ? 'png' : type.indexOf('jpeg') != -1 ? 'jpeg' : type == 'audio/mpeg' ? 'mp3' : type.split('/')[1];
+        var tp = type.indexOf('png') != -1 ? 'png' : type.indexOf('jpeg') != -1 ? 'jpeg' : type == 'audio/mpeg' ? 'mp3' : type == "video/x-flv" ? "flv" : type.split('/')[1];
         var fn = '/' + type + '/' + uuid.v4() + '.' + tp;
         var tmpPath = file.path;
         var dir = target_path + '/' + type;
@@ -51,9 +51,10 @@ exports.svf = function (req, res) {
                 if (err) throw err;
             });
             // 抓取视频快照
-            if (type == 'video/mp4') {
-                getSnapShot(target_path, function (err3, path) {
-                    res.send({path: fn.replace('.mp4', '.png'), code: err3 ? -3 : 1, video: fn});         //-3 : 抓取缩略图错误
+            if (type == 'video/mp4' || type == "video/x-flv") {
+                getSnapShot(target_path, tp, function (err3, path) {
+                    console.error(err3);
+                    res.send({path: fn.replace("." + tp, '.png'), code: err3 ? -3 : 1, video: fn});         //-3 : 抓取缩略图错误
                 });
             } else {
                 res.send({path: fn, code: 1});
@@ -61,13 +62,11 @@ exports.svf = function (req, res) {
         });
     });
 
-
 };
 
-
-function getSnapShot(videoPath, callback) {
+function getSnapShot(videoPath, tp, callback) {
     var cmd = 'ffmpeg -i "INPUT" -ss 00:00:02.435 -f image2 -vframes 1 "OUT"';
-    var path = videoPath.replace('.mp4', '.png');
+    var path = videoPath.replace("." + tp, '.png');
     var rm = cmd.replace('INPUT', videoPath).replace('OUT', path);
     while(rm.indexOf('\\') != -1)  {
         rm = rm.replace('\\','/');

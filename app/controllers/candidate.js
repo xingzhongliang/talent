@@ -24,7 +24,7 @@ var fs = require("fs");
 exports.candidate = function (req, res, next, id) {
     Candidate.load(id, function (err, candidate) {
         if (err) return next(err);
-        if (!candidate) return next('找不到该选项，选项值： ' + id);
+        if (!candidate) return next(new Error('找不到该选项，选项id： ' + id));
         req.candidate = candidate;
         next()
     });
@@ -37,6 +37,16 @@ exports.candidate = function (req, res, next, id) {
  */
 exports.add = function (req, res) {
     var subject = req.subject;
+    if (!config.isAdmin(req.session.user.erpId)) { // 非管理员 限制在报名窗口期内进入这个页面
+        var now = new Date().getTime();
+        if (subject.regStart && now < subject.regStart.getTime()) { // 还没到报名时间
+            req.flash("errors", "还没到报名时间");
+            res.redirect('/subject/' + subject._id);
+        } else if (subject.regEnd && now > subject.regEnd.getTime()) { // 报名时间已过
+            req.flash("errors", "报名时间已过");
+            res.redirect('/subject/' + subject._id);
+        }
+    }
     // 查询主题下的域和组
     Subject.scopesAndGroups(subject._id, function (scopes, groups) {
         subject.scopes = scopes;
@@ -54,8 +64,8 @@ exports.add = function (req, res) {
 exports.doAdd = function (req, res) {
     var candidate = new Candidate(req.body);
     var subject = req.subject;
-    // 选项图片
 
+    // 选项图片
     var witOfAudio = req.body.witOfAudio;
     var witOfImg = req.body.witOfImg;
     var witOfVideo = req.body.witOfVideo;
@@ -76,7 +86,7 @@ exports.doAdd = function (req, res) {
         if (config.isAdmin(req.session.user.erpId)) {
             res.redirect('/subject/' + candidate.subject + '/candidate/list');
         } else {
-            res.redirect('/');
+            res.redirect('/subject/' + candidate.subject);
         }
     });
 };
@@ -123,8 +133,11 @@ exports.list = function (req, res) {
 exports.show = function (req, res) {
     var candidate = req.candidate;
     Subject.load(candidate.subject, function (err, subject) {
+        if(err) throw err;
         Scope.load(candidate.scope, function (err, scope) {
+            if(err) throw err;
             Group.load(candidate.group, function (err, group) {
+                if(err) throw err;
                 var template = subject.viewOpt.templateName || "default";
                 res.render(config.templateDir + "/" + template + '/detail', {
                     title: req.candidate.name,
@@ -183,9 +196,11 @@ exports.channel = function (req, res) {
     Scope.load(scopeId, function (err, scope) {
         if (err) throw err;
         Group.load(groupId, function (err, group) {
+            if(err) throw err;
             Candidate.list(options, function (err, candidates) {
                 if (err) throw err;
                 Candidate.count(options.criteria).exec(function (err, count) {
+                    if(err) throw err;
                     res.render(config.templateDir + "/" + template + '/list', {
                         title: group.name + " - " + scope.name,
                         subject: subject,
@@ -212,43 +227,44 @@ exports.vote = function (req, res) {
     var fromLogin = /\/login$/.test(req.get("Referer").toString());
     var voter = req.session.user;
     var candidate = req.candidate;
+    var response = function (type, msg) {
+        req.flash(type, msg);
+        if (fromLogin) {
+            res.redirect("/subject/" + candidate.subject);
+        } else {
+            res.redirect("back");
+        }
+    };
     // 检查是否参与过本主题的本轮投票
     Subject.load(candidate.subject, function (err, subject) {
-        Vote.voted(voter.erpId, subject, function (err, vote) {
-            if (err) throw err;
-            if (vote) {
-                // 投过，给出提示
-                req.flash("errors", "重复投票");
-                if (fromLogin) {
-                    res.redirect("/subject/" + candidate.subject);
+        if(err) return response("errors", "服务器错误");
+        var now = new Date().getTime();
+        if (subject.voteStart && now < subject.voteStart.getTime()) { // 还没到投票时间
+            response("errors", "还没到投票时间！");
+        } else if (subject.voteEnd && now > subject.voteEnd.getTime()) { // 投票时间已结束
+            response("errors", "投票时间已结束")
+        } else {
+            Vote.voted(voter.erpId, subject, function (err, vote) {
+                if(err) return response("errors", "服务器错误");
+                if (vote) { // 投过，给出提示
+                    response("errors", "请不要重复投票！");
                 } else {
-                    res.redirect("back");
-                }
-            } else {
-                vote = new Vote({
-                    voter_erp: voter.erpId, voter_name: voter.name, voter_department: voter.department, subject: candidate.subject, candidate: candidate._id, round: subject.round
-                });
-                vote.save(function (err) {
-                    Candidate.update({_id: candidate._id}, {$inc: { votes: 1}}, function (err, i) {
-                        if (err) {
-                            req.flash("errors", "服务器错误");
-                            if (fromLogin) {
-                                res.redirect("/subject/" + candidate.subject);
-                            } else {
-                                res.redirect("back");
-                            }
-                        } else {
-                            req.flash("info", "投票成功");
-                            if (fromLogin) {
-                                res.redirect("/subject/" + candidate.subject);
-                            } else {
-                                res.redirect("back");
-                            }
-                        }
+                    vote = new Vote({
+                        voter_erp: voter.erpId, voter_name: voter.name, voter_department: voter.department, subject: candidate.subject, candidate: candidate._id, round: subject.round
                     });
-                });
-            }
-        });
+                    vote.save(function (err) {
+                        if(err) return response("errors", "服务器错误");
+                        Candidate.update({_id: candidate._id}, {$inc: { votes: 1}}, function (err, i) {
+                            if (err) {
+                                response("errors", "服务器错误");
+                            } else {
+                                response("info", "恭喜，投票成功！");
+                            }
+                        });
+                    });
+                }
+            });
+        }
     });
 
 };

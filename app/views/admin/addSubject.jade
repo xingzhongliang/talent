@@ -1,28 +1,24 @@
 extends ../layouts/adminWithSideBar
 block head
-  link(href="/css/bootstrapSwitch.css",rel="stylesheet",media="screen")
-  link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
-  style
-      .span-4 {
-          width: 340px;;
-      }
-  script(src="/js/bootstrap-sniper.js")
-  script(src="/js/datepicker/js/bootstrap-datepicker.js")
-  script(src="/js/filebox/filebox.js")
-  script
-    $(function(){
-        $('#voteMax').sniper();
-        $('#regMax').sniper();
-        $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
+    link(href="/css/bootstrapSwitch.css",rel="stylesheet",media="screen")
+    link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
+    script(src="/js/bootstrap-sniper.js")
+    script(src="/js/datepicker/js/bootstrap-datepicker.js")
+    script(src="/js/filebox/filebox.js")
+    script
+        $(function(){
+            $('#voteMax').sniper();
+            $('#regMax').sniper();
+            $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
 
-        $('#banInpt').filebox({
-            width:450,
-            height:150,
-            callback:function(f,data,res) {
-                $('#banInpt').val(data.path);
-            }
+            $('#banInpt').filebox({
+                width:450,
+                height:150,
+                callback:function(f,data,res) {
+                    $('#banInpt').val(data.path);
+                }
+            });
         });
-    });
 
 
 block sidebar
@@ -178,23 +174,23 @@ block main
 
 
 block footer
-  script(src="/js/bootstrapSwitch.js")
-  script
-    function sbmt() {
-        if(!$.trim($('#sub-name').val())) {
-            return showMsg('主题名称不能为空');
+    script(src="/js/bootstrapSwitch.js")
+    script
+        function sbmt() {
+            if(!$.trim($('#sub-name').val())) {
+                return showMsg('主题名称不能为空');
+            }
+           $('#dataForm').submit();
         }
-       $('#dataForm').submit();
-    }
 
 
-    function showMsg(msg) {
-        $('#msgDiv').show().find('span').html(msg);
-    }
+        function showMsg(msg) {
+            $('#msgDiv').show().find('span').html(msg);
+        }
 
-    $(function(){
-        $("#toggleAdvancedOptsBtn").click(function(){
-            $(this).find("i").toggleClass("icon-plus").toggleClass("icon-minus");
-            $("#advancedOpts").slideToggle();
+        $(function(){
+            $("#toggleAdvancedOptsBtn").click(function(){
+                $(this).find("i").toggleClass("icon-plus").toggleClass("icon-minus");
+                $("#advancedOpts").slideToggle();
+            });
         });
-    });

@@ -1721,3 +1721,75 @@ body {
     cursor: default;
     background-color: #fff;
 }
+.redwindow {
+    border: 1px solid #B42748;
+    margin: auto;
+    width: 400px;
+    background: #FFFFFF;
+    position: fixed;
+    top:45%;
+    left:40%;
+    box-shadow:0px 0px 20px rgba(0,0,0,1);
+}
+
+.redwindow .title {
+    width: 100%;
+    height: 30px;
+    background: #d0456d;
+    background: -moz-linear-gradient(top, #d0456d 0, #b42748 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #d0456d), color-stop(100%, #b42748));
+    background: -webkit-linear-gradient(top, #d0456d 0, #b42748 100%);
+    background: -o-linear-gradient(top, #d0456d 0, #b42748 100%);
+    background: -ms-linear-gradient(top, #d0456d 0, #b42748 100%);
+    background: linear-gradient(to bottom, #d0456d 0, #b42748 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType = 0, startColorstr = #d0456d, endColorstr = #b42748);
+}
+
+.redwindow .title .text {
+    color: #FFFFFF;
+    font: 16px "微软雅黑", "黑体";
+    padding: 6px 10px;
+}
+
+.redwindow .title .close {
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 20px;
+    height: 30px;
+    padding-left: 10px;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 30px;
+}
+
+.redwindow .content {
+    border-radius: 5px 5px 5px 5px;
+    color: #333;
+    font: 14px Verdana, "宋体";
+    padding: 15px;
+}
+
+.redwindow .footer {
+    text-align: center;
+}
+
+.redwindow .btn {
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 3px 3px 3px 3px;
+    color: #FFFFFF;
+    height: 28px;
+    line-height: 28px;
+    padding: 0px 8px;
+    margin: 10px 10px 0 10px;
+    font: 14px "微软雅黑", "黑体";
+    background: #d0456d;
+    background: -moz-linear-gradient(top, #d0456d 0, #b42748 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #d0456d), color-stop(100%, #b42748));
+    background: -webkit-linear-gradient(top, #d0456d 0, #b42748 100%);
+    background: -o-linear-gradient(top, #d0456d 0, #b42748 100%);
+    background: -ms-linear-gradient(top, #d0456d 0, #b42748 100%);
+    background: linear-gradient(to bottom, #d0456d 0, #b42748 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType = 0, startColorstr = #d0456d, endColorstr = #b42748);
+}
