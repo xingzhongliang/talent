@@ -61,7 +61,7 @@ block head
 
 block sidebar
     ul(data-spy="affix").nav.nav-tabs.nav-stacked
-        li: a(href="/subject/#{subject._id}") 查看主题
+        li: a(href="/subject/#{subject._id}",target="_blank") 查看主题
         li: a(href="/subject/#{subject._id}/candidate/add") 新增选项
         li: a(href="/subject/#{subject._id}/candidate/list") 管理选项
         li: a(href="#scopeManager") 域管理
@@ -91,7 +91,7 @@ block main
                 span.label.label-info.label-large 开放报名
             else
                 span.label.label-large 不开放报名
-            if subject.token != 0
+            if subject.token
                 span.label.label-important.label-large 使用令牌
             else
                 span.label.label-large  禁用令牌
@@ -257,6 +257,67 @@ block main
                         a#cfrmEdit(href='javascript:;',onclick='sbmt()').btn.btn-success.btn-large   确认修改
                         a(href='javascript:;',onclick='cancelModify()',style="margin-left:15px").btn  取消
 
+    div#set.hide
+        h3 活动设置
+        div.row
+            .span3
+                if subject.isPrivate == 1
+                    div.switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
+                        input(name='sub[isPrivate]',type='checkbox',checked='true',value='1')
+                else
+                    div.switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
+                        input(name='sub[isPrivate]',type='checkbox',checked='false',value='1')
+            .span3
+                if subject.canReg == 1
+                    div.switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
+                        input(name='sub[canReg]',type='checkbox',checked='true',value='1')
+                else
+                    div.switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
+                        input(name='sub[canReg]',type='checkbox',checked='false',value='1')
+            .span3
+                if subject.token
+                    div.switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
+                        input(name='sub[token]',type='checkbox',value='1',checked='true')
+                else
+                    div.switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
+                        input(name='sub[token]',type='checkbox',value='1')
+        div.row &nbsp;
+        div.row
+            div.span4
+                div.well
+                    h5 投票设置
+                    p 每个人在这次活动中能投多少票
+                    input#voteMax(type='text',name='sub[voteChance]',value="#{subject.voteChance}")
+                    p 投票的窗口期：
+                    div.input-append
+                        input.dpInpt.input-block-level(name='sub[voteStart]',type="text",value='#{fmt(subject.voteStart)}')
+                        span.add-on
+                            i.icon-th
+                    div.input-append
+                        input.dpInpt.input-block-level(name='sub[voteEnd]',type="text",value='#{fmt(subject.voteEnd)}')
+                        span.add-on
+                            i.icon-th
+            div.span4.fl-right
+                div.well
+                    h5 报名设置
+                    p 每个人在这次活动中能报名几次
+                    input#regMax(type='text',name='sub[regChance]',value='#{subject.regChance}')
+                    p 报名的窗口期：
+                    div.input-append
+                        input.dpInpt.input-block-level(name='sub[regStart]',type="text",value='#{fmt(subject.regStart)}')
+                        span.add-on
+                            i.icon-th
+                    div.input-append
+                        input.dpInpt.input-block-level(name='sub[regEnd]',type="text",value='#{fmt(subject.regEnd)}')
+                        span.add-on
+                            i.icon-th
+        br
+        br
+        br
+        div.row
+            div.span8
+                div.div-center
+                    a(href='javascript:;',onclick='sbmt()').btn.btn-primary  修改活动设置
         hr
     div#sp.hide
         .input-append
