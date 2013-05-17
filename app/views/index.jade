@@ -1,19 +1,23 @@
-extends layouts/bootstrap
+//系统首页 显示所有公开的主题
+extends layouts/admin
 block head
-
+    link(href="/css/subject.css",rel="stylesheet",media="screen")
 block content
-    .row
-        .span9
+    .row-fluid
+        .span12
             form.well.form-search
                 input(type="text").span5
                 button.btn.btn-success 搜索主题
                     i.icon-search.icon-white
     each item in list
-        .row
-            .span1
-                .subject-vote #{item.votes}
-            .span8.subject
-                if item.banner
-                    img(src="#{item.banner}")
-                .subject-name #{item.name}
-                .subject-desc #{item.description}
+        .row-fluid
+                .span2
+                    .subject-top TOP
+                    //.subject-hot HOT
+                    .subject-vote #{item.votes}
+                .span10
+                    .subject
+                        if item.banner
+                            img(src="#{item.banner}")
+                        .subject-name #{item.name}
+                        .subject-desc #{item.description}

@@ -55,7 +55,7 @@ exports.show = function (req, res) {
         subject.groups = groups;
         var cs = [];
         Candidate.findBySubjectId(subject._id, function (err, candidates) {
-            if(err) throw err;
+            if (err) throw err;
             for (var i = 0; i < candidates.length; i++) {
                 var s = candidates[i].scope;
                 var g = candidates[i].group;
@@ -110,7 +110,7 @@ exports.doAdd = function (req, res) {
     regEnd && (subject.regEnd = moment(regEnd, fmt));
 
     subject.save(function (err) {
-        if(err) throw err;
+        if (err) throw err;
         res.redirect('/admin');
         console.info('[doAddSub]end>>');
     });
@@ -126,46 +126,37 @@ exports.doEdit = function (req, res) {
     var subject = req.body.sub;
     var erpId = req.session.user.erpId;
     var sub = req.subject;
-    if(!sub) {                         //Subject check
-        res.send({code:-1})
+    if (!sub) {                         //Subject check
+        res.send({code: -1})
     }
-    if(sub.owner != erpId && !config.isAdmin(erpId)) {   //User check,Admin can modify any subject
-        res.send({code:-2})
+    if (sub.owner != erpId && !config.isAdmin(erpId)) {   //User check,Admin can modify any subject
+        res.send({code: -2})
     }
     // 如果设置为使用令牌，则生成令牌
     if (subject.token == 1) {
         subject.token = uuid.v4();
-    }else{
+    } else {
         subject.token = 0;    //else set token to null
     }
-//    var fmt = 'YYYY-MM-DD';
-//    var voteBegin = req.body['voteStart'];
-//    var voteEnd = req.body['voteEnd'];
-//    var regBegin = req.body['regStart'];
-//    var regEnd = req.body['regEnd'];
-//    voteBegin && (subject.voteStart = moment(voteBegin, fmt));
-//    voteEnd && (subject.voteEnd = moment(voteEnd, fmt));
-//    regBegin && (subject.regStart = moment(regBegin, fmt));
-//    regEnd && (subject.regEnd = moment(regEnd, fmt));
 
-    Subject.update({_id:sub._id},
-        {$set:{
-            token:subject.token,
-            voteStart:req.body['voteStart'],
-            voteEnd:req.body['voteEnd'],
-            regStart:req.body['regStart'],
-            regEnd:req.body['regEnd'],
-            voteChance:subject.voteChance,
-            regChance:subject.regChance,
-            isPrivate:subject.isPrivate ? true : false,
-            canReg:subject.canReg ? true : false
-        }},function (err) {
-        if (err) {
-            console.error(err);
-            throw err;
-        }
-        res.send({code:1});
-    });
+    Subject.update({_id: sub._id},
+        {$set: {
+            token: subject.token,
+            voteStart: req.body['voteStart'],
+            voteEnd: req.body['voteEnd'],
+            regStart: req.body['regStart'],
+            regEnd: req.body['regEnd'],
+            voteChance: subject.voteChance,
+            regChance: subject.regChance,
+            isPrivate: subject.isPrivate ? true : false,
+            canReg: subject.canReg ? true : false
+        }}, function (err) {
+            if (err) {
+                console.error(err);
+                throw err;
+            }
+            res.send({code: 1});
+        });
 
 };
 
@@ -179,9 +170,9 @@ exports.list = function (req, res) {
     };
 
     Subject.list(options, function (err, subjects) {
-        if(err) throw err;
+        if (err) throw err;
         Subject.count().exec(function (err, count) {
-            if(err) throw err;
+            if (err) throw err;
             res.render("admin/index", {
                 title: "管理控制台",
                 subjects: subjects,
@@ -198,11 +189,32 @@ exports.list = function (req, res) {
  * @param res
  */
 exports.index = function (req, res) {
-    Subject.findOne()
+    var page = req.param('page') > 0 ? req.param('page') : 0;
+    var pageSize = 6;
+    var options = {
+        pageSize: pageSize,
+        page: page
+    };
+    var now = new Date();
+    Subject.find({isPrivate: false})
+        .where('topStartTime').lt(now)
+        .where('topEndTime').gt(now)
         .sort({createTime: '-1'})
-        .exec(function (err, subject) {
-            if(err) throw err;
-            res.redirect("/subject/" + subject._id);
+        .exec(function (er, tops) {
+            if (er) throw er;
+            Subject.list(options, function (err, subjects) {
+                if (err) throw err;
+                Subject.count().exec(function (err, count) {
+                    if (err) throw err;
+                    res.render("index", {
+                        title: "表决吧，骚年！",
+                        list: subjects,
+                        tops:tops,
+                        pages: count / pageSize,
+                        page: page
+                    });
+                });
+            });
         });
 };
 

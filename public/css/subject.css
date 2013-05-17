@@ -1,9 +1,8 @@
 .subject {
-    border: 1px solid #bcbcbc;
+    /*border: 1px solid #bcbcbc;*/
     background: #f4f4f4;
     overflow: hidden;
     padding: 10px;
-    margin-top: 15px;
 }
 
 .subject-name {
@@ -20,21 +19,33 @@
 }
 
 .subject-vote {
-    width: 70px;
-    height: 70px;
+    /*height: 70px;*/
+    line-height: 20px;;
     padding: 15px;
     text-align: center;
-    font-size: 50px;
+    font-size: 40px;
     color: white;
-    background: orange;
+    background: #87cc6e;
 }
-.subject-tag {
-    width: 70px;
-    padding: 5px;
+
+.subject-hot {
+    line-height: 15px;;
+    padding: 2px;
     text-align: center;
-    font-size: 14px;
+    font-size: 15px;
     font-family: 微软雅黑;
-    font-s;
+    font-weight: bolder;
     color: white;
-    background: orange;
+    background: #ff6928;
+}
+
+.subject-top {
+    line-height: 15px;;
+    padding: 2px;
+    text-align: center;
+    font-size: 15px;
+    font-family: 微软雅黑;
+    font-weight: bolder;
+    color: white;
+    background: #7aa2df;
 }

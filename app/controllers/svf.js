@@ -12,7 +12,6 @@ var config = require('../../config/config');
 var path = require("path");
 var child_process = require('child_process');
 var mime = require('mime-magic');
-var iconv = require('iconv-lite');
 
 exports.svf = function (req, res) {
     var file = req.files.fn;
