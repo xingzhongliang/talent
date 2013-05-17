@@ -1,0 +1,19 @@
+extends layouts/bootstrap
+block head
+
+block content
+    .row
+        .span9
+            form.well.form-search
+                input(type="text").span5
+                button.btn.btn-success 搜索主题
+                    i.icon-search.icon-white
+    each item in list
+        .row
+            .span1
+                .subject-vote #{item.votes}
+            .span8.subject
+                if item.banner
+                    img(src="#{item.banner}")
+                .subject-name #{item.name}
+                .subject-desc #{item.description}
