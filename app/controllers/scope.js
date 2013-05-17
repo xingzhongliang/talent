@@ -11,7 +11,7 @@ var Scope = mongoose.model("Scope");
 exports.scope = function (req, res, next, id) {
     Scope.load(id, function (err, scope) {
         if (err) return next(err);
-        if (!scope) return next('找不到数据，id： ' + id);
+        if (!scope) return next(new Error('找不到数据，id： ' + id));
         req.scope = scope;
         next()
     });
@@ -31,7 +31,7 @@ exports.save = function (req, res) {
     if (!_id) {
         scope.save(function (err, sc) {
             if (err) {
-                console.info(err);
+                if(err) throw err;
             } else {
                 res.set('Content-Type', 'text/plain');
                 res.send({data: sc, i: 1});
@@ -40,7 +40,7 @@ exports.save = function (req, res) {
     } else {
         Scope.update({_id: _id}, {$set: {name: scope.name}}, function (err, i) {
             if (err) {
-                console.info(err);
+                if(err) throw err;
             } else {
                 res.set('Content-Type', 'text/plain');
                 res.send({data: scope, i: i});
@@ -59,6 +59,7 @@ exports.del = function (req, res) {
     scope.remove(function (err, scope) {
         res.set('Content-Type', 'text/plain');
         if (err) {
+            console.error(err);
             res.send({deleted: false});
         } else {
             res.send({deleted: true});

@@ -10,7 +10,7 @@ var Group = mongoose.model("Group");
 exports.group = function (req, res, next, id) {
     Group.load(id, function (err, group) {
         if (err) return next(err);
-        if (!group) return next('找不到数据，id： ' + id);
+        if (!group) return next(new Error('找不到数据，id： ' + id));
         req.group = group;
         next()
     });
@@ -31,7 +31,7 @@ exports.save = function (req, res) {
     if (!_id) {
         group.save(function (err, gp) {
             if (err) {
-                console.info(err);
+                if(err) throw err;
             } else {
                 res.set('Content-Type', 'text/plain');
                 res.send({data: gp, i: 1});
@@ -40,7 +40,7 @@ exports.save = function (req, res) {
     } else {
         Group.update({_id: _id}, {$set: {name: group.name, max: group.max}}, function (err, i) {
             if (err) {
-                console.info(err);
+                if(err) throw err;
             } else {
                 res.set('Content-Type', 'text/plain');
                 res.send({data: group, i: i});
@@ -59,6 +59,7 @@ exports.del = function (req, res) {
     group.remove(function (err, group) {
         res.set('Content-Type', 'text/plain');
         if (err) {
+            console.error(err);
             res.send({deleted: false});
         } else {
             res.send({deleted: true});

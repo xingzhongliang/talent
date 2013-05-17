@@ -24,7 +24,7 @@ var fs = require("fs");
 exports.candidate = function (req, res, next, id) {
     Candidate.load(id, function (err, candidate) {
         if (err) return next(err);
-        if (!candidate) return next('找不到该选项，选项值： ' + id);
+        if (!candidate) return next(new Error('找不到该选项，选项id： ' + id));
         req.candidate = candidate;
         next()
     });
@@ -64,8 +64,8 @@ exports.add = function (req, res) {
 exports.doAdd = function (req, res) {
     var candidate = new Candidate(req.body);
     var subject = req.subject;
-
     // 选项图片
+
     var witOfAudio = req.body.witOfAudio;
     var witOfImg = req.body.witOfImg;
     var witOfVideo = req.body.witOfVideo;
@@ -232,6 +232,7 @@ exports.vote = function (req, res) {
     };
     // 检查是否参与过本主题的本轮投票
     Subject.load(candidate.subject, function (err, subject) {
+        if(err) return response("errors", "服务器错误");
         var now = new Date().getTime();
         if (subject.voteStart && now < subject.voteStart.getTime()) { // 还没到投票时间
             response("errors", "还没到投票时间！");
@@ -239,7 +240,7 @@ exports.vote = function (req, res) {
             response("errors", "投票时间已结束")
         } else {
             Vote.voted(voter.erpId, subject, function (err, vote) {
-                if (err) throw err;
+                if(err) return response("errors", "服务器错误");
                 if (vote) { // 投过，给出提示
                     response("errors", "请不要重复投票！");
                 } else {
@@ -247,6 +248,7 @@ exports.vote = function (req, res) {
                         voter_erp: voter.erpId, voter_name: voter.name, voter_department: voter.department, subject: candidate.subject, candidate: candidate._id, round: subject.round
                     });
                     vote.save(function (err) {
+                        if(err) return response("errors", "服务器错误");
                         Candidate.update({_id: candidate._id}, {$inc: { votes: 1}}, function (err, i) {
                             if (err) {
                                 response("errors", "服务器错误");

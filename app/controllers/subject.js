@@ -15,7 +15,7 @@ var config = require("../../config/config");
 exports.subject = function (req, res, next, id) {
     Subject.load(id, function (err, subject) {
         if (err) return next(err);
-        if (!subject) return next('找不到该主题，主题ID： ' + id);
+        if (!subject) return next(new Error('找不到该主题，主题ID： ' + id));
         req.subject = subject;
         next()
     });
@@ -55,6 +55,7 @@ exports.show = function (req, res) {
         subject.groups = groups;
         var cs = [];
         Candidate.findBySubjectId(subject._id, function (err, candidates) {
+            if (err) throw err;
             for (var i = 0; i < candidates.length; i++) {
                 var s = candidates[i].scope;
                 var g = candidates[i].group;
@@ -95,7 +96,7 @@ exports.doAdd = function (req, res) {
         subject.token = uuid.v4();
     }
     // 给主题赋值owner
-    subject.owner = req.session.user.name;
+    subject.owner = req.session.user.erpId;
 
     //日期属性处理
     var fmt = 'YYYY-MM-DD';
@@ -103,21 +104,62 @@ exports.doAdd = function (req, res) {
     var voteEnd = req.param['voteEnd'];
     var regBegin = req.param['regBegin'];
     var regEnd = req.param['regEnd'];
-    voteBegin && (subject.voteBegin = moment(voteBegin, fmt));
+    voteBegin && (subject.voteStart = moment(voteBegin, fmt));
     voteEnd && (subject.voteEnd = moment(voteEnd, fmt));
-    regBegin && (subject.regBegin = moment(regBegin, fmt));
+    regBegin && (subject.regStart = moment(regBegin, fmt));
     regEnd && (subject.regEnd = moment(regEnd, fmt));
 
     subject.save(function (err) {
-        if (err) {
-            console.error(err);
-            throw err;
-        }
+        if (err) throw err;
         res.redirect('/admin');
         console.info('[doAddSub]end>>');
     });
 
 };
+
+/**
+ * MODIFY
+ * @param req
+ * @param res
+ */
+exports.doEdit = function (req, res) {
+    var subject = req.body.sub;
+    var erpId = req.session.user.erpId;
+    var sub = req.subject;
+    if (!sub) {                         //Subject check
+        res.send({code: -1})
+    }
+    if (sub.owner != erpId && !config.isAdmin(erpId)) {   //User check,Admin can modify any subject
+        res.send({code: -2})
+    }
+    // 如果设置为使用令牌，则生成令牌
+    if (subject.token == 1) {
+        subject.token = uuid.v4();
+    } else {
+        subject.token = 0;    //else set token to null
+    }
+
+    Subject.update({_id: sub._id},
+        {$set: {
+            token: subject.token,
+            voteStart: req.body['voteStart'],
+            voteEnd: req.body['voteEnd'],
+            regStart: req.body['regStart'],
+            regEnd: req.body['regEnd'],
+            voteChance: subject.voteChance,
+            regChance: subject.regChance,
+            isPrivate: subject.isPrivate ? true : false,
+            canReg: subject.canReg ? true : false
+        }}, function (err) {
+            if (err) {
+                console.error(err);
+                throw err;
+            }
+            res.send({code: 1});
+        });
+
+};
+
 
 exports.list = function (req, res) {
     var page = req.param('page') > 0 ? req.param('page') : 0;
@@ -128,8 +170,9 @@ exports.list = function (req, res) {
     };
 
     Subject.list(options, function (err, subjects) {
-        if (err) return res.status(500).render('500', {title: "500", error: err.stack });
+        if (err) throw err;
         Subject.count().exec(function (err, count) {
+            if (err) throw err;
             res.render("admin/index", {
                 title: "管理控制台",
                 subjects: subjects,
@@ -146,10 +189,32 @@ exports.list = function (req, res) {
  * @param res
  */
 exports.index = function (req, res) {
-    Subject.findOne()
+    var page = req.param('page') > 0 ? req.param('page') : 0;
+    var pageSize = 6;
+    var options = {
+        pageSize: pageSize,
+        page: page
+    };
+    var now = new Date();
+    Subject.find({isPrivate: false})
+        .where('topStartTime').lt(now)
+        .where('topEndTime').gt(now)
         .sort({createTime: '-1'})
-        .exec(function (err, subject) {
-            res.redirect("/subject/" + subject._id);
+        .exec(function (er, tops) {
+            if (er) throw er;
+            Subject.list(options, function (err, subjects) {
+                if (err) throw err;
+                Subject.count().exec(function (err, count) {
+                    if (err) throw err;
+                    res.render("index", {
+                        title: "表决吧，骚年！",
+                        list: subjects,
+                        tops:tops,
+                        pages: count / pageSize,
+                        page: page
+                    });
+                });
+            });
         });
 };
 

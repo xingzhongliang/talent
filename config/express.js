@@ -37,7 +37,7 @@ module.exports = function (app, config) {
             console.error(err.stack);
 
             // error page
-            res.status(500).render('500', {title: "500", error: err.stack });
+            res.status(500).render('500', {title: "500", error: err });
         });
 
         // assume 404 since no middleware responded
@@ -47,7 +47,7 @@ module.exports = function (app, config) {
 
         // 处理“未捕获异常”，防止服务器异常退出
         process.on('uncaughtException', function (err) {
-            console.error("uncaughtException!!!", err);
+            console.error("uncaughtException!!!", err.stack);
         });
     });
 };

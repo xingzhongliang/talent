@@ -12,7 +12,7 @@ module.exports = {
 
     root: rootPath, // 系统根路径
 //    uploadDir: '/data/talent/uploads', // 文件上传的目录 ： 不能放在应用目录下面 防止应用更新时被误删
-    uploadDir: 'E:\\talent\\uploads', // 文件上传的目录 ： 不能放在应用目录下面 防止应用更新时被误删
+    uploadDir: 'D:\\TEMP', // 文件上传的目录 ： 不能放在应用目录下面 防止应用更新时被误删
 //    templateDir: 'E:\\talent\\uploads\\templates', // 模板文件夹
     templateDir: rootPath + '\\templates', // 模板文件夹
     app: {

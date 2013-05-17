@@ -9,11 +9,17 @@
 
 (function ($) {
 
+    var def = {
+        method: 'get',
+        dataType: 'json'
+    }
     $.importCSS('/load/css/load.css');
-    $.fn.loading = function (url, data, callback) {
+    $.fn.loading = function (url, data,opt, callback) {
         var $t = this;
         if (typeof  data == 'function') {
             callback = data;
+        }else if(typeof  opt == 'function') {
+            callback = opt;
         }
         $t.each(function () {
             var self = this, $self = $(this);
@@ -24,13 +30,14 @@
             $(img).addClass('img').html('&nbsp;').appendTo(div);
             $self.addCover({
                 position: 'center',
-                content: div
+                content: div,
+                of:opt && opt.of ? opt.of : null,
+                as:opt && opt.as ? opt.as: null
             }).showCover();
         });
-        var opt = {
+        opt.hide && $t.hide();
+        var param = {
             url: url,
-            method: 'get',
-            dataType: 'json',
             success: function (res) {
                 callback && callback(res);
                 $t.each(function () {
@@ -38,10 +45,15 @@
                 });
             }
         };
-        if(typeof data == 'object') {
-            opt.data = data;
+        if(typeof data != 'object') {
+            param.data = data;
         }
-        $.ajax(opt);
+        if(typeof  opt == 'object') {
+            opt = $.simpleMerge(def,opt);
+            param.method = opt.method;
+            param.dataType = opt.dataType;
+        }
+        $.ajax(param);
 
     };
 
