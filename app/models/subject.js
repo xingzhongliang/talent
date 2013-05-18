@@ -26,13 +26,12 @@ var SubjectSchema = new Schema({
     , voteEnd: Date // 投票结束时间
     , regStart: Date //  报名开始时间
     , regEnd: Date // 报名结束时间
-    , isPrivate: {type: Boolean, default: true} //  是否所有人可见
+    , isPublic: {type: Boolean, default: true} //  是否所有人可见
     , token: String // 如果token值不为空 则user成为candidate时需要token
     , owner: String // 创建者erp账号
     , createTime: {type: Date, default: Date.now} //创建日期
     , round: {type: Number, default: 1} // 当前第几轮 默认1次 可以重新开启新一轮投票
-    , topStartTime:Date  // 置顶开始时间
-    , topEndTime:Date  // 置顶结束时间
+    , fixTop:{type:Boolean,default:false}  // 置顶
     , yn: {type: Number, default: 1}  //是否可用
     , viewOpt: { // 页面展示选项
         templateName: String // 使用模板名称，隐含指定了模板路径

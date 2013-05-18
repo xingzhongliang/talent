@@ -6,6 +6,7 @@ block head
     script(src="/js/load/load.js")
     script(src="/js/popover/popover.js")
     script(src="/js/bootstrapSwitch.js")
+    script(src="/js/filebox/filebox.js")
     style
         .muted {
             background: #F5F5F5;
@@ -16,6 +17,43 @@ block head
     script(src="/js/datepicker/js/bootstrap-datepicker.js")
     script
         $(function(){
+
+            $('#banInpt').filebox({
+                width:450,
+                height:150,
+                callback:function(f,data,res) {
+                   data && data.path && $('#subBanner').val(data.path);
+               }
+            });
+
+            $('#svBanner').click(function(){
+                var ban = $('#subBanner').val();
+                if(ban) {
+                    $.ajax({
+                        url:'/subject/#{subject._id}/chg-banner?' + new Date().getTime(),
+                        method:'post',
+                        dataType:'json',
+                        data:'banner=' + ban,
+                        success:function(res) {
+                            window.location.reload();
+                        }
+                    });
+                }
+            });
+
+            $('#ccBtn').click(function(){
+                var btn = $('.addBan').get(0);
+                btn.pop = !btn.pop;
+                $(btn).hideCover();
+            });
+
+            $('.addBan').zpop({
+                position:'left',
+                target:$('#banPop').get(0)
+            }).click(function(){
+                this.pop = !this.pop;
+                this.pop ? $(this).showCover() : $(this).hideCover();
+            });
 
             $('#modSetBtn').zpop({
                 position:'left',
@@ -79,11 +117,26 @@ block main
                     button.btn 下一轮投票
                     a(href="/subject/#{subject._id}/candidate/list").btn 选项管理
                     a(href='/subject/#{subject._id}/candidate/add').btn.btn-success.btn-add-opt 新选项
+                        i.icon-plus.icon-white
+    h4 Banner
+    .row
+        if subject.banner
+            .span9(style="text-align:center;margin-bottom:15px")
+                img(src="#{subject.banner}")
+        input(type="hidden",id="subBanner")
+        .pull-right
+            if subject.banner
+                button.addBan.btn.btn-primary 修改
+            else
+                button.addBan.btn.btn-primary 上传
+        .clearfix
+    hr
 
     h4 活动设置
     div.row
         .span9
-            if subject.isPrivate == 1
+            i.icon-tags
+            if subject.isPublic == 1
                 span.label.label-info.label-large 首页可见
             else
                 span.label.label-large 首页不可见
@@ -200,12 +253,12 @@ block main
                     div.row
                         .span10
                             .span3
-                                if subject.isPrivate == 1
+                                if subject.isPublic == 1
                                     div.b2-switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
-                                        input(name='sub[isPrivate]',type='checkbox',checked='true',value='1')
+                                        input(name='sub[isPublic]',type='checkbox',checked='true',value='1')
                                 else
                                     div.b2-switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
-                                        input(name='sub[isPrivate]',type='checkbox',checked='false',value='1')
+                                        input(name='sub[isPublic]',type='checkbox',checked='false',value='1')
                             .span3
                                 if subject.canReg == 1
                                     div.b2-switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
@@ -261,12 +314,12 @@ block main
         h3 活动设置
         div.row
             .span3
-                if subject.isPrivate == 1
+                if subject.isPublic == 1
                     div.switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
-                        input(name='sub[isPrivate]',type='checkbox',checked='true',value='1')
+                        input(name='sub[isPublic]',type='checkbox',checked='true',value='1')
                 else
                     div.switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
-                        input(name='sub[isPrivate]',type='checkbox',checked='false',value='1')
+                        input(name='sub[isPublic]',type='checkbox',checked='false',value='1')
             .span3
                 if subject.canReg == 1
                     div.switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
@@ -346,12 +399,22 @@ block main
         .modal-footer
             a#sbmDelbtn.btn.btn-danger 确定
             button(data-dismiss="modal").btn 取消
+    .hide
+        #banPop
+            div(style="margin-bottom:10px")
+                input#banInpt(type="text")
+            .pull-right
+                button#svBanner.btn.btn-success 确定
+                span &nbsp;
+                button#ccBtn.btn  取消
+            .clearfix
 
 
 
 block footer
     script(src="/js/bootstrapSwitch.js")
     script
+
         function sbmt() {
             $('#cfrmEdit').siblings('a').hide();
             $('#cfrmEdit').loading('/subject/#{subject._id}/do-edit',$('#dataForm').serialize()
@@ -393,7 +456,7 @@ block footer
                 if(gi) {
                     $('#' + gi).find('.mgBtn').loading('/group/save',data,svGroup);
                 }else{
-                    $('#addScopeBtn').loading('/group/save',data,svGroup);
+                    $('#addGroupBtn').loading('/group/save',data,svGroup);
                 }
             }
         }

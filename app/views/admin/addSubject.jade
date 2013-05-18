@@ -2,6 +2,10 @@ extends ../layouts/adminWithSideBar
 block head
     link(href="/css/bootstrapSwitch.css",rel="stylesheet",media="screen")
     link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
+    style
+        .span-4 {
+            width: 340px;;
+        }
     script(src="/js/bootstrap-sniper.js")
     script(src="/js/datepicker/js/bootstrap-datepicker.js")
     script(src="/js/filebox/filebox.js")
@@ -44,7 +48,7 @@ block main
       div.row
         .span3
           div.b-switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
-            input(name='isPrivate',type='checkbox',checked='true',value='1')
+            input(name='isPublic',type='checkbox',checked='true',value='1')
         .span3
           div.b-switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
             input(name='canReg',type='checkbox',checked='true',value='1')
@@ -94,6 +98,9 @@ block main
       div#advancedOpts.well.hide
         fieldset
           legend 页面通用设置
+          .alert.alert-info
+             strong 小贴士：
+             span 如果希望主题被置顶显示，请务必上传banner，否则无法正常显示
           .control-group
             label.control-label 主题Banner图片：
             .controls
