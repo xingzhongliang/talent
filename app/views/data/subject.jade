@@ -1,0 +1,32 @@
+//
+    User: laichendong
+    Date: 13-5-18
+    Time: 下午10:49
+extends ../layouts/adminWithSideBar
+block head
+    style
+        .thumbnail .well{margin-bottom: 0;}
+        .summaryNum{font-size: 3em;}
+block sidebar
+    ul(data-spy="affix").nav.nav-tabs.nav-stacked
+        li: a(href="/subject/#{subject._id}/data/candidate") 选项数据
+        li: a(href="/subject/#{subject._id}/data/votes") 选票数据
+
+block main
+    .well
+        h2!=subject.name
+            small &nbsp;第 #{subject.round} 轮
+    ul.thumbnails
+        li.span3
+            .thumbnail: .well 选项数：
+                b.summaryNum= summary.numCandidate
+        li.span3
+            .thumbnail: .well 投票数：
+                b.summaryNum= summary.numVotes
+        li.span3
+            .thumbnail: .well 域数：
+                b.summaryNum= summary.numScope
+        li.span3
+            .thumbnail: .well 组数：
+                b.summaryNum= summary.numGroup
+

@@ -34,7 +34,6 @@ var SubjectSchema = new Schema({
     , topStartTime:Date  // 置顶开始时间
     , topEndTime:Date  // 置顶结束时间
     , yn: {type: Number, default: 1}  //是否可用
-    , votes: {type: Number, default: 0}  //本次活动的参与人数 注意：不一定等于 总票数
     , viewOpt: { // 页面展示选项
         templateName: String // 使用模板名称，隐含指定了模板路径
         , showType: {type: Number, default: 3}  // 候选项在前台的展示方式1、文本；2、图片；3、详情页
