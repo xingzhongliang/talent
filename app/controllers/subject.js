@@ -148,8 +148,68 @@ exports.doEdit = function (req, res) {
             regEnd: req.body['regEnd'],
             voteChance: subject.voteChance,
             regChance: subject.regChance,
-            isPrivate: subject.isPrivate ? true : false,
+            isPublic: subject.isPublic ? true : false,
             canReg: subject.canReg ? true : false
+        }}, function (err) {
+            if (err) {
+                console.error(err);
+                throw err;
+            }
+            res.send({code: 1});
+        });
+
+};
+
+/**
+ * 改变主题的置顶状态
+ * @param req
+ * @param res
+ */
+exports.doFixTop = function (req, res) {
+    var erpId = req.session.user.erpId;
+    var sub = req.subject;
+    if (!sub) {                         //Subject check
+        res.send({code: -1})
+    }
+    if (sub.owner != erpId && !config.isAdmin(erpId)) {   //User check,Admin can modify any subject
+        res.send({code: -2})
+    }
+
+    sub.fixTop = !sub.fixTop;
+
+    Subject.update({_id: sub._id},
+        {$set: {
+            fixTop: sub.fixTop
+        }}, function (err) {
+            if (err) {
+                console.error(err);
+                throw err;
+            }
+            res.send({code: 1});
+        });
+
+};
+
+/**
+ * 更新banner图片
+ * @param req
+ * @param res
+ */
+exports.chgBanner = function (req, res) {
+    var erpId = req.session.user.erpId;
+    var sub = req.subject;
+    if (!sub) {                         //Subject check
+        res.send({code: -1})
+    }
+    if (sub.owner != erpId && !config.isAdmin(erpId)) {   //User check,Admin can modify any subject
+        res.send({code: -2})
+    }
+
+    var banner = req.param('banner');
+
+    Subject.update({_id: sub._id},
+        {$set: {
+            banner: banner
         }}, function (err) {
             if (err) {
                 console.error(err);
@@ -190,16 +250,29 @@ exports.list = function (req, res) {
  */
 exports.index = function (req, res) {
     var page = req.param('page') > 0 ? req.param('page') : 0;
+    var kw = req.param('kw');
     var pageSize = 6;
+    kw && (kw = kw.trim());
     var options = {
         pageSize: pageSize,
         page: page
     };
-    var now = new Date();
-    Subject.find({isPrivate: false})
-        .where('topStartTime').lt(now)
-        .where('topEndTime').gt(now)
+    options.criteria = {
+        isPublic : true
+    };
+    var reg;
+    if(kw) {
+        var r = '';
+        for(var i = 0; i < kw.length; i++) {
+            var c = kw.charAt(i);
+            c && c.trim() && (r += ('.*' + c));
+        }
+        reg = new RegExp(r + '.*','i');
+    }
+    reg && (options.criteria.name = reg);
+    Subject.find({isPublic: true,fixTop:true})
         .sort({createTime: '-1'})
+        .limit(3)
         .exec(function (er, tops) {
             if (er) throw er;
             Subject.list(options, function (err, subjects) {
@@ -210,6 +283,7 @@ exports.index = function (req, res) {
                         title: "表决吧，骚年！",
                         list: subjects,
                         tops:tops,
+                        kw:kw,
                         pages: count / pageSize,
                         page: page
                     });

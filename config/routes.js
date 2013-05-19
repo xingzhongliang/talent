@@ -31,6 +31,8 @@ module.exports = function (app) {
     app.get('/subject/:subjectId/data', auth("admin"), data.subject); // 主题数据首页
     app.get('/subject/:subjectId/edit', auth("admin"), subject.edit); // 编辑，管理主题
     app.post('/subject/:subjectId/do-edit', auth("admin"), subject.doEdit); // Modify
+    app.post('/subject/:subjectId/fix-top', auth("admin"), subject.doFixTop); // Modify
+    app.post('/subject/:subjectId/chg-banner', auth("admin"), subject.chgBanner); // Modify
 
     // 选项管理
     app.get('/subject/:subjectId/candidate', candidate.channel); // 前台展示列表（频道）页

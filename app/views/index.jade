@@ -2,22 +2,72 @@
 extends layouts/admin
 block head
     link(href="/css/subject.css",rel="stylesheet",media="screen")
+    script
+        $(function(){
+            $('#top').carousel({interval: 2000});
+        });
 block content
-    .row-fluid
+    .row
         .span12
-            form.well.form-search
-                input(type="text").span5
-                button.btn.btn-success 搜索主题
-                    i.icon-search.icon-white
+            if tops && tops.length > 0
+                #top.carousel.slide
+                    .carousel-inner
+                        each top,i in tops
+                            if(i == 0)
+                                -var clazz="item active"
+                            else
+                                -var clazz="item"
+                            div(class="#{clazz}",style="background:gray")
+                                .div-center
+                                    a(href="/subject/#{top._id}")
+                                        img(src="#{top.banner}",alt="#{top.name}",style="max-height:500px")
+                                .carousel-caption
+                                    h4 #{top.name}
+                                    p #{top.comment}
+                    a.carousel-control.left(href="#top",data-slide="prev") &lsaquo;
+                    a.carousel-control.right(href="#top",data-slide="next") &rsaquo;
+
+        div(style="margin-bottom:15px;margin-top:15px").span12
+            div(style="text-align:center").form-search
+                form(method="get",action="/")
+                    .input-append
+                        if kw
+                            input.span6.search-query(type="text",name="kw",placeholder="请输入主题名称",value="#{kw}")
+                        else
+                            input.span6.search-query(type="text",name="kw",placeholder="请输入主题名称")
+                        button(type="submit").btn.btn-success
+                            i.icon-white.icon-search
+    hr
+    div(style="margin-bottom:15px").row
+        .span12
+                .btn-group
+                    button.btn 时间&nbsp;
+                        i.icon-arrow-down
+                    button.btn 人气&nbsp;
+                        i.icon-arrow-down
+            .clearfix
     each item in list
-        .row-fluid
-                .span2
-                    .subject-top TOP
-                    //.subject-hot HOT
-                    .subject-vote #{item.votes}
-                .span10
-                    .subject
+        .row(style="margin-bottom:15px;")
+            .span10
+                .subject
+                    .subject-name
+                        a.subject-a(href="/subject/#{item._id}")  #{item.name}
+                    .subject-desc #{item.comment}
                         if item.banner
-                            img(src="#{item.banner}")
-                        .subject-name #{item.name}
-                        .subject-desc #{item.description}
+                            .subject-banner
+                                img(src="#{item.banner}")
+                    .subject-foot
+                        .pull-right  Post By #{item.owner} ghost / #{fmt2(item.createTime,'YYYY-MM-DD HH:mm')}
+                        .clearfix
+            .span2
+                //.subject-top TOP
+                //.subject-hot HOT
+                .subject-vote #{item.votes}
+    if list.length == 0
+        .row
+            if kw
+                .alert.div-center  没有查到关于 <strong style="color:red">#{kw} </strong>的主题 ！
+            else
+                .alert.div-center  目前没有主题，赶快去创建一个吧！
+
+
