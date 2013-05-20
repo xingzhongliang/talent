@@ -15,87 +15,6 @@ block head
             width: 340px;;
         }
     script(src="/js/datepicker/js/bootstrap-datepicker.js")
-    script
-        $(function(){
-
-            $('#banInpt').filebox({
-                width:450,
-                height:150,
-                callback:function(f,data,res) {
-                   data && data.path && $('#subBanner').val(data.path);
-               }
-            });
-
-            $('#svBanner').click(function(){
-                var ban = $('#subBanner').val();
-                if(ban) {
-                    $.ajax({
-                        url:'/subject/#{subject._id}/chg-banner?' + new Date().getTime(),
-                        method:'post',
-                        dataType:'json',
-                        data:'banner=' + ban,
-                        success:function(res) {
-                            window.location.reload();
-                        }
-                    });
-                }
-            });
-
-            $('#ccBtn').click(function(){
-                var btn = $('.addBan').get(0);
-                btn.pop = !btn.pop;
-                $(btn).hideCover();
-            });
-
-            $('.addBan').zpop({
-                position:'left',
-                target:$('#banPop').get(0)
-            }).click(function(){
-                this.pop = !this.pop;
-                this.pop ? $(this).showCover() : $(this).hideCover();
-            });
-
-            $('#modSetBtn').zpop({
-                position:'left',
-                target:$('#set').get(0)
-            }).click(function(){
-                this.pop = !this.pop;
-                this.pop ? $(this).showCover() : $(this).hideCover();
-            });
-
-            $('.voteMax').sniper();
-            $('.regMax').sniper();
-            $('.b2-switch')['bootstrapSwitch']();
-            $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
-            $('.datepicker ').css({zIndex:1020});
-
-            msBtnInit($('#addScopeBtn').get(0),'','');
-            mgBtnInit($('#addGroupBtn').get(0),'','','');
-            $('.msBtn').each(function(){
-                var tr = $(this).parents('tr');
-                var sn =  tr.find('td').eq(1).html();
-                msBtnInit(this,sn,tr.attr('id'));
-            });
-            $('.mgBtn').each(function(){
-                var tr = $(this).parents('tr');
-                var gn =  tr.find('td').eq(1).html();
-                var gm =  tr.find('td').eq(2).html();
-                mgBtnInit(this,gn,gm,tr.attr('id'));
-            });
-            $("#scope").delegate(".dsBtn","click",function(){
-                var id = $(this).parents("tr").attr("id");
-                // 显示删除警告
-                $("#sbmDelbtn").attr("href", "javascript:delSG('"+id+"','scope');");
-                $("#delModal").find(".modal-body p").html("您确定删除这个域吗？").end().modal();
-            });
-            $("#group").delegate(".dgBtn","click",function(){
-                var id = $(this).parents("tr").attr("id");
-                // 显示删除警告
-                $("#sbmDelbtn").attr("href", "javascript:delSG('"+id+"','group');");
-                $("#delModal").find(".modal-body p").html("您确定删除这个组吗？").end().modal();
-            });
-        });
-
 
 block sidebar
     ul(data-spy="affix").nav.nav-tabs.nav-stacked
@@ -414,7 +333,109 @@ block main
 block footer
     script(src="/js/bootstrapSwitch.js")
     script
+        $(function(){
 
+            $('#banInpt').filebox({
+                width:450,
+                height:150,
+                callback:function(f,data,res) {
+                   data && data.path && $('#subBanner').val(data.path);
+               }
+            });
+
+            $('#svBanner').click(function(){
+                var ban = $('#subBanner').val();
+                if(ban) {
+                    $.ajax({
+                        url:'/subject/#{subject._id}/chg-banner?' + new Date().getTime(),
+                        method:'post',
+                        dataType:'json',
+                        data:'banner=' + ban,
+                        success:function(res) {
+                            window.location.reload();
+                        }
+                    });
+                }
+            });
+
+            $('#ccBtn').click(function(){
+                var btn = $('.addBan').get(0);
+                btn.pop = !btn.pop;
+                $(btn).hideCover();
+            });
+
+            $('.addBan').zpop({
+                position:'left',
+                target:$('#banPop').get(0)
+            }).click(function(){
+                this.pop = !this.pop;
+                this.pop ? $(this).showCover() : $(this).hideCover();
+            });
+
+            $('#modSetBtn').zpop({
+                position:'left',
+                target:$('#set').get(0)
+            }).click(function(){
+                this.pop = !this.pop;
+                this.pop ? $(this).showCover() : $(this).hideCover();
+            });
+
+            $('.voteMax').sniper();
+            $('.regMax').sniper();
+            $('.b2-switch')['bootstrapSwitch']();
+            $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
+            $('.datepicker ').css({zIndex:1020});
+
+            $('#addScopeBtn').popover({
+                placement:'top',
+                html:true,
+                content:function(){
+                    return $('#sp').html().replace('SN',"").replace('SI',"");
+                }
+            });
+            $('#addGroupBtn').popover({
+                placement:'top',
+                html:true,
+                content:function(){
+                    return $('#gp').html().replace('GN',"").replace('GI',"").replace('GM',"");
+                }
+            });
+            $(".msBtn").popover(msOpt);
+            $(".mgBtn").popover(mgOpt);
+            $("#scope").delegate(".dsBtn","click",function(){
+                var id = $(this).parents("tr").attr("id");
+                // 显示删除警告
+                $("#sbmDelbtn").attr("href", "javascript:delSG('"+id+"','scope');");
+                $("#delModal").find(".modal-body p").html("您确定删除这个域吗？").end().modal();
+            });
+            $("#group").delegate(".dgBtn","click",function(){
+                var id = $(this).parents("tr").attr("id");
+                // 显示删除警告
+                $("#sbmDelbtn").attr("href", "javascript:delSG('"+id+"','group');");
+                $("#delModal").find(".modal-body p").html("您确定删除这个组吗？").end().modal();
+            });
+        });
+        var mgOpt = {
+             placement:'top',
+             html:true,
+             content:function(){
+                var tr = $(this).parents("tr");
+                var name = tr.find("td:eq(1)").text();
+                var id = tr.attr("id");
+                var max = tr.find("td:eq(2)").text();
+                return $('#gp').html().replace('GN',name).replace('GI',id).replace('GM',max);
+             }
+        };
+        var msOpt = {
+             placement:'top',
+             html:true,
+             content:function(){
+                var tr = $(this).parents("tr");
+                var name = tr.find("td:eq(1)").text();
+                var id = tr.attr("id");
+                return $('#sp').html().replace('SN',name).replace('SI',id);
+             }
+        };
         function sbmt() {
             $('#cfrmEdit').siblings('a').hide();
             $('#cfrmEdit').loading('/subject/#{subject._id}/do-edit',$('#dataForm').serialize()
@@ -472,13 +493,11 @@ block footer
                 tab.append('<tr>' + tab.find('.tmpl').html() + '</tr>').show();
                 var tr = tab.find('tr:last');
                 tr.attr('id',data._id);  //使用scope的id
-                msBtnInit(tr.find('.msBtn').get(0),data.name,data._id);
             }
             var tds = tr.find('td');
             tds.eq(0).html(tab.find('tbody').find('tr').size() - 1);
             tds.eq(1).html(data.name);
-            // 不能调两遍？ 直接使按钮失效了
-            msBtnInit(tr.find('.msBtn').get(0),data.name,data._id);
+            $("tr .msBtn").popover(msOpt);
         }
 
         function svGroup(res) {
@@ -492,13 +511,12 @@ block footer
                 tab.append('<tr>' + tab.find('.tmpl').html() + '</tr>').show();
                 var tr = tab.find('tr:last');
                 tr.attr('id',data._id);  //使用group的id
-                mgBtnInit(tr.find('.mgBtn').get(0),data.name,data.max,data._id);
             }
             var tds = tr.find('td');
             tds.eq(0).html(tab.find('tbody').find('tr').size() - 1);
             tds.eq(1).html(data.name);
             tds.eq(2).html(data.max);
-            mgBtnInit(tr.find('.mgBtn').get(0),data.name,data.max,data._id);
+            $("tr .mgBtn").popover(mgOpt);
         }
 
         // 删除域或组
@@ -518,32 +536,6 @@ block footer
         }
 
 
-        function msBtnInit(obj,name,id) {
-            obj.pop = null;
-            $(obj).popover('destroy').unbind('click');
-            $(obj).popover({   //init edit pop
-                placement:'top',
-                html:true,
-                content:$('#sp').html().replace('SN',name).replace('SI',id)
-            }).click(function(){
-                this.pop = !this.pop;
-                this.pop ? $(this).popover('show') : $(this).popover('hide');
-            });
-        }
-
-        function mgBtnInit(obj,name,max,id) {
-             obj.pop = null;
-             $(obj).popover('destroy').unbind('click');
-             $(obj).popover({   //init edit pop
-                 placement:'top',
-                 html:true,
-                 content:$('#gp').html().replace('GN',name).replace('GI',id).replace('GM',max)
-             }).click(function(){
-                 this.pop = !this.pop;
-                 this.pop ? $(this).popover('show') : $(this).popover('hide');
-             });
-         }
-
         function closeAS(obj) {
             var si = $(obj).siblings(':hidden').val();
             var it = !si ? $('#addScopeBtn').popover('hide').get(0) : $('#' + si).find('.msBtn').popover('hide').get(0);
@@ -561,6 +553,4 @@ block footer
             obj.pop = !obj.pop;
             $('#modSetBtn').hideCover();
         }
-
-
 

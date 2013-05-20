@@ -45,7 +45,7 @@
                 });
             }
         };
-        if(typeof data != 'object') {
+        if(typeof data == 'object') {
             param.data = data;
         }
         if(typeof  opt == 'object') {
