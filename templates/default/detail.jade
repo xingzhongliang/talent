@@ -12,7 +12,10 @@ block content
   .w
     .list-area
         .list-area-title
-            h2= scope.name
+            if (scope && scope.name)
+                h2= scope.name
+            else
+                h2 &nbsp;
         .details
           .detail_face
             div
@@ -44,10 +47,11 @@ block content
                             param(name="flashvars",value="file=#{video}&image=#{img}")
                             embed(type="application/x-shockwave-flash",id="ve#{i}",name="ve#{i}",src="/js/pl.swf",width="608",height="504",allowscriptaccess="always",allowfullscreen="true",flashvars="file=#{video}&image=#{img}")
               //mp3
-            each item in candidate.witOfImg
-                .detail_wit
-                    script
-                        dewplayer("/test1.mp3");
+            each audio in candidate.witOfAudio
+                if audio
+                    .detail_wit
+                        script
+                            dewplayer('#{audio}');
 
           .detail_vote
             .vote_num #{candidate.votes}
