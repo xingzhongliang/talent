@@ -438,9 +438,10 @@ block footer
         };
         function sbmt() {
             $('#cfrmEdit').siblings('a').hide();
-            $('#cfrmEdit').loading('/subject/#{subject._id}/do-edit',$('#dataForm').serialize()
-                ,{method:'post',hide:true}
-                ,function(res){
+            $('#cfrmEdit').loading('/subject/#{subject._id}/do-edit',$('#dataForm').serialize(),{
+                method:'post'
+                , hide:true
+            }, function(res){
                 window.location.reload();
             });
         }

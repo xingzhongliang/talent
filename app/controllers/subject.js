@@ -127,10 +127,10 @@ exports.doEdit = function (req, res) {
     var erpId = req.session.user.erpId;
     var sub = req.subject;
     if (!sub) {                         //Subject check
-        res.send({code: -1})
+        return res.send({code: -1})
     }
     if (sub.owner != erpId && !config.isAdmin(erpId)) {   //User check,Admin can modify any subject
-        res.send({code: -2})
+        return res.send({code: -2})
     }
     // 如果设置为使用令牌，则生成令牌
     if (subject.token == 1) {

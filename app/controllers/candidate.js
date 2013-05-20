@@ -132,6 +132,7 @@ exports.list = function (req, res) {
     };
     // 查询汇总信息
     Candidate.collection.group(groupBy.keys, groupBy.condition, groupBy.initial, groupBy.reduce, groupBy.finalize, true, function (err, summary) {
+        if (err) throw err;
         // 查询主题下的域和组
         Subject.scopesAndGroups(subject._id, function (scopes, groups) {
             subject.scopes = scopes;
