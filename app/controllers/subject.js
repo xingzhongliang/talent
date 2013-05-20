@@ -244,7 +244,7 @@ exports.list = function (req, res) {
 };
 
 /**
- * 首页 显示最新活动的首页
+ * 首页
  * @param req
  * @param res
  */
@@ -258,19 +258,19 @@ exports.index = function (req, res) {
         page: page
     };
     options.criteria = {
-        isPublic : true
+        isPublic: true
     };
     var reg;
-    if(kw) {
+    if (kw) {
         var r = '';
-        for(var i = 0; i < kw.length; i++) {
+        for (var i = 0; i < kw.length; i++) {
             var c = kw.charAt(i);
             c && c.trim() && (r += ('.*' + c));
         }
-        reg = new RegExp(r + '.*','i');
+        reg = new RegExp(r + '.*', 'i');
     }
     reg && (options.criteria.name = reg);
-    Subject.find({isPublic: true,fixTop:true})
+    Subject.find({isPublic: true, fixTop: true})
         .sort({createTime: '-1'})
         .limit(3)
         .exec(function (er, tops) {
@@ -282,13 +282,28 @@ exports.index = function (req, res) {
                     res.render("index", {
                         title: "表决吧，骚年！",
                         list: subjects,
-                        tops:tops,
-                        kw:kw,
+                        tops: tops,
+                        kw: kw,
                         pages: count / pageSize,
                         page: page
                     });
                 });
             });
         });
+};
+
+/**
+ * 主题介绍页
+ * @param req
+ * @param res
+ */
+exports.intro = function (req, res) {
+    var subject = req.subject;
+    var template = subject.viewOpt.templateName || "default";
+    res.render(config.templateDir + "/" + template + '/intro', {
+        title: subject.name,
+        subject: subject,
+        template: template
+    });
 };
 

@@ -28,6 +28,7 @@ module.exports = function (app) {
     app.get('/subject/add', auth("admin"), subject.add); // 添加主题
     app.post('/subject/do-add', auth("admin"), subject.doAdd);// 插入数据
     app.get('/subject/:subjectId', subject.show); // 前台展示主题首页
+    app.get('/subject/:subjectId/intro', subject.intro); // 主题介绍页
     app.get('/subject/:subjectId/data', auth("admin"), data.subject); // 主题数据首页
     app.get('/subject/:subjectId/edit', auth("admin"), subject.edit); // 编辑，管理主题
     app.post('/subject/:subjectId/do-edit', auth("admin"), subject.doEdit); // Modify
