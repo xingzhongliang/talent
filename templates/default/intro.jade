@@ -1,0 +1,13 @@
+//-
+    User: laichendong
+    Date: 13-5-19
+    Time: 下午6:30
+extends layout
+block content
+    .w
+        .list-area
+            .list-area-title
+                h2 活动规则及公告
+            if subject.detail
+                .content !{subject.detail}
+

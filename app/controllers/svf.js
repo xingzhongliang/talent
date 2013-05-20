@@ -13,15 +13,16 @@ var path = require("path");
 var child_process = require('child_process');
 var mime = require('mime-magic');
 
-
 exports.svf = function (req, res) {
     var file = req.files.fn;
+    for(var p in file){
+        console.log(p + ":" + file[p]);
+    }
+
     var unkonwn = 'application/octet-stream';
     mime(file.path, function (err, type) {
-        if (err) {
-            console.info(err);
-        }
         console.info(type);
+        if (err)  throw err;
         var typeSize = {
             'image/jpg': 1048576, 'image/jpeg': 1048576, 'image/png': 1048576, 'image/pjpeg': 1048576, 'image/bmp': 1048576, 'image/x-png': 1048576, 'audio/mpeg': 1048576 * 50, 'video/mp4': 1048576 * 200, 'video/x-flv': 1048576 * 200
         };
@@ -47,14 +48,16 @@ exports.svf = function (req, res) {
         fs.rename(tmpPath, target_path, function (err) {
             if (err) throw err;
             // 删除临时文件夹文件,
-            fs.unlink(tmpPath, function () {
-                if (err) throw err;
-            });
+            if (fs.existsSync(tmpPath)) {
+                fs.unlink(tmpPath, function (err) {
+                    if (err) throw err;
+                });
+            }
             // 抓取视频快照
             if (type == 'video/mp4' || type == "video/x-flv") {
-                getSnapShot(target_path, tp, function (err3, path) {
-                    console.error(err3);
-                    res.send({path: fn.replace("." + tp, '.png'), code: err3 ? -3 : 1, video: fn});         //-3 : 抓取缩略图错误
+                getSnapShot(target_path, tp, function (err, path) {
+                    if (err) throw err;
+                    res.send({path: fn.replace("." + tp, '.png'), code: err ? -3 : 1, video: fn});         //-3 : 抓取缩略图错误
                 });
             } else {
                 res.send({path: fn, code: 1});
@@ -68,13 +71,12 @@ function getSnapShot(videoPath, tp, callback) {
     var cmd = 'ffmpeg -i "INPUT" -ss 00:00:02.435 -f image2 -vframes 1 "OUT"';
     var path = videoPath.replace("." + tp, '.png');
     var rm = cmd.replace('INPUT', videoPath).replace('OUT', path);
-    while(rm.indexOf('\\') != -1)  {
-        rm = rm.replace('\\','/');
+    while (rm.indexOf('\\') != -1) {
+        rm = rm.replace('\\', '/');
     }
     child_process.exec(rm, function (err, out, code) {
         callback(err, path);
     });
-
 
 //    var opt = [
 //        '-i ',
@@ -111,7 +113,7 @@ function mkdirSync(url, mode, cb) {
         arr.splice(0, 2, arr[0] + "/" + arr[1])
     }
     function inner(cur) {
-        if (!fs.existsSync(cur)) {//不存在就创建一个
+        if (cur && !fs.existsSync(cur)) {//不存在就创建一个
             fs.mkdirSync(cur, mode)
         }
         if (arr.length) {
