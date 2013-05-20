@@ -251,6 +251,7 @@ exports.list = function (req, res) {
 exports.index = function (req, res) {
     var page = req.param('page') > 0 ? req.param('page') : 0;
     var kw = req.param('kw');
+    var st = req.param('st');
     var pageSize = 6;
     kw && (kw = kw.trim());
     var options = {
@@ -269,6 +270,24 @@ exports.index = function (req, res) {
         }
         reg = new RegExp(r + '.*', 'i');
     }
+    var sort = {};
+    switch (st) {
+        case '1':
+            sort.createTime = '-1';
+            break;
+        case '2':
+            sort.createTime = '1';
+            break;
+        case '3':
+            sort.votes = '-1';
+            break;
+        case '4':
+            sort.votes = '1';
+            break;
+        default :
+            sort.createTime = '-1';
+    }
+    options.sort = sort;
     reg && (options.criteria.name = reg);
     Subject.find({isPublic: true, fixTop: true})
         .sort({createTime: '-1'})
@@ -284,6 +303,7 @@ exports.index = function (req, res) {
                         list: subjects,
                         tops: tops,
                         kw: kw,
+                        st: st,
                         pages: count / pageSize,
                         page: page
                     });

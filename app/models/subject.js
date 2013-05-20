@@ -58,7 +58,7 @@ SubjectSchema.statics = {
     list: function (options, cb) {
         var criteria = options.criteria || {};
         this.find(criteria)
-            .sort({createTime: '-1'})
+            .sort(options.sort ? options.sort : {createTime: '-1'})
             .limit(options.pageSize)
             .skip(options.pageSize * options.page)
             .exec(cb);
