@@ -11,6 +11,26 @@ block sidebar
         li: a(href="/subject/#{subject._id}/candidate/add") 新增选项
 
 block main
+    .well
+        p 选项总数：
+            b.badge.badge-warning #{summary.count}
+        dl
+            dt #{subject.viewOpt.newCandidatePage.scopeLabel}：
+            each scope in subject.scopes
+                dd.span2 #{scope.name}：
+                    if (summary.scope[scope.id])
+                        b.badge.badge-success #{summary.scope[scope.id]}
+                    else
+                        b.badge 0
+
+        dl
+            dt #{subject.viewOpt.newCandidatePage.groupLabel}：
+            each group in subject.groups
+                dd.span2 #{group.name}：
+                    if (summary.group[group.id])
+                        b.badge.badge-success #{summary.group[group.id]}
+                    else
+                        b.badge 0
     table.table
         thead
             tr
@@ -26,6 +46,11 @@ block main
                                 ul.dropdown-menu
                                     each scope in subject.scopes
                                         li: a.scopeSelector(_id="#{scope.id}") #{scope.name}
+                                            b.text-error
+                                                if(summary.scope[scope.id])
+                                                    | ( #{summary.scope[scope.id]} )
+                                                else
+                                                    | ( 0 )
                 if subject.groups.length > 1
                     th
                         .dropdown
@@ -36,6 +61,11 @@ block main
                                 ul.dropdown-menu
                                     each group in subject.groups
                                         li: a.groupSelector(_id="#{group.id}") #{group.name}
+                                            b.text-error
+                                                if (summary.group[group.id])
+                                                    | ( #{summary.group[group.id]} )
+                                                else
+                                                    | ( 0 )
 
                 th
                     #sortByVotes.btn 得票数
