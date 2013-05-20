@@ -16,6 +16,7 @@ module.exports = function (app) {
 
     app.get('/', subject.index);// 首页
     app.get("/admin", auth("admin"), subject.list);// 管理控制台
+    app.get('/data', auth("admin"), data.index); // 系统统计数据
 
     // 登录登出
     app.get('/login', passport.login);

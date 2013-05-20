@@ -9,7 +9,7 @@ block head
         .summaryNum{font-size: 3em;}
 block sidebar
     ul(data-spy="affix").nav.nav-tabs.nav-stacked
-        li: a(href="/subject/#{subject._id}/data/candidate") 选项数据
+        li: a(href="/subject/#{subject._id}/candidate/list") 选项数据
         li: a(href="/subject/#{subject._id}/data/votes") 选票数据
 
 block main
@@ -22,7 +22,7 @@ block main
                 b.summaryNum= summary.numCandidate
         li.span3
             .thumbnail: .well 投票数：
-                b.summaryNum= summary.numVotes
+                b.summaryNum= summary.numVote
         li.span3
             .thumbnail: .well 域数：
                 b.summaryNum= summary.numScope

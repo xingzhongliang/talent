@@ -1,0 +1,23 @@
+//-
+    系统统计数据
+    User: laichendong
+    Date: 13-5-20
+    Time: 下午4:42
+extends ../layouts/admin
+
+block head
+    style
+        .thumbnail .well{margin-bottom: 0;}
+        .summaryNum{font-size: 3em;}
+
+block content
+    ul.thumbnails
+        li.span3
+            .thumbnail: .well 主题数：
+                b.summaryNum= summary.numSubject
+        li.span3
+            .thumbnail: .well 总选项：
+                b.summaryNum= summary.numCandidate
+        li.span3
+            .thumbnail: .well 投票数：
+                b.summaryNum= summary.numVote

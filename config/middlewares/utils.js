@@ -38,6 +38,7 @@ function utils(name) {
         res.locals.config = config;
         res.locals.scopeName = _name;
         res.locals.groupName = _name;
+        res.locals.isActive = isActive;
 
         if (typeof req.flash !== 'undefined') {
             res.locals.info = req.flash('info');
@@ -66,20 +67,20 @@ function createPagination(req) {
             var params = qs.parse(url.parse(req.url).query)
             var str = ''
 
-        params.page = 0
-        var clas = page == 0 ? "active" : "no"
-        str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">首页</a></li>'
-        for (var p = 0; p < pages; p++) {
-            params.page = p
-            clas = page == p ? "active" : "no"
-            str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">' + (p + 1) + '</a></li>'
-        }
-        params.page = --p
-        clas = page == params.page ? "active" : "no"
-        str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">尾页</a></li>'
+            params.page = 0
+            var clas = page == 0 ? "active" : "no"
+            str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">首页</a></li>'
+            for (var p = 0; p < pages; p++) {
+                params.page = p
+                clas = page == p ? "active" : "no"
+                str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">' + (p + 1) + '</a></li>'
+            }
+            params.page = --p
+            clas = page == params.page ? "active" : "no"
+            str += '<li class="' + clas + '"><a href="?' + qs.stringify(params) + '">尾页</a></li>'
 
             return str
-        }catch(err) {
+        } catch (err) {
             return '';
         }
     }
@@ -150,7 +151,7 @@ function cut(str, maxLenght) {
  * @returns {*}
  */
 function fmt(date) {
-    return fmt2(date,'YYYY-MM-DD');
+    return fmt2(date, 'YYYY-MM-DD');
 }
 
 /**
@@ -159,9 +160,9 @@ function fmt(date) {
  * @param fmt
  * @returns {*}
  */
-function fmt2(date,fmt) {
+function fmt2(date, fmt) {
     try {
-        if(!date || !fmt) {
+        if (!date || !fmt) {
             throw new Error('date or format string  is undefined');
         }
         return moment(date).format(fmt);
@@ -170,14 +171,29 @@ function fmt2(date,fmt) {
     }
 }
 
-function _name(id, arr){
+function _name(id, arr) {
     try {
-        for(var i = 0; i<arr.length; i++) {
-            if(id == arr[i]._id){
+        for (var i = 0; i < arr.length; i++) {
+            if (id == arr[i]._id) {
                 return arr[i].name;
             }
         }
     } catch (err) {
         return '';
+    }
+}
+
+/**
+ * 判断导航是否要高亮
+ * @param navPath
+ * @param url
+ */
+function isActive(navPath, url) {
+    if (url.indexOf(navPath) >= 0) {
+        return "active";
+    } else if (navPath == "/admin" && url.indexOf("/subject") >= 0) {
+        return "active";
+    } else {
+        return "";
     }
 }
