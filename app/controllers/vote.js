@@ -26,17 +26,18 @@ exports.list = function (req, res) {
     var page = req.param('page') > 0 ? req.param('page') : 0;
     var pageSize = req.param('pageSize') || config.app.pageSize;
     var subject = req.subject;
+    var init = {
+        count: 0,
+        department: {},
+        candidate: {},
+        votes: [],
+        page: page,
+        pageSize: pageSize
+    };
     var groupBy = {
         keys: {},
         condition: {subject: subject._id.toString()},
-        initial: {
-            count: 0,
-            department: {},
-            candidate: {},
-            votes: [],
-            page: page,
-            pageSize: pageSize
-        },
+        initial: init,
         reduce: function (doc, out) {
 
             out.count++;
@@ -61,11 +62,12 @@ exports.list = function (req, res) {
         }
     };
     Vote.collection.group(groupBy.keys, groupBy.condition, groupBy.initial, groupBy.reduce, groupBy.finalize, true, groupBy.option, function (err, result) {
+        result = result[0] || init;
         if (err) throw err;
         res.render("vote/list", {
-            result: result[0],
+            result: result,
             subject: subject,
-            pages: result[0].count / pageSize,
+            pages: result.count / pageSize,
             page: page,
             dataOptions: {
                 candidate: candidate,

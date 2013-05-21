@@ -105,15 +105,16 @@ exports.list = function (req, res) {
     var page = req.param('page') > 0 ? req.param('page') : 0;
     var pageSize = req.param('pageSize') || config.app.pageSize;
     var subject = req.subject;
+    var summary = {
+        count:0,
+        group: {},
+        scope: {}
+    };
 
     var groupBy = {
         keys: {},
         condition: {subject: subject._id.toString()},
-        initial: {
-            count:0,
-            group: {},
-            scope: {}
-        },
+        initial: summary,
         reduce: function (doc, out) {
             out.count++;
             if (out.group[doc.group]) {
@@ -131,7 +132,7 @@ exports.list = function (req, res) {
         }
     };
     // 查询汇总信息
-    Candidate.collection.group(groupBy.keys, groupBy.condition, groupBy.initial, groupBy.reduce, groupBy.finalize, true, function (err, summary) {
+    Candidate.collection.group(groupBy.keys, groupBy.condition, groupBy.initial, groupBy.reduce, groupBy.finalize, true, function (err, result) {
         if (err) throw err;
         // 查询主题下的域和组
         Subject.scopesAndGroups(subject._id, function (scopes, groups) {
@@ -163,7 +164,7 @@ exports.list = function (req, res) {
                             pages: count / pageSize,
                             page: page,
                             dataOptions: dataOptions,
-                            summary: summary[0]
+                            summary: result[0] || summary
                         });
                     });
                 });
