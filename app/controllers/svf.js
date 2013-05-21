@@ -8,7 +8,8 @@
  */
 var fs = require('fs');
 var uuid = require("node-uuid");
-var config = require('../../config/config');
+var env = process.env.NODE_ENV || "development";
+var config = require("../../config/config")[env];
 var path = require("path");
 var child_process = require('child_process');
 var mime = require('mime-magic');

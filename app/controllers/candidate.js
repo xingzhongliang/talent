@@ -10,7 +10,8 @@ var Subject = mongoose.model("Subject");
 var Group = mongoose.model("Group");
 var Scope = mongoose.model("Scope");
 var Vote = mongoose.model("Vote");
-var config = require("../../config/config");
+var env = process.env.NODE_ENV || "development";
+var config = require("../../config/config")[env];
 var uuid = require("node-uuid");
 var fs = require("fs");
 

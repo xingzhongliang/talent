@@ -2,14 +2,19 @@
  * 达人官网入口文件
  */
 var express = require('express')
+    , env = process.env.NODE_ENV || "development"
+    , config = require("./config/config")[env]
     , http = require('http')
-    , config = require("./config/config")
     , mongoose = require('mongoose')
     , fs = require('fs');
 
 // 启动数据库连接
 mongoose.connect(config.db);
-mongoose.set('debug',true);
+
+if (env == "development") {
+    mongoose.set('debug', true);
+}
+
 // 加载各个model依赖
 var models_path = __dirname + '/app/models';
 fs.readdirSync(models_path).forEach(function (file) {

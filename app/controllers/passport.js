@@ -1,4 +1,5 @@
-var config = require("../../config/config");
+var env = process.env.NODE_ENV || "development";
+var config = require("../../config/config")[env];
 var mongoose = require("mongoose");
 var Subject = mongoose.model("Subject");
 /*

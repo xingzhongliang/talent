@@ -4,7 +4,8 @@ var uuid = require("node-uuid");
 var Subject = mongoose.model("Subject");
 var Candidate = mongoose.model("Candidate");
 var util = require("./util/util");
-var config = require("../../config/config");
+var env = process.env.NODE_ENV || "development";
+var config = require("../../config/config")[env];
 /**
  * 按Id查找主题，找到之后放到req里面
  * @param req
@@ -220,8 +221,13 @@ exports.chgBanner = function (req, res) {
 
 };
 
-
+/**
+ * 管理控制台首页
+ * @param req
+ * @param res
+ */
 exports.list = function (req, res) {
+    console.log(process.env.NODE_ENV);
     var page = req.param('page') > 0 ? req.param('page') : 0;
     var pageSize = 6;
     var options = {
