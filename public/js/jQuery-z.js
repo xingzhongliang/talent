@@ -23,7 +23,7 @@
 
 
     /**
-     * 在指定位置添加一个元素  盗版自bootstrap
+     * 在指定位置添加一个元素
      * option = {
      *     position :  left | right | top | bottom | center
      *     ,content :  text | html | dom
@@ -44,6 +44,8 @@
         };
         opt = merge(def, opt);
         return this.each(function () {
+            var it = $(this).data(opt.id ? co + opt.id : co);
+            it && $(it).remove(); //clean
             var self = this, $self = $(this);
             var pos = $self.getPosAndSize();
             var $d = opt.floor ? $(opt.floor) : $(create('DIV')).css({
@@ -70,7 +72,6 @@
                 while (p.parentNode && p.parentNode != document.body) {
                     p = p.parentNode;
                     if ($(p).css('position') == 'absolute') {
-                        console.info($(p).offset());
                         var of = $(p).offset();
                         l += of.left;
                         t += of.top;
@@ -144,6 +145,26 @@
         return this.each(function () {
             var it = $(this).data(id ? co + id : co);
             it && $(it).hide();
+        });
+    };
+
+    /**
+     * @param expr
+     * @return {*|null}
+     */
+    $.fn.findInCover = function (expr) {
+        var it = this.eq(0).data(id ? co + id : co);
+        return it ? $(it).find(expr) : null;
+    };
+
+    /**
+     * @param expr
+     * @return {*|null}
+     */
+    $.fn.removeCover = function (id) {
+        return this.each(function () {
+            var it = $(this).data(id ? co + id : co);
+            it && $(it).remove();
         });
     };
 
@@ -284,8 +305,8 @@ $(function () {
             if (txt) {
                 var h = $self.height();
                 $self.addCover({
-                    content: '<span style="color:gray;font-size:14px">' + txt +'</span>',
-                    pla: {x: 10, y: (h-14)/2},
+                    content: '<span style="color:gray;font-size:14px">' + txt + '</span>',
+                    pla: {x: 10, y: (h - 14) / 2},
                     click: function () {
                         $(this).hide();
                         window.setTimeout(function () {

@@ -1,4 +1,5 @@
 /**
+ * 表单验证js
  * Created with IntelliJ IDEA.
  * User: lijiale
  * Date: 13-5-8
@@ -10,20 +11,14 @@
     var JConsole = {} , debug = false;
     var SUPP = 'select,textarea,input[type!="button"][type!="submit"][type!="reset"]';
     var VT = '_validate_T_';
-    var VN = '_validate_N_';
-    var V2 = '_validate_V_';
     var VC = '_validate_C_';
     var VE = '_validate_E_';
     var VR = '_validate_R_';
     JConsole.info = function (msg) {
-        if ($.browser.mozilla && debug) {
-            console.info(msg);
-        }
+        debug && console.info(msg);
     };
     JConsole.error = function (msg) {
-        if ($.browser.mozilla) {
-            console.error(msg);
-        }
+        debug && console.error(msg);
     };
     var opt = {
         lazy: false,
@@ -31,7 +26,8 @@
         observer: true,
         strict: true,
         showTip: false,
-        forbidden: false
+        forbidden: false,
+        cache: true  //启用如果发现对象的值没有变化，将会直接返回上次的验证结果，当这个对象的验证结果依赖别的表单域时，请设置为false
     };
 
     var rule = {
@@ -68,35 +64,23 @@
     };
 
 
-    $.fn.validateSingle = function () {
-        return this.each(function () {
-            _check().call(this);
-        });
-    };
-
-    $.closeValidate = function (o) {
-        opt.forbidden = o;
-    };
-
     function _check() {
-        var result = {r:true},self = this,$self = $(self);
+        var result = {r: true}, self = this, $self = $(self);
         try {
-            if (opt.forbidden) {
-                return result;
-            }
             var val = $self.val();
-            if ((!self[VN] && !val) || (val && self[V2] && val == self[V2])) {
+            var defVal = self[VT]['default'];
+            if ((!self[VT]['require'] && !val) || (val && defVal && val == defVal)) {
                 JConsole.info('<...skip all validate...>');
-                $self.clearMsg();
-                self[VR] = {r: true};
+                self[VR] = {r: true, val: val};
                 return self[VR];
             }
-            if (!opt.strict && self[VC]) {
+            if (opt.cache && self[VR] && self[VR].val == val) {          //return the latest result
                 return self[VR];
             }
             JConsole.info('execute check :');
+            result.val = val;
             for (var r in self[VT]) {
-                if(!self[VT].hasOwnProperty(r)) {
+                if (!self[VT].hasOwnProperty(r)) {
                     continue;
                 }
                 if (r != 'sub') {
@@ -116,7 +100,7 @@
                 } else {
                     JConsole.info('call join func....');
                     for (var i in self[VT][r]) {
-                        if(self[VT][r].hasOwnProperty(i)) {
+                        if (self[VT][r].hasOwnProperty(i)) {
                             result = self[VT][r][i].call(this);
                             if (!result.r) {
                                 break;
@@ -129,88 +113,94 @@
                 }
             }
             self[VR] = result;
-            self[VC] = true;
             _showMsg(self, result);
             return result.r;
         } catch (err) {
             JConsole.error(err);
-            return {r:false,msg:'validator error'};
+            return {r: false, msg: 'validator error'};
         }
     }
 
-    $.fn.setDefaultVal = function (val) {
-        return this.each(function () {
-            val && $.trim(val) != '' ? (this[V2] = $.trim(val)) : (this[V2] = null);
-        });
-    };
+    function _vali(rules) {
+        var result = {};
+        for(var rule in rules) {
+            if(rules.hasOwnProperty(rule)) {
+                if (typeof handler[rule] == 'object') {
+                    result.r = handler[rule].test(val);
+                    !result.r && (result.msg = _msgHandler(rule[rule], this));
+                } else if (handler[rule]) {
+                    result = handler[rule](this, rules[rule]);
+                }
+                if(!result.r) {
+                    return result;
+                }
+            }
+        }
+        return result;
+    }
 
+    /**
+     * 表单验证初始化
+     * @param setting
+     * @return {*|null}
+     */
     $.fn.validateInit = function (setting) {
         return this.each(function () {
-            var self = this,$self = $(self);
-            JConsole.info('checkInit....');
+            var self = this, $self = $(self);
+            JConsole.info('validateInit....');
             if (self.tagName != 'FORM') {
-                throw new Error('Invalid Element :' + this.attr('tagName'));
+                throw new Error('Invalid Element :' + self.attr('tagName'));
             }
             opt = $.extend({}, opt, setting);
             $self.bind('submit',
                 function () {
                     return opt.forbidden || $(this).validate(true);
                 }).find(SUPP).each(function () {
-                    !this[VT] && _init.call(this);
+                    _init.call(this);
                 });
         });
     };
 
-
-    function _init(forceInit) {
+    function _init() {
         var self = this, $self = $(self);
-        var v = $self.attr('v'), s = _sign(this);
-        if (v || forceInit) {
-            JConsole.info('Init...' + s);
-            !self[VT] && (self[VT] = {});
-            if (v) {
-                var arr = v.split(';');
-                for (var i in arr) {
-                    if (!arr.hasOwnProperty(i) || !$.trim(arr[i])) {
-                        continue;
-                    }
-                    var arg = arr[i].split(':');
-                    arg[0] != 'default' ? (self[VT][arg[0]] = arg.length > 1 ? arg[1] : true ) : (self[V2] && (self[V2] = arg[1]));
-                    arg[0] == 'require' && (self[VN] = true);
-                    JConsole.info(arg[0] + ',' + self[VT][arg[0]]);
-                }
-            }
-            if (!opt.lazy) {
-                JConsole.info('handler bind...' + this.tagName);
-                if (self.tagName == 'SELECT') {
-                    $self.change(function () {
-                        JConsole.info('type...1');
-                        this[VC] = false;
-                        _check.call(this);
-                    });
-                } else if (self.type != 'text' && this.type != 'password'
-                    && self.tagName != 'TEXTAREA') {
-                    $self.bind('click', function () {
-                        JConsole.info('type...2');
-                        this[VC] = false;
-                        _check.call(this);
-                    });
-                } else {
-                    JConsole.info('type...3');
-                    self.bind(opt.event, _check).keyup(function () {
-                        this[VC] = false;
-                    });
-                }
-            }
+        var v = $self.attr('v');
+        if (!v) return false;
+        JConsole.info('Init...' + v);
+        v && (self[VT] = _param(v));
+        JConsole.info('handler bind...' + this.tagName);
+        this[VC] = false;
+        if (self.tagName == 'SELECT') {
+            $self.change(_check);
+        } else if (self.type != 'text' && this.type != 'password' && self.tagName != 'TEXTAREA') {
+            $self.bind('click', _check);
+        } else {
+            $self.bind(opt.event, _check);
         }
+        $self.blur(_check);
+        return true;
     }
+
+
+    function _param(v) {
+        var arr = v.split(';');
+        var rule = {};
+        for (var i in arr) {
+            if (!arr.hasOwnProperty(i) || !$.trim(arr[i])) {
+                continue;
+            }
+            var arg = arr[i].split(':');
+            rule[arg[0]] = arg.length > 1 ? arg[1] : true;
+        }
+        return rule;
+    }
+
 
     $.fn.validateJoin = function (handler, ru) {
         return this.each(function () {
             var self = this;
             if (self && self.tagName) {
                 rule = ru ? ru : 'sub';
-                self[VT] && ( _init.call(self, true));
+                self[VT] && ( _init.call(self));
                 if (!ru) {
                     self[VT][rule] && (self[VT][rule] = []);
                     self[VT][rule].push(handler);
@@ -224,47 +214,31 @@
 
     /**
      * 注意这个方法不支持jQuery的链式操作
-     * @param c
+     * @param rule
      */
-    $.fn.validate = function (c) {
+    $.fn.validate = function (rule) {
         var result = true;
         this.each(function () {
-            if (!opt.forbidden) {
-                var self = this, $self = $(self);
-                typeof c == 'boolean' && (opt.forbidden = !c);
-                if (self.tagName != 'FORM') {
-                    throw new Error('Invalid Element :' + self.attr('tagName'))
-                }
+            var self = this, $self = $(self);
+            if (self.tagName != 'FORM') {
+                //validate single
+                return rule ? self[VT][rule] ? self[VT][rule].call(self) : _vali.call(self,_param(rule)) : _check.call(self);
+            } else {
+                //validate form
                 $self.find(SUPP).each(function () {
                     this[VT] && _check.call(this);
-                });
-                for (var r in self[VR]) {
-                    if (self[VR].hasOwnProperty(r) && !self[VR].r) {
+                }).each(function(){
+                    var it = this;
+                    if(it[VT] && !it[VR].r) {
                         result = false;
-                        break;
+                        window.setTimeout(function(){console.info(it);$(it).focus()},100);
                     }
-                }
+                    return result;
+                });
+                return result;
             }
         });
         return result;
-    };
-
-    $.fn.clearMsg = function () {
-        return this.each(function () {
-            JConsole.info('clear msg .....');
-            $(this).find(SUPP).andSelf().each(function () {
-                var self = this,$self = $(self);
-                if (self[VT]) {
-                    self[VC] = false;
-                    // TODO clear....
-                    if (!opt.showTip) {
-                        $self.unbind('focus', showTip).unbind('blur', closeTip);
-                        $self.removeClass('areaError').removeClass('areaPass')
-                            .removeClass('inputPass').removeClass('inputError')
-                    }
-                }
-            });
-        });
     };
 
 
@@ -316,14 +290,14 @@
             if (d_reg.test(val)) {
                 d_reg = n > 0 ? new RegExp(reg.replace('n', n)) : new RegExp("^[0-9]*[1-9][0-9]*$");
                 (n = n > 0 ? n : 0) && (mc = 10 ^ n);
-                d_reg.test(val) ? (val && _compare(val, max) > 0 ? (r = {r : false,msg : '不能大于' + max })
-                    : ( _compare(val, min) < 0 && (r = {r:false,msg:'不能小于' + min})))
-                    : (r ={r : false, msg : (n > 0 ? '小数位数不得多于' + n + '位' : '必须是整数')});
+                d_reg.test(val) ? (val && _compare(val, max) > 0 ? (r = {r: false, msg: '不能大于' + max })
+                    : ( _compare(val, min) < 0 && (r = {r: false, msg: '不能小于' + min})))
+                    : (r = {r: false, msg: (n > 0 ? '小数位数不得多于' + n + '位' : '必须是整数')});
                 JConsole.info(val);
                 JConsole.info(max);
                 JConsole.info(min)
             } else {
-                r = {r : false,msg : '非法的数字格式'};
+                r = {r: false, msg: '非法的数字格式'};
             }
         } else {
             !d_reg.test(val) && (r.r = false )
@@ -377,20 +351,33 @@
         return msg;
     }
 
-    function fail(r) {
-        //
+    function validate_fail(obj,r) {
+        var div = document.createElement('div');
+       $(div).css({padding:'5px',width:'150',height:'auto'}).html(r.msg);
+        $(obj).zpop({
+            position:'left'
+            ,target:div
+            ,style:'validate-popover'
+        }).focus(_show).blur(_hide).parents('.control-group').addClass('error');
+    }
+
+    function _show() {
+        $(this).showCover();
+    }
+    function _hide() {
+        $(this).hideCover();
     }
 
     function success(r) {
-        //
+        $(this).unbind('focus',_show).unbind('blur',_hide).removeCover().parents('.control-group').removeClass('error');
     }
 
     function _showMsg(obj, result) {
-        JConsole.info(obj.tagName + ':' + result.r + ':' + result.msg);
+        JConsole.info(result.r +':' + result.msg);
         if (!result.r) {
-            success.call(obj,result);
+            validate_fail(obj, result);
         } else {
-            fail.call(obj,result);
+            success.call(obj, result);
         }
     }
 

@@ -222,12 +222,46 @@ exports.chgBanner = function (req, res) {
 
 
 exports.list = function (req, res) {
+    var kw = req.param('kw');
+    var st = req.param('st');
+    var owner = req.param('owner');
+
     var page = req.param('page') > 0 ? req.param('page') : 0;
     var pageSize = 6;
     var options = {
         pageSize: pageSize,
         page: page
     };
+    var reg;
+    if (kw) {
+        var r = '';
+        for (var i = 0; i < kw.length; i++) {
+            var c = kw.charAt(i);
+            c && c.trim() && (r += ('.*' + c));
+        }
+        reg = new RegExp(r + '.*', 'i');
+    }
+    var sort = {};
+    switch (st) {
+        case '1':
+            sort.createTime = '-1';
+            break;
+        case '2':
+            sort.createTime = '1';
+            break;
+        case '3':
+            sort.votes = '-1';
+            break;
+        case '4':
+            sort.votes = '1';
+            break;
+        default :
+            sort.createTime = '-1';
+    }
+    options.sort = sort;
+    options.criteria = {};
+    reg && (options.criteria.name = reg);
+    owner && owner.trim() && (options.criteria.owner = owner.trim());
 
     Subject.list(options, function (err, subjects) {
         if (err) throw err;
@@ -236,6 +270,9 @@ exports.list = function (req, res) {
             res.render("admin/index", {
                 title: "管理控制台",
                 subjects: subjects,
+                kw:kw,
+                st:st,
+                owner:owner,
                 pages: count / pageSize,
                 page: page
             });

@@ -10,27 +10,27 @@
 (function($){
     $.importCSS('/popover/css/popover.css');
     var def = {
+        style:'z-popover', //z-popover | validate
         position : 'bottom',
         target : ''   // 要弹出的dom，必须是dom对象 ！！
-    }
+    };
 
     $.fn.zpop = function(opt) {
         return this.each(function(){
-            var self = this,$self = $(this);
+            var $self = $(this);
             opt = $.simpleMerge(def, opt);
             var  w  = document.createElement('div');
             var  a  = document.createElement('div');
             var  c  = document.createElement('div');
             var  h  = document.createElement('h2');
-            $(h).addClass('z-popover-title').text(opt.title ? opt.title : '');
-            $(c).addClass('z-popover-content').append(opt.target);
+            $(h).addClass(opt.style + '-title').text(opt.title ? opt.title : '');
+            $(c).addClass(opt.style + '-content').append(opt.target);
             $(a).addClass('arrow');
-//            $(w).addClass('popover fade in').css({display:'block'}).addClass(opt.position).append(a).append(h).append(c);
-            $(w).addClass('z-popover fade in').css({display:'block'}).addClass(opt.position).append(a).append(h).append(c);
+            $(w).addClass(opt.style + ' fade in').css({display:'block'}).addClass(opt.position).append(a).append(h).append(c);
             $self.addCover({
                 position:opt.position,
                 floor:w
             });
         });
     }
-})(jQuery)
+})(jQuery);
