@@ -12,19 +12,19 @@ block main
             b.badge.badge-warning #{result.count}
         dl
             dt 投票者部门：
-            each department in result.department
+            each count, department in result.department
                 dd.span2 #{department}：
-                    if (result.department[department])
-                        b.badge.badge-success #{resulet.department[department]}
+                    if (count)
+                        b.badge.badge-success #{count}
                     else
                         b.badge 0
 
         dl
             dt 选项：
-            each candidate in result.candidate
-                dd.span2 #{candidate}：
-                    if (result.candidate[candidate])
-                        b.badge.badge-success #{result.candidate[candidate]}
+            each c, c_id in result.candidate
+                dd.span2 #{c.name}：
+                    if (c.count)
+                        b.badge.badge-success #{c.count}
                     else
                         b.badge 0
     table.table
@@ -32,48 +32,49 @@ block main
             tr
                 th.span1 #
                 th 姓名
-                th 部门
-                th 选项
                 th
-                    #sortByVotes.btn 投票时间
+                    .dropdown
+                        .btn-group
+                            a.departmentSelector.btn(_id="all") 部门
+                            a.btn.dropdown-toggle(data-toggle="dropdown")
+                                i.icon-chevron-down
+                            ul.dropdown-menu
+                                each count, department in result.department
+                                    li: a.departmentSelector(_id="#{department}") #{department}：
+                                        b.text-error
+                                            if (count)
+                                                | ( #{count} )
+                                            else
+                                                | ( 0 )
+                th
+                    .dropdown
+                        .btn-group
+                            a.candidateSelector.btn(_id="all") 选项
+                            a.btn.dropdown-toggle(data-toggle="dropdown")
+                                i.icon-chevron-down
+                            ul.dropdown-menu
+                                each c, c_id in result.candidate
+                                    li: a.candidateSelector(_id="#{c_id}") #{c.name}：
+                                        b.text-error
+                                            if (c.count)
+                                                | ( #{c.count} )
+                                            else
+                                                | ( 0 )
+                th
+                    #sortByTime.btn 投票时间
                         i.icon-arrow-down
-                th.span2 操作
         tbody
-            tr.tmpl.hide
-                td
-                td
-                td
-                td
-                td
-                td
-                    .btn-group
-                        a(target="_blank").btn.btn-small.msBtn 查看
-                        a.btn.btn-small.btn-danger.dsBtn 删除
             if(result.votes.length <= 0)
-                tr: td(colspan="6")
+                tr: td(colspan="5")
                     p.text-center.text-warning 没有数据
             each v,i in result.votes
                 tr
                     td= i+1
                     td= v.voter_name
                     td= v.voter_department
-                    td= v.candidate
+                    td: a(href="/candidate/#{v.candidate}",target="_blank")= v.candidate_name
                     td= fmt2(v.time,'YYYY-MM-DD HH:mm')
-                    td
-                        .btn-group
-                            //a.btn.btn-small.msBtn(href="/candidate/#{c._id}",target="_blank") 查看
-                            //a.delModalBtn.btn.btn-small.btn-danger.dsBtn(candidate-id="#{c._id}",data-toggle="modal") 删除
 
-    // 删除提示框
-    #delModal.modal.hide.fade
-        .modal-header
-            button(data-dismiss="modal").close ×
-            h3 确定删除选项
-        .modal-body
-            p 删除选项将附带删除上传的相关文件，且不能回复！确定要删除？
-        .modal-footer
-            a(href="")#sbmDelbtn.btn.btn-danger 确定
-            button(data-dismiss="modal").btn 取消
 
     // 分页条
     if pages > 1
@@ -83,38 +84,33 @@ block main
 
     script
         $(function(){
-            // 显示删除警告
-            $(".delModalBtn").click(function(){
-              $("#sbmDelbtn").attr("href", "/candidate/" + $(this).attr("candidate-id") + "/del");
-              $("#delModal").modal();
-            });
-
 
             var dataOptions = !{JSON.stringify(dataOptions)};
-            if(dataOptions.votes == "-1") {
-                $("#sortByVotes").find("i").removeClass("icon-arrow-up").addClass("icon-arrow-down")
+            if(dataOptions.time == "-1") {
+                $("#sortByTime").find("i").removeClass("icon-arrow-up").addClass("icon-arrow-down")
             } else {
-                $("#sortByVotes").find("i").removeClass("icon-arrow-down").addClass("icon-arrow-up")
+                $("#sortByTime").find("i").removeClass("icon-arrow-down").addClass("icon-arrow-up")
             }
 
             // 按票数排序
-            $("#sortByVotes").click(function(){
+            $("#sortByTime").click(function(){
                 var sort = $(this).find("i")
                     .toggleClass("icon-arrow-down")
                     .toggleClass("icon-arrow-up")
                     .hasClass("icon-arrow-down") ? "-1" : "1";
-                $.extend(dataOptions, {votes : sort})
+                $.extend(dataOptions, {time : sort})
                 window.location = "?" + $.param(dataOptions)
             });
+
             //
-            $(".scopeSelector").click(function(){
-                var scope = $(this).attr("_id");
-                $.extend(dataOptions, {scope : scope})
+            $(".departmentSelector").click(function(){
+                var department = $(this).attr("_id");
+                $.extend(dataOptions, {department : department})
                 window.location = "?" + $.param(dataOptions)
             })
-            $(".groupSelector").click(function(){
-                var group = $(this).attr("_id");
-                $.extend(dataOptions, {group : group})
+            $(".candidateSelector").click(function(){
+                var candidate = $(this).attr("_id");
+                $.extend(dataOptions, {candidate : candidate})
                 window.location = "?" + $.param(dataOptions)
             });
         });

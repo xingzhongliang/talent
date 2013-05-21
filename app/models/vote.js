@@ -16,7 +16,8 @@ var VoteSchema = new Schema({
     , voter_name: String // 投票者姓名
     , voter_department: String // 投票者部门
     , subject: String  // 活动的主题 方便统计
-    , candidate: String // 投给了谁
+    , candidate: String // 投给了谁 选项id
+    , candidate_name: String // 投给了谁  选项名称
     , round: String // 第几轮投票
     , time: {type: Date, default: Date.now} // 投票时间
 });

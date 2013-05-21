@@ -298,7 +298,13 @@ exports.vote = function (req, res) {
                     response("errors", "请不要重复投票！");
                 } else {
                     vote = new Vote({
-                        voter_erp: voter.erpId, voter_name: voter.name, voter_department: voter.department, subject: candidate.subject, candidate: candidate._id, round: subject.round
+                        voter_erp: voter.erpId,
+                        voter_name: voter.name,
+                        voter_department: voter.department,
+                        subject: candidate.subject,
+                        candidate: candidate._id,
+                        candidate_name: candidate.name,
+                        round: subject.round
                     });
                     vote.save(function (err) {
                         if (err) return response("errors", "服务器错误");

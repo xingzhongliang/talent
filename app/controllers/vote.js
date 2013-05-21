@@ -35,9 +35,12 @@ exports.list = function (req, res) {
         page: page,
         pageSize: pageSize
     };
+    var condition = {subject: subject._id.toString()};
+    if (candidate) condition.candidate = candidate.toString();
+    if (department) condition.department = department.toString();
     var groupBy = {
         keys: {},
-        condition: {subject: subject._id.toString()},
+        condition: condition,
         initial: init,
         reduce: function (doc, out) {
 
@@ -50,10 +53,13 @@ exports.list = function (req, res) {
             } else {
                 out.department[doc.voter_department] = 1;
             }
-            if (out.candidate[doc.candidate]) {
-                out.candidate[doc.candidate] += 1;
+            if (out.candidate[doc.candidate] && out.candidate[doc.candidate].count) {
+                out.candidate[doc.candidate].count += 1;
             } else {
-                out.candidate[doc.candidate] = 1;
+                out.candidate[doc.candidate] = {
+                    count : 1,
+                    name : doc.candidate_name
+                };
             }
         },
         option: {

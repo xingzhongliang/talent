@@ -13,7 +13,8 @@
 var url = require('url')
     , qs = require('querystring')
     , moment = require('moment')
-    , config = require("../config");
+    , env = process.env.NODE_ENV || "development"
+    , config = require("../config")[env];
 
 /**
  * Helpers method
