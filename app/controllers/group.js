@@ -33,7 +33,7 @@ exports.save = function (req, res) {
             if (err) {
                 if(err) throw err;
             } else {
-                res.set('Content-Type', 'text/plain');
+                res.set('Content-Type', 'application/json');
                 res.send({data: gp, i: 1});
             }
         });
@@ -42,7 +42,7 @@ exports.save = function (req, res) {
             if (err) {
                 if(err) throw err;
             } else {
-                res.set('Content-Type', 'text/plain');
+                res.set('Content-Type', 'application/json');
                 res.send({data: group, i: i});
             }
         });
@@ -57,7 +57,7 @@ exports.save = function (req, res) {
 exports.del = function (req, res) {
     var group = req.group;
     group.remove(function (err, group) {
-        res.set('Content-Type', 'text/plain');
+        res.set('Content-Type', 'application/json');
         if (err) {
             console.error(err);
             res.send({deleted: false});

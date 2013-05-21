@@ -33,7 +33,7 @@ exports.save = function (req, res) {
             if (err) {
                 if(err) throw err;
             } else {
-                res.set('Content-Type', 'text/plain');
+                res.set('Content-Type', 'application/json');
                 res.send({data: sc, i: 1});
             }
         });
@@ -42,7 +42,7 @@ exports.save = function (req, res) {
             if (err) {
                 if(err) throw err;
             } else {
-                res.set('Content-Type', 'text/plain');
+                res.set('Content-Type', 'application/json');
                 res.send({data: scope, i: i});
             }
         });
@@ -57,7 +57,7 @@ exports.save = function (req, res) {
 exports.del = function (req, res) {
     var scope = req.scope;
     scope.remove(function (err, scope) {
-        res.set('Content-Type', 'text/plain');
+        res.set('Content-Type', 'application/json');
         if (err) {
             console.error(err);
             res.send({deleted: false});

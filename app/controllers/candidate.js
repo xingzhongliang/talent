@@ -105,41 +105,71 @@ exports.list = function (req, res) {
     var page = req.param('page') > 0 ? req.param('page') : 0;
     var pageSize = req.param('pageSize') || config.app.pageSize;
     var subject = req.subject;
-    // 查询主题下的域和组
-    Subject.scopesAndGroups(subject._id, function (scopes, groups) {
-        subject.scopes = scopes;
-        subject.groups = groups;
-        var options = {
-            pageSize: pageSize,
-            page: page,
-            criteria: {subject: subject._id}
-        };
-        if (scope) options.criteria.scope = scope;
-        if (group) options.criteria.group = group;
-        var dataOptions = {
-            scope: scope,
-            group: group,
-            votes: votes
-        };
-        Candidate.find(options.criteria)
-            .sort({votes:votes})
-            .limit(options.pageSize)
-            .skip(options.pageSize * options.page)
-            .exec(function (err, candidates) {
-                if (err) throw err;
-                Candidate.count(options.criteria).exec(function (err, count) {
-                    res.render("candidate/list", {
-                        title: "选项管理 - " + subject.name,
-                        subject: subject,
-                        candidates: candidates,
-                        pages: count / pageSize,
-                        page: page,
-                        dataOptions: dataOptions
+    var summary = {
+        count:0,
+        group: {},
+        scope: {}
+    };
+
+    var groupBy = {
+        keys: {},
+        condition: {subject: subject._id.toString()},
+        initial: summary,
+        reduce: function (doc, out) {
+            out.count++;
+            if (out.group[doc.group]) {
+                out.group[doc.group] += 1;
+            } else {
+                out.group[doc.group] = 1;
+            }
+            if (out.scope[doc.scope]) {
+                out.scope[doc.scope] += 1;
+            } else {
+                out.scope[doc.scope] = 1;
+            }
+        },
+        finalize: function () {
+        }
+    };
+    // 查询汇总信息
+    Candidate.collection.group(groupBy.keys, groupBy.condition, groupBy.initial, groupBy.reduce, groupBy.finalize, true, function (err, result) {
+        if (err) throw err;
+        // 查询主题下的域和组
+        Subject.scopesAndGroups(subject._id, function (scopes, groups) {
+            subject.scopes = scopes;
+            subject.groups = groups;
+            var options = {
+                pageSize: pageSize,
+                page: page,
+                criteria: {subject: subject._id}
+            };
+            if (scope) options.criteria.scope = scope;
+            if (group) options.criteria.group = group;
+            var dataOptions = {
+                scope: scope,
+                group: group,
+                votes: votes
+            };
+            Candidate.find(options.criteria)
+                .sort({votes: votes})
+                .limit(options.pageSize)
+                .skip(options.pageSize * options.page)
+                .exec(function (err, candidates) {
+                    if (err) throw err;
+                    Candidate.count(options.criteria).exec(function (err, count) {
+                        res.render("candidate/list", {
+                            title: "选项管理 - " + subject.name,
+                            subject: subject,
+                            candidates: candidates,
+                            pages: count / pageSize,
+                            page: page,
+                            dataOptions: dataOptions,
+                            summary: result[0] || summary
+                        });
                     });
                 });
-            });
-    });
-
+        });
+    })
 };
 
 /**
