@@ -23,13 +23,14 @@
 
 
     /**
-     * 在指定位置添加一个元素  盗版自bootstrap
+     * 在指定位置添加一个元素
      * option = {
      *     position :  left | right | top | bottom | center
      *     ,content :  text | html | dom
      *     ,container : dom
      *     ,pla :  {x,y} 采用相对定位 以当前元素的位置为基准做偏移
      *     ,zIndex :  999
+     *     ,click :  function
      * }
      * @return {*|null}
      */
@@ -38,11 +39,13 @@
         //default option
         var def = {
             position: 'bottom',
-            floor:null,
-//            of:{left..top}  offset
+            floor: null
+//            ,of:{left..top}  offset
         };
         opt = merge(def, opt);
         return this.each(function () {
+            var it = $(this).data(opt.id ? co + opt.id : co);
+            it && $(it).remove(); //clean
             var self = this, $self = $(this);
             var pos = $self.getPosAndSize();
             var $d = opt.floor ? $(opt.floor) : $(create('DIV')).css({
@@ -50,8 +53,8 @@
                 display: 'block',
                 maxWidth: '2560',
                 maxHeight: '1440',
-                zIndex:1010
-            })
+                zIndex: 1010
+            });
             !opt.floor && $d.append(opt.content);
             self == document.body && (opt.container = self);
             opt.container ? $d.appendTo(opt.container) : $d.insertAfter(self);
@@ -63,13 +66,12 @@
 //            console.info('left:' + pos.left);
 //            console.info('width:' + pos.width);
 //            console.info('height:' + pos.height);
-            var l = 0,t = 0;
-            if(!opt.container) {
+            var l = 0, t = 0;
+            if (!opt.container) {
                 var p = self;
-                while(p.parentNode && p.parentNode != document.body) {
+                while (p.parentNode && p.parentNode != document.body) {
                     p = p.parentNode;
-                    if($(p).css('position') == 'absolute') {
-                        console.info($(p).offset());
+                    if ($(p).css('position') == 'absolute') {
                         var of = $(p).offset();
                         l += of.left;
                         t += of.top;
@@ -108,7 +110,7 @@
                         break;
                 }
             }
-            if(opt.of) {
+            if (opt.of) {
                 opt.of.left && (tp.left += opt.of.left);
                 opt.of.top && (tp.top += opt.of.top);
 
@@ -116,6 +118,9 @@
 //            $d.css({left: tp.left, top: tp.top});
             $d.css({left: tp.left - l, top: tp.top - t});
             $self.data(opt.id ? co + opt.id : co, $d.get(0));
+            if (opt.click) {
+                $d.click(opt.click);
+            }
         });
     };
 
@@ -143,6 +148,26 @@
         });
     };
 
+    /**
+     * @param expr
+     * @return {*|null}
+     */
+    $.fn.findInCover = function (expr) {
+        var it = this.eq(0).data(id ? co + id : co);
+        return it ? $(it).find(expr) : null;
+    };
+
+    /**
+     * @param expr
+     * @return {*|null}
+     */
+    $.fn.removeCover = function (id) {
+        return this.each(function () {
+            var it = $(this).data(id ? co + id : co);
+            it && $(it).remove();
+        });
+    };
+
 
     /**
      * 合并两个对象的属性  忽略父类的属性
@@ -163,7 +188,7 @@
      * @param o1
      * @param o2
      */
-    $.simpleWrap =  wrap;
+    $.simpleWrap = wrap;
 
     function wrap(o1, o2) {
         try {
@@ -232,8 +257,7 @@
             dataType: 'script'
         };
         $.ajax(opt);
-    }
-
+    };
 
 
     /**
@@ -243,32 +267,62 @@
     $.assert = assert;
     var assert = {
 
-            isNotNull: function (obj, msg) {
-                if (!obj && obj !== '') {
-                    throw new Error(msg || 'Null error');
-                }
-            },
+        isNotNull: function (obj, msg) {
+            if (!obj && obj !== '') {
+                throw new Error(msg || 'Null error');
+            }
+        },
 
-            isAvailable: function (obj, msg) {
-                if (!obj) {
-                    throw  new Error(msg || 'Not available error');
-                }
-            },
+        isAvailable: function (obj, msg) {
+            if (!obj) {
+                throw  new Error(msg || 'Not available error');
+            }
+        },
 
-            isNotEmpty: function(obj,msg) {
-                if(typeof obj == "boolean") return;
-                if( !obj  || ($.type(obj) == 'string' && !$.trim(obj))
-                    || ($.type(obj) == 'array' && !obj.length)
-                    || ($.type(obj) == 'obj' && $.isEmptyObject(obj))
-                    || ($.type(obj) == 'obj' && $.isEmptyObject(obj))) {
-                    throw new Error(msg || 'Empty error')
-                }
+        isNotEmpty: function (obj, msg) {
+            if (typeof obj == "boolean") return;
+            if (!obj || ($.type(obj) == 'string' && !$.trim(obj))
+                || ($.type(obj) == 'array' && !obj.length)
+                || ($.type(obj) == 'obj' && $.isEmptyObject(obj))
+                || ($.type(obj) == 'obj' && $.isEmptyObject(obj))) {
+                throw new Error(msg || 'Empty error')
             }
         }
+    };
 
+})(jQuery);
 
+//Add placeholder support for IE
+function _ph_support() {
+    return 'placeholder' in document.createElement('input');
+}
 
+$(function () {
+    if (!_ph_support()) {
+        $('select,textarea,input[type!="button"][type!="submit"][type!="reset"]').each(function () {
+            var self = this, $self = $(this);
+            var txt = $self.attr('placeholder'), val = $self.val();
+            if (txt) {
+                var h = $self.height();
+                $self.addCover({
+                    content: '<span style="color:gray;font-size:14px">' + txt + '</span>',
+                    pla: {x: 10, y: (h - 14) / 2},
+                    click: function () {
+                        $(this).hide();
+                        window.setTimeout(function () {
+                            self.focus()
+                        }, 100);
+                    }
+                }).focus(function () {
+                        $(this).hideCover();
+                    }).blur(function () {
+                        var val = $(this).val();
+                        val && (val = $.trim(val));
+                        !val && $(this).showCover();
+                    });
+                !val && $self.showCover();
+            }
 
-
-})
-    (jQuery);
+        });
+    }
+});

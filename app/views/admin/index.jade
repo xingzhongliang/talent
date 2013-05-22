@@ -7,6 +7,15 @@ extends ../layouts/admin
 block head
     script
         $(function(){
+            $('#top').carousel({interval: 2000});
+                $('#ts').click(function(){
+                    $(this).find('i').hasClass('icon-arrow-up') ? $('#st').val(1) : $('#st').val(2);
+                    $('#sform').submit();
+                });
+                $('#hs').click(function(){
+                    $(this).find('i').hasClass('icon-arrow-up') ? $('#st').val(3) : $('#st').val(4);
+                    $('#sform').submit();
+             });
             $('.x-group').delegate('.btn-fix','click',function(){
                 var self = this;
                 $.ajax({
@@ -42,10 +51,17 @@ block content
                 p
                     .row
                         .span12
-                            form.form-inline
-                                input(type="text",placeholder="创建者").span2
+                            form#sform.form-inline
+                                input(type="hidden",name="st",value="#{st}")
+                                if st
+                                    input(type="text",placeholder="创建者",name="owner",value="#{owner}").span2
+                                else
+                                    input(type="text",placeholder="创建者",name="owner").span2
                                 span &nbsp;
-                                input(type="text",placeholder="主题名称").span4
+                                if kw
+                                    input(type="text",placeholder="主题名称",name="kw",value="#{kw}").span4
+                                else
+                                    input(type="text",placeholder="主题名称",name="kw").span4
                                 span &nbsp;
                                 button.btn
                                     i.icon-search
@@ -59,11 +75,17 @@ block content
    div(style="margin-bottom:15px").row
        .span12
            .btn-group
-               button.btn 时间&nbsp;
-                   i.icon-arrow-down
-               button.btn 人气&nbsp;
-                   i.icon-arrow-down
-           .clearfix
+               button#ts.btn 时间&nbsp;
+                   if st == 2
+                       i.icon-arrow-up
+                   else
+                       i.icon-arrow-down
+               button#hs.btn 人气&nbsp;
+                   if st == 4
+                       i.icon-arrow-up
+                   else
+                       i.icon-arrow-down
+            .clearfix
    .row
        .span12
            ul.thumbnails

@@ -10,6 +10,8 @@ block head
     script(src="/js/bootstrap-sniper.js")
     script(src="/js/datepicker/js/bootstrap-datepicker.js")
     script(src="/js/filebox/filebox.js")
+    script(src="/js/popover/popover.js")
+    script(src="/js/validate/validate.js")
     script(src="/js/wysihtml5-0.3.0.min.js")
     script(src="/js/bootstrap-wysihtml5-0.0.2.min.js")
     script
@@ -25,9 +27,11 @@ block head
                     $('#banInpt').val(data.path);
                 }
             });
-
+           //validate
+           $('#dataForm').validateInit();
             // 初始化编辑器
-            $(".wysihtml5").wysihtml5();
+            //$(".wysihtml5").wysihtml5();
+
         });
 
 
@@ -46,9 +50,9 @@ block main
         fieldset
             legend 基本信息
             .control-group
-                input.input-block-level(type='text',id='sub-name',name='name',placeholder='活动名称')
+                input.input-block-level(type='text',id='sub-name',name='name',placeholder='活动名称',v="require;length:30")
             .control-group
-                textarea.input-block-level(name='comment',rows=3,placeholder='活动说明')
+                textarea.input-block-level(name='comment',rows=3,placeholder='活动说明',v="require;length:800")
         fieldset
             legend 活动设置
             div.row
@@ -68,16 +72,16 @@ block main
                         h5 投票设置
                         p 每个人在这次活动中能投多少票
                         .control-group
-                            input#voteMax(type='text',name='voteChance',value="1")
+                            input#voteMax(type='text',name='voteChance',value="1",v="require;number")
                         p 投票的窗口期：
                         .control-group
                             div.input-append
-                                input.dpInpt.input-block-level(name='voteStart',type="text")
+                                input.dpInpt.input-block-level(name='voteStart',type="text",v="require")
                                 span.add-on
                                     i.icon-th
                         .control-group
                             div.input-append
-                                input.dpInpt.input-block-level(name='voteEnd',type="text")
+                                input.dpInpt.input-block-level(name='voteEnd',type="text",v="require")
                                 span.add-on
                                     i.icon-th
                 div.span-4.pull-right
@@ -85,16 +89,16 @@ block main
                         h5 报名设置
                         p 每个人在这次活动中能报名几次
                         .control-group
-                            input#regMax(type='text',name='regChance',value='1')
+                            input#regMax(type='text',name='regChance',value='1',v="require;number")
                         p 报名的窗口期：
                         .control-group
                             div.input-append
-                                input.dpInpt.input-block-level(name='regStart',type="text")
+                                input.dpInpt.input-block-level(name='regStart',type="text",v="require")
                                 span.add-on
                                     i.icon-th
                         .control-group
                             div.input-append
-                                input.dpInpt.input-block-level(name='regEnd',type="text")
+                                input.dpInpt.input-block-level(name='regEnd',type="text",v="require")
                                 span.add-on
                                     i.icon-th
         fieldset
@@ -194,10 +198,8 @@ block footer
     script(src="/js/bootstrapSwitch.js")
     script
         function sbmt() {
-            if(!$.trim($('#sub-name').val())) {
-                return showMsg('主题名称不能为空');
-            }
-           $('#dataForm').submit();
+             console.info($('#dataForm').validate());
+             $('#dataForm').validate() && $('#dataForm').submit();
         }
 
 

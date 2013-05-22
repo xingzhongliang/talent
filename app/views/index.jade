@@ -5,6 +5,14 @@ block head
     script
         $(function(){
             $('#top').carousel({interval: 2000});
+            $('#ts').click(function(){
+               $(this).find('i').hasClass('icon-arrow-up') ? $('#st').val(1) : $('#st').val(2);
+                $('#sform').submit();
+            });
+            $('#hs').click(function(){
+                $(this).find('i').hasClass('icon-arrow-up') ? $('#st').val(3) : $('#st').val(4);
+                $('#sform').submit();
+            });
         });
 block content
     .row
@@ -29,8 +37,9 @@ block content
 
         div(style="margin-bottom:15px;margin-top:15px").span12
             div(style="text-align:center").form-search
-                form(method="get",action="/")
+                form#sform(method="get",action="/")
                     .input-append
+                        input#st(name="st",type="hidden",value="#{st}")
                         if kw
                             input.span6.search-query(type="text",name="kw",placeholder="请输入主题名称",value="#{kw}")
                         else
@@ -41,10 +50,17 @@ block content
     div(style="margin-bottom:15px").row
         .span12
                 .btn-group
-                    button.btn 时间&nbsp;
-                        i.icon-arrow-down
-                    button.btn 人气&nbsp;
-                        i.icon-arrow-down
+                    button#ts.btn 时间&nbsp;
+                        if st == 2
+                            i.icon-arrow-up
+                        else
+                            i.icon-arrow-down
+                    button#hs.btn 人气&nbsp;
+                        if st == 4
+                            i.icon-arrow-up
+                        else
+                            i.icon-arrow-down
+
             .clearfix
     each item in list
         .row(style="margin-bottom:15px;")
@@ -53,16 +69,20 @@ block content
                     .subject-name
                         a.subject-a(href="/subject/#{item._id}")  #{item.name}
                     .subject-desc #{item.comment}
-                        if item.banner
+                        if item.banner && item.banner.length > 0
                             .subject-banner
                                 img(src="#{item.banner}")
                     .subject-foot
-                        .pull-right  Post By #{item.owner} ghost / #{fmt2(item.createTime,'YYYY-MM-DD HH:mm')}
+                        .pull-right  Post By #{item.owner}  / #{fmt2(item.createTime,'YYYY-MM-DD HH:mm')}
                         .clearfix
             .span2
                 //.subject-top TOP
                 //.subject-hot HOT
-                .subject-vote #{item.votes}
+                if item.votes && item.votes > 0
+                    .subject-vote #{item.votes}
+                else
+                    .subject-vote 0
+
     if list.length == 0
         .row
             if kw
