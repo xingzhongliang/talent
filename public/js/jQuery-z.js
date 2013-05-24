@@ -89,23 +89,23 @@
             } else {
                 switch (opt.position) {
                     case 'bottom':
-                        console.info('bottom');
+//                        console.info('bottom');
                         tp = {top: pos.top + pos.height, left: pos.left + pos.width / 2 - w / 2};
                         break;
                     case 'top':
-                        console.info('top');
+//                        console.info('top');
                         tp = {top: pos.top - h, left: pos.left + pos.width / 2 - w / 2};
                         break;
                     case 'left':
-                        console.info('left');
+//                        console.info('left');
                         tp = {top: pos.top + pos.height / 2 - h / 2, left: pos.left - w};
                         break;
                     case 'right':
-                        console.info('right');
+//                        console.info('right');
                         tp = {top: pos.top + pos.height / 2 - h / 2, left: pos.left + pos.width};
                         break;
                     case 'center':
-                        console.info('center');
+//                        console.info('center');
                         tp = {top: pos.top + pos.height / 2 - h / 2, left: pos.left + pos.width / 2 - w / 2};
                         break;
                 }
