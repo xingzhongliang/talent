@@ -273,7 +273,7 @@ exports.list = function (req, res) {
 
     Subject.list(options, function (err, subjects) {
         if (err) throw err;
-        Subject.count().exec(function (err, count) {
+        Subject.count(options.criteria).exec(function (err, count) {
             if (err) throw err;
             res.render("admin/index", {
                 title: "管理控制台",

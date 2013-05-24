@@ -43,9 +43,9 @@ block head
         });
 
 block content
-   .row
-       .span12
-           .hero-unit
+    .row
+        .span12
+            .hero-unit
                 h2  主题管理
                 p 欢迎进入主题管理系统！
                 p
@@ -68,55 +68,54 @@ block content
                                 span &nbsp;
                                 a.btn.btn-success(href="/subject/add") 创建新主题
 
-   hr
-   .alert.alert-info
+    hr
+    .alert.alert-info
         strong 小贴士：
         span 置顶主题只会显示最新的三个
-   div(style="margin-bottom:15px").row
-       .span12
-           .btn-group
-               button#ts.btn 时间&nbsp;
-                   if st == 2
-                       i.icon-arrow-up
-                   else
-                       i.icon-arrow-down
-               button#hs.btn 人气&nbsp;
-                   if st == 4
-                       i.icon-arrow-up
-                   else
-                       i.icon-arrow-down
-            .clearfix
-   .row
-       .span12
-           ul.thumbnails
-               for subject in subjects
-                  li.span4
-                    .thumbnail
-                      .well.well-small.clearfix
-                        h4
-                            a(href="/subject/#{subject._id}",style="text-decoration:none",target="_blank") #{cut(subject.name, 9)}
-                        .clearfix
-                          p.pull-right!=subject.owner
-                        p.subjectComment!=cut(subject.comment, 100)
-                        div.pull-right=fmt2(subject.createTime,'YYYY-MM-DD HH:mm')
-                      .btn-group.x-group
-                        if !subject.fixTop
-                            button.btn.btn-success.btn-fix(id="#{subject._id}") 置顶
-                        else
-                            button.btn.btn-warning.btn-cfix(id="#{subject._id}") 取消置顶
-                        a.btn(href="/subject/#{subject._id}/data") &nbsp;数&nbsp;&nbsp;据&nbsp;
-                        a.btn(href="/subject/#{subject._id}/edit") &nbsp;管&nbsp;&nbsp;理&nbsp;
-                            i.icon-cog
-                      p
+    div(style="margin-bottom:15px").row
+        .span12
+            .btn-group
+                button#ts.btn 时间&nbsp;
+                    if st == 2
+                        i.icon-arrow-up
+                    else
+                        i.icon-arrow-down
+                button#hs.btn 人气&nbsp;
+                    if st == 4
+                        i.icon-arrow-up
+                    else
+                        i.icon-arrow-down
+                .clearfix
+    .row
+        .span12
+            ul.thumbnails
+                for subject in subjects
+                    li.span4
+                        .thumbnail
+                            .well.well-small.clearfix
+                                h4
+                                    a(href="/subject/#{subject._id}",style="text-decoration:none",target="_blank") #{cut(subject.name, 9)}
+                                .clearfix
+                                    p.pull-right!=subject.owner
+                                p.subjectComment!=cut(subject.comment, 100)
+                                div.pull-right=fmt2(subject.createTime,'YYYY-MM-DD HH:mm')
+                            .btn-group.x-group
+                                if !subject.fixTop
+                                    button.btn.btn-success.btn-fix(id="#{subject._id}") 置顶
+                                else
+                                    button.btn.btn-warning.btn-cfix(id="#{subject._id}") 取消置顶
+                                a.btn(href="/subject/#{subject._id}/data") &nbsp;数&nbsp;&nbsp;据&nbsp;
+                                a.btn(href="/subject/#{subject._id}/edit") &nbsp;管&nbsp;&nbsp;理&nbsp;
+                                    i.icon-cog
+                            p
 
+            // 分页条
+            if pages > 1
+                .pagination.pagination-centered
+                    ul
+                        != createPagination(pages, page)
 
-              // 分页条
-              if pages > 1
-                  .pagination.pagination-centered
-                      ul
-                          != createPagination(pages, page)
-
-   #delModal.modal.hide.fade
+    #delModal.modal.hide.fade
         .modal-header
             button(data-dismiss="modal").close ×
             h3 主题管理
