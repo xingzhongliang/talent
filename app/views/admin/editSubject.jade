@@ -80,7 +80,7 @@ block main
                     .input-prepend
                         span.add-on 报名链接
                         input.span7(type="text",value="http://#{config.app.domain}/subject/#{subject._id}/candidate/add")
-                if subject.token != 0
+                if subject.token
                     .input-prepend
                         span.add-on 报名令牌
                         input.span7(type="text",value="#{subject.token}")

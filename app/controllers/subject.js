@@ -95,6 +95,8 @@ exports.doAdd = function (req, res) {
     // 如果设置为使用令牌，则生成令牌
     if (subject.token == 1) {
         subject.token = uuid.v4();
+    } else {
+        subject.token = "";
     }
     // 给主题赋值owner
     subject.owner = req.session.user.erpId;
@@ -276,9 +278,9 @@ exports.list = function (req, res) {
             res.render("admin/index", {
                 title: "管理控制台",
                 subjects: subjects,
-                kw:kw,
-                st:st,
-                owner:owner,
+                kw: kw,
+                st: st,
+                owner: owner,
                 pages: count / pageSize,
                 page: page
             });

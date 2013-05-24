@@ -27,7 +27,7 @@ var SubjectSchema = new Schema({
     , regStart: Date //  报名开始时间
     , regEnd: Date // 报名结束时间
     , isPublic: {type: Boolean, default: true} //  是否所有人可见
-    , token: String // 如果token值不为空 则user成为candidate时需要token
+    , token: {type: String, default:""} // 如果token值不为空 则user成为candidate时需要token
     , owner: String // 创建者erp账号
     , createTime: {type: Date, default: Date.now} //创建日期
     , round: {type: Number, default: 1} // 当前第几轮 默认1次 可以重新开启新一轮投票
