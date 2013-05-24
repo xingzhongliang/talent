@@ -38,12 +38,17 @@ block content
     div.container
         .span10.offset1
             form.form-signin(method="post", action="/verify-token",id="loginForm")
-                h2.form-signin-heading 令牌验证
+                h2.page-header=locals.subject.name
+                    small 令牌验证
+                div.alert.alert-info
+                    p 由于主题设置需要令牌才可以报名,请先输入令牌。
+                    p 如果不知道令牌是什么，请联系主题创建者：
+                        b=subject.owner
                 if locals.errors.length > 0
                     for error in errors
                         div.alert.alert-error=error
                 input.input-block-level(type="text",placeholder="令牌",name="token",required)
-                input(type="hidden", name="target", value!=locals.target)
-                input(type="hidden", name="subjectId", value!=locals.subjectId)
+                input(type="hidden", name="target", value=locals.target)
+                input(type="hidden", name="subjectId", value=locals.subject._id)
                 button.btn.btn-large.btn-primary(type="submit") 验&nbsp;证
 

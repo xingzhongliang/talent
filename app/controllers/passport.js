@@ -61,7 +61,16 @@ exports.doLogout = function (req, res) {
  * @param res
  */
 exports.token = function (req, res) {
-    res.render('token', { target: req.flash("target"), subjectId: req.flash("subjectId")});
+    var subjectId = req.flash("subjectId")[0];
+    if (subjectId) {
+        Subject.load(subjectId, function (err, subject) {
+            if (err) throw err;
+            if (!subject) throw new Error("骚年，你说的那个主题不存在");
+            res.render('token', { target: req.flash("target"), subject: subject});
+        });
+    } else {
+        throw new Error("骚年，你要验证哪个主题的令牌？");
+    }
 };
 
 /**
@@ -71,7 +80,7 @@ exports.token = function (req, res) {
  */
 exports.verifyToken = function (req, res) {
     // 返回错误信息
-    var returnError = function(err){
+    var returnError = function (err) {
         req.flash("errors", err);
         req.flash("target", req.body.target);
         req.flash("subjectId", req.body.subjectId);

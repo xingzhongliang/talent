@@ -19,7 +19,10 @@ block head
 block sidebar
     ul(data-spy="affix").nav.nav-tabs.nav-stacked
         li: a(href="/subject/#{subject._id}",target="_blank") 查看主题
-        li: a(href="/subject/#{subject._id}/candidate/add") 新增选项
+        if(subject.token)
+            li: a(href="/subject/#{subject._id}/candidate/add?token=#{subject.token}") 新增选项
+        else
+            li: a(href="/subject/#{subject._id}/candidate/add") 新增选项
         li: a(href="/subject/#{subject._id}/candidate/list") 管理选项
         li: a(href="#scopeManager") 域管理
         li: a(href="#groupManager") 组管理
@@ -35,8 +38,13 @@ block main
                 div.btn-group
                     button.btn 下一轮投票
                     a(href="/subject/#{subject._id}/candidate/list").btn 选项管理
-                    a(href='/subject/#{subject._id}/candidate/add').btn.btn-success.btn-add-opt 新选项
-                        i.icon-plus.icon-white
+                    if(subject.token)
+                        a(href='/subject/#{subject._id}/candidate/add?token=#{subject.token}').btn.btn-success.btn-add-opt 新选项
+                            i.icon-plus.icon-white
+                    else
+                        a(href='/subject/#{subject._id}/candidate/add').btn.btn-success.btn-add-opt 新选项
+                            i.icon-plus.icon-white
+
     h4 Banner
     .row
         if subject.banner
