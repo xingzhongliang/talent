@@ -38,6 +38,7 @@ module.exports = function (role, url) {
                         req.flash("subjectId", req.subject._id);
                         res.redirect('/token');
                     } else {
+                        req.session.user.token = req.subject.token;
                         next();
                     }
                 }
