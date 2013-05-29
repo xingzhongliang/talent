@@ -12,6 +12,7 @@ block sidebar
             li: a(href="/subject/#{subject._id}/candidate/add?token=#{subject.token}") 新增选项
         else
             li: a(href="/subject/#{subject._id}/candidate/add") 新增选项
+        li: a(href="/subject/#{subject._id}/candidate/list") 管理选项
         li: a(href="/subject/#{subject._id}/vote/list") 投票情况
 
 block main
