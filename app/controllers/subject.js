@@ -27,7 +27,7 @@ exports.subject = function (req, res, next, id) {
  * addSubject page.
  */
 exports.add = function (req, res) {
-    res.render('admin/addSubject', { title: '添加主题' });
+    res.render('subject/add', { title: '添加主题' });
 };
 
 /**
@@ -39,7 +39,7 @@ exports.edit = function (req, res) {
     var subject = req.subject;
     Subject.scopesAndGroups(subject._id, function (scopes, groups, err) {
         if (err) throw err;
-        res.render('admin/editSubject', { title: '主题管理', subject: subject, scopes: scopes, groups: groups });
+        res.render('subject/edit', { title: '主题管理', subject: subject, scopes: scopes, groups: groups });
     });
 };
 
