@@ -20,20 +20,56 @@ var config = require("../../config/config")[env];
  */
 exports.list = function (req, res) {
     var time = req.param("time") || "-1";
-    var department = req.param("department") || "all";
-    var candidate = req.param("candidate") || "all";
-    department = (department == "all") ? "" : department;
-    candidate = (candidate == "all") ? "" : candidate;
+    var department = req.param("department") || "";
+    var candidate = req.param("candidate") || "";
     var page = req.param('page') > 0 ? req.param('page') : 0;
     var pageSize = req.param('pageSize') || config.app.pageSize;
+    var subject = req.subject;
+    summaryInfo(function(result){
+        var options = {
+            pageSize: pageSize,
+            page: page,
+            criteria: {subject: subject._id}
+        };
+        Vote.find(options.criteria)
+            .sort({time: time})
+            .limit(options.pageSize)
+            .skip(options.pageSize * options.page)
+            .exec(function (err, votes) {
+                if (err) throw err;
+                Vote.count(options.criteria).exec(function (err, count) {
+                    res.render("vote/list", {
+                        result: result,
+                        subject: subject,
+                        votes: votes,
+                        pages: count / pageSize,
+                        page: page,
+                        dataOptions: {
+                            candidate: candidate,
+                            department: department,
+                            time: time
+                        }
+                    });
+                });
+            });
+
+    });
+};
+
+/**
+ * 获取投票汇总数据
+ * @param req 请求对象
+ * @param cb 回调函数
+ */
+var summaryInfo = function (req, cb) {
+    var time = req.param("time") || "-1";
+    var department = req.param("department") || "";
+    var candidate = req.param("candidate") || "";
     var subject = req.subject;
     var init = {
         count: 0,
         department: {},
-        candidate: {},
-        votes: [],
-        page: page,
-        pageSize: pageSize
+        candidate: {}
     };
     var condition = {subject: subject._id.toString()};
     if (candidate) condition.candidate = candidate.toString();
@@ -43,11 +79,7 @@ exports.list = function (req, res) {
         condition: condition,
         initial: init,
         reduce: function (doc, out) {
-
             out.count++;
-            if ((out.count >= out.page * out.pageSize) && (out.count < (out.page + 1) * out.pageSize)) {
-                out.votes.push(doc);
-            }
             if (out.department[doc.voter_department]) {
                 out.department[doc.voter_department] += 1;
             } else {
@@ -57,30 +89,17 @@ exports.list = function (req, res) {
                 out.candidate[doc.candidate].count += 1;
             } else {
                 out.candidate[doc.candidate] = {
-                    count : 1,
-                    name : doc.candidate_name
+                    count: 1,
+                    name: doc.candidate_name
                 };
             }
-        },
-        option: {
-            $sort: {time: time}
         },
         finalize: function () {
         }
     };
     Vote.collection.group(groupBy.keys, groupBy.condition, groupBy.initial, groupBy.reduce, groupBy.finalize, true, groupBy.option, function (err, result) {
-        result = result[0] || init;
         if (err) throw err;
-        res.render("vote/list", {
-            result: result,
-            subject: subject,
-            pages: result.count / pageSize,
-            page: page,
-            dataOptions: {
-                candidate: candidate,
-                department: department,
-                time: time
-            }
-        });
+        result = result[0] || init;
+        cb(result);
     });
 };

@@ -106,12 +106,12 @@ exports.list = function (req, res) {
     var page = req.param('page') > 0 ? req.param('page') : 0;
     var pageSize = req.param('pageSize') || config.app.pageSize;
     var subject = req.subject;
+
     var summary = {
-        count:0,
+        count: 0,
         group: {},
         scope: {}
     };
-
     var groupBy = {
         keys: {},
         condition: {subject: subject._id.toString()},

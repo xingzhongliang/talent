@@ -83,9 +83,8 @@ block main
                     td: a(href="/candidate/#{v.candidate}",target="_blank")= v.candidate_name
                     td= fmt2(v.time,'YYYY-MM-DD HH:mm')
 
-
-    // 分页条
     if pages > 1
+        // 分页条
         .pagination.pagination-centered
             ul
                 != createPagination(pages, page)
