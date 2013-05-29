@@ -1,12 +1,8 @@
-extends ../layouts/adminWithSideBar
+extends ../layouts/admin
 block head
     link(href="/css/bootstrapSwitch.css",rel="stylesheet",media="screen")
     link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
     link(href="/css/bootstrap-wysihtml5-0.0.2.css",rel="stylesheet",media="screen")
-    style
-        .span-4 {
-            width: 340px;;
-        }
     script(src="/js/bootstrap-sniper.js")
     script(src="/js/datepicker/js/bootstrap-datepicker.js")
     script(src="/js/filebox/filebox.js")
@@ -21,7 +17,7 @@ block head
             $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
 
             $('#banInpt').filebox({
-                width:520,
+                width:746,
                 height:150,
                 callback:function(f,data,res) {
                     $('#banInpt').val(data.path);
@@ -35,11 +31,7 @@ block head
         });
 
 
-block sidebar
-
-
-
-block main
+block content
     div.page-header
         h2 添加主题
             small     Add Subject
@@ -67,7 +59,7 @@ block main
             .control-group
                 label.control-label 前台显示模板：
                 .controls
-                    select.input-block-level(name="viewOpt[templateName]")
+                    select(name="viewOpt[templateName]")
                         option(value="default",selected=) default
 
         fieldset
