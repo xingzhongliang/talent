@@ -17,24 +17,25 @@ block sidebar
 block main
     .well
         p 投票总数：
-            b.badge.badge-warning #{result.count}
+            span.badge.badge-warning #{summary.count}
         dl
-            dt 投票者部门：
-            each count, department in result.department
-                dd.span2 #{department}：
-                    if (count)
-                        b.badge.badge-success #{count}
-                    else
-                        b.badge 0
-
+            if Object.getOwnPropertyNames(summary.department)
+                dt 投票者部门：
+                each count, department in summary.department
+                    dd.span2 #{department}：
+                        if (count)
+                            b.badge.badge-success #{count}
+                        else
+                            b.badge 0
         dl
-            dt 选项：
-            each c, c_id in result.candidate
-                dd.span2 #{c.name}：
-                    if (c.count)
-                        b.badge.badge-success #{c.count}
-                    else
-                        b.badge 0
+            if Object.getOwnPropertyNames(summary.candidate)
+                dt 选项：
+                each c, c_id in summary.candidate
+                    dd.span2 #{c.name}：
+                        if (c.count)
+                            b.badge.badge-success #{c.count}
+                        else
+                            b.badge 0
     table.table
         thead
             tr
@@ -43,39 +44,41 @@ block main
                 th
                     .dropdown
                         .btn-group
-                            a.departmentSelector.btn(_id="all") 部门
-                            a.btn.dropdown-toggle(data-toggle="dropdown")
-                                i.icon-chevron-down
-                            ul.dropdown-menu
-                                each count, department in result.department
-                                    li: a.departmentSelector(_id="#{department}") #{department}：
-                                        b.text-error
-                                            if (count)
-                                                | ( #{count} )
-                                            else
-                                                | ( 0 )
+                            a.departmentSelector.btn(_id="") 投票者部门
+                            if Object.getOwnPropertyNames(summary.department)
+                                a.btn.dropdown-toggle(data-toggle="dropdown")
+                                    i.icon-chevron-down
+                                ul.dropdown-menu
+                                    each count, department in summary.department
+                                        li: a.departmentSelector(_id="#{department}") #{department}：
+                                            b.text-error
+                                                if (count)
+                                                    | ( #{count} )
+                                                else
+                                                    | ( 0 )
                 th
                     .dropdown
                         .btn-group
-                            a.candidateSelector.btn(_id="all") 选项
-                            a.btn.dropdown-toggle(data-toggle="dropdown")
-                                i.icon-chevron-down
-                            ul.dropdown-menu
-                                each c, c_id in result.candidate
-                                    li: a.candidateSelector(_id="#{c_id}") #{c.name}：
-                                        b.text-error
-                                            if (c.count)
-                                                | ( #{c.count} )
-                                            else
-                                                | ( 0 )
+                            a.candidateSelector.btn(_id="") 选项
+                            if Object.getOwnPropertyNames(summary.candidate)
+                                a.btn.dropdown-toggle(data-toggle="dropdown")
+                                    i.icon-chevron-down
+                                ul.dropdown-menu
+                                    each c, c_id in summary.candidate
+                                        li: a.candidateSelector(_id="#{c_id}") #{c.name}：
+                                            b.text-error
+                                                if (c.count)
+                                                    | ( #{c.count} )
+                                                else
+                                                    | ( 0 )
                 th
                     #sortByTime.btn 投票时间
                         i.icon-arrow-down
         tbody
-            if(result.votes.length <= 0)
+            if(summary.count <= 0)
                 tr: td(colspan="5")
                     p.text-center.text-warning 没有数据
-            each v,i in result.votes
+            each v,i in votes
                 tr
                     td= i+1
                     td= v.voter_name

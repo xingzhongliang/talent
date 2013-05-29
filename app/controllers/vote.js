@@ -25,7 +25,7 @@ exports.list = function (req, res) {
     var page = req.param('page') > 0 ? req.param('page') : 0;
     var pageSize = req.param('pageSize') || config.app.pageSize;
     var subject = req.subject;
-    summaryInfo(function(result){
+    summaryInfo(req, function(summary){
         var options = {
             pageSize: pageSize,
             page: page,
@@ -39,7 +39,7 @@ exports.list = function (req, res) {
                 if (err) throw err;
                 Vote.count(options.criteria).exec(function (err, count) {
                     res.render("vote/list", {
-                        result: result,
+                        summary: summary,
                         subject: subject,
                         votes: votes,
                         pages: count / pageSize,
@@ -73,8 +73,8 @@ var summaryInfo = function (req, cb) {
     };
     var condition = {subject: subject._id.toString()};
     if (candidate) condition.candidate = candidate.toString();
-    if (department) condition.department = department.toString();
-    var groupBy = {
+    if (department) condition.voter_department = department.toString();
+    var groupOpts = {
         keys: {},
         condition: condition,
         initial: init,
@@ -97,7 +97,7 @@ var summaryInfo = function (req, cb) {
         finalize: function () {
         }
     };
-    Vote.collection.group(groupBy.keys, groupBy.condition, groupBy.initial, groupBy.reduce, groupBy.finalize, true, groupBy.option, function (err, result) {
+    Vote.collection.group(groupOpts.keys, groupOpts.condition, groupOpts.initial, groupOpts.reduce, groupOpts.finalize, true, groupOpts.option, function (err, result) {
         if (err) throw err;
         result = result[0] || init;
         cb(result);
