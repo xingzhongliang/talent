@@ -11,6 +11,7 @@ block head
             min-height: 20px;
             padding: 19px;
         }
+
         .a_cursor {
             cursor: pointer;
         }
@@ -49,110 +50,110 @@ block head
 
 
 block sidebar
-  ul(data-spy="affix").nav.nav-tabs.nav-stacked
-    li: a(href="/subject/#{subject._id}/edit") 管理主题
-    li: a(href="/subject/#{subject._id}",target="_blank") 查看主题
-    li: a(href="/subject/add") 新增主题
-    li: a(href="/subject/#{subject._id}/candidate/list") 管理选项
+    ul(data-spy="affix").nav.nav-tabs.nav-stacked
+        li: a(href="/subject/#{subject._id}/edit") 管理主题
+        li: a(href="/subject/#{subject._id}",target="_blank") 查看主题
+        li: a(href="/subject/add") 新增主题
+        li: a(href="/subject/#{subject._id}/candidate/list") 管理选项
 
 block main
-  .page-header
-    h2= subject.name
-      small #{subject.viewOpt.newCandidatePage.actionLabel}
-  .row &nbsp;
-  form(id='dataForm',method="post",enctype="multipart/form-data", action="/subject/#{subject._id}/candidate/new").form-horizontal
-    .span9
-      //- 如果有组或域，显示备选
-      if subject.scopes.length > 1 || subject.groups.length > 1
-        fieldset
-        legend 基本信息
-        if subject.scopes.length > 1
-          .control-group
-            lebel.control-label #{subject.viewOpt.newCandidatePage.scopeLabel}：
-            .controls
-              select(name="scope").span6
-                each scope in subject.scopes
-                  option(value=scope._id)=scope.name
-        if subject.groups.length > 1
-          .control-group
-            lebel.control-label #{subject.viewOpt.newCandidatePage.groupLabel}：
-            .controls
-              select(name="group").span6
-                each group in subject.groups
-                  option(value=group._id)=group.name
-      fieldset
-        .control-group
-          label.control-label #{subject.viewOpt.newCandidatePage.titleLabel}：
-          .controls
-            if subject.viewOpt.candidateIsEmployee
-              //- 如果选项时京东员工，选项标题默认为员工姓名，不能更改
-              input.span6(name="name",type="text",readonly,value=req.session.user.name)
-            else
-              //- 否则不提供默认值，并可输入
-              input.span6(name="name",type="text",placeholder="#{subject.viewOpt.newCandidatePage.titleLabel}")
-        //- showType > 1 表示为非纯文本，需要图片和详细信息
-        if subject.viewOpt.showType > 1
-          .control-group
-            label.control-label #{subject.viewOpt.newCandidatePage.imgLabel}：
-            .controls
-                input#avatar.span6(type="text",name="avatar")
-          .control-group
-            lebel.control-label #{subject.viewOpt.newCandidatePage.descriptionLabel}：
-            .controls
-              textarea.span6(name="description",rows="5",placeholder="简短描述")
-        //- showType == 3 表示为有详情页，则至少需要提供一个文本，图片，音频或视频作为详情
-        if subject.viewOpt.showType == 3
-          .well.span8
+    .page-header
+        h2= subject.name
+            small #{subject.viewOpt.newCandidatePage.actionLabel}
+    .row &nbsp;
+    form(id='dataForm',method="post",enctype="multipart/form-data", action="/subject/#{subject._id}/candidate/new").form-horizontal
+        .span9
+            //- 如果有组或域，显示备选
+            if subject.scopes.length > 1 || subject.groups.length > 1
+                fieldset
+                legend 基本信息
+                if subject.scopes.length > 1
+                    .control-group
+                        lebel.control-label #{subject.viewOpt.newCandidatePage.scopeLabel}：
+                        .controls
+                            select(name="scope").span6
+                                each scope in subject.scopes
+                                    option(value=scope._id)=scope.name
+                if subject.groups.length > 1
+                    .control-group
+                        lebel.control-label #{subject.viewOpt.newCandidatePage.groupLabel}：
+                        .controls
+                            select(name="group").span6
+                                each group in subject.groups
+                                    option(value=group._id)=group.name
             fieldset
-              legend #{subject.viewOpt.newCandidatePage.detailLegend}
-            input(name='witOfImg',type="hidden")
-            input(name='witOfVideo',type="hidden")
-            input(name='witOfAudio',type="hidden")
-            textarea.span8(rows="7",placeholder="详细描述",name="witOfText")
-            div.row
-                .span8
-                    .btn-group
-                        a(href="javascript:;", title="上传图片",onclick="showPanel(1)").btn
-                            i.icon-picture
-                        a(href="javascript:;", title="上传视频",onclick="showPanel(2)").btn
-                            i.icon-film
-                        a(href="javascript:;", title="上传音频",onclick="showPanel(3)").btn
-                            i.icon-music
-                .span8 &nbsp;
-            div#imgPanel.row.hide
-                .span8.atvSpan
-                    .pull-left
-                        ul.thumbnails
-                    .pull-left &nbsp;
-                    .pull-left
-                        input#addImg(type="text")
-                    .clearfix
-                .span8 &nbsp;
-                    a(name='imgPanel')
-            div#mediaPanel.row.hide
-                .span8.atvSpan
-                    .pull-left
-                        ul.thumbnails
-                    .pull-left &nbsp;
-                    .pull-left
-                        input#addMedia(type="text")
-                    .clearfix
-                .span8 &nbsp;
-                    a(name='mediaPanel')
-            div#musicPanel.row.hide
-                .span8.atvSpan
-                    .pull-left
-                        ul.thumbnails
-                    .pull-left &nbsp;
-                    .pull-left
-                        input#addMusic(type="text")
-                    .clearfix
-                .span8 &nbsp;
-                    a(name='musicPanel')
+                .control-group
+                    label.control-label #{subject.viewOpt.newCandidatePage.titleLabel}：
+                    .controls
+                        if subject.viewOpt.candidateIsEmployee
+                            //- 如果选项时京东员工，选项标题默认为员工姓名，不能更改
+                            input.span6(name="name",type="text",readonly,value=req.session.user.name)
+                        else
+                            //- 否则不提供默认值，并可输入
+                            input.span6(name="name",type="text",placeholder="#{subject.viewOpt.newCandidatePage.titleLabel}")
+                //- showType > 1 表示为非纯文本，需要图片和详细信息
+                if subject.viewOpt.showType > 1
+                    .control-group
+                        label.control-label #{subject.viewOpt.newCandidatePage.imgLabel}：
+                        .controls
+                            input#avatar.span6(type="text",name="avatar")
+                    .control-group
+                        lebel.control-label #{subject.viewOpt.newCandidatePage.descriptionLabel}：
+                        .controls
+                            textarea.span6(name="description",rows="5",placeholder="简短描述")
+                //- showType == 3 表示为有详情页，则至少需要提供一个文本，图片，音频或视频作为详情
+                if subject.viewOpt.showType == 3
+                    .well.span8
+                        fieldset
+                            legend #{subject.viewOpt.newCandidatePage.detailLegend}
+                        input(name='witOfImg',type="hidden")
+                        input(name='witOfVideo',type="hidden")
+                        input(name='witOfAudio',type="hidden")
+                        textarea.span8(rows="7",placeholder="详细描述",name="witOfText")
+                        div.row
+                            .span8
+                                .btn-group
+                                    a(href="javascript:;", title="上传图片",onclick="showPanel(1)").btn
+                                        i.icon-picture
+                                    a(href="javascript:;", title="上传视频",onclick="showPanel(2)").btn
+                                        i.icon-film
+                                    a(href="javascript:;", title="上传音频",onclick="showPanel(3)").btn
+                                        i.icon-music
+                            .span8 &nbsp;
+                        div#imgPanel.row.hide
+                            .span8.atvSpan
+                                .pull-left
+                                    ul.thumbnails
+                                .pull-left &nbsp;
+                                .pull-left
+                                    input#addImg(type="text")
+                                .clearfix
+                            .span8 &nbsp;
+                                a(name='imgPanel')
+                        div#mediaPanel.row.hide
+                            .span8.atvSpan
+                                .pull-left
+                                    ul.thumbnails
+                                .pull-left &nbsp;
+                                .pull-left
+                                    input#addMedia(type="text")
+                                .clearfix
+                            .span8 &nbsp;
+                                a(name='mediaPanel')
+                        div#musicPanel.row.hide
+                            .span8.atvSpan
+                                .pull-left
+                                    ul.thumbnails
+                                .pull-left &nbsp;
+                                .pull-left
+                                    input#addMusic(type="text")
+                                .clearfix
+                            .span8 &nbsp;
+                                a(name='musicPanel')
 
-          .span8.muted
-             .pull-right
-                button.btn.btn-success.btn-large(type="button",onclick="sbmt()") 提交报名信息
+                    .span8.muted
+                        .pull-right
+                            button.btn.btn-success.btn-large(type="button",onclick="sbmt()") 提交报名信息
 block footer
     script
         var witOfImg=[],witOfAudio=[],witOfVideo=[];

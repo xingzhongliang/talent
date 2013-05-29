@@ -21,16 +21,16 @@ block head
             $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
 
             $('#banInpt').filebox({
-                width:450,
+                width:520,
                 height:150,
                 callback:function(f,data,res) {
                     $('#banInpt').val(data.path);
                 }
             });
-           //validate
+           // validate
            $('#dataForm').validateInit();
             // 初始化编辑器
-            //$(".wysihtml5").wysihtml5();
+            $(".wysihtml5").wysihtml5();
 
         });
 
@@ -50,57 +50,81 @@ block main
         fieldset
             legend 基本信息
             .control-group
-                input.input-block-level(type='text',id='sub-name',name='name',placeholder='活动名称',v="require;length:30")
+                label.control-label 活动名称：
+                .controls
+                    input.input-block-level(type='text',id='sub-name',name='name',placeholder='活动名称',v="require;length:30")
             .control-group
-                textarea.input-block-level(name='comment',rows=3,placeholder='活动说明',v="require;length:800")
+                label.control-label 活动说明：
+                .controls
+                    textarea.input-block-level(name='comment',rows=3,placeholder='活动说明',v="require;length:800")
+            //.alert.alert-info
+                strong 小贴士：
+                span 如果希望主题被置顶显示，请务必上传banner，否则无法正常显示
+            .control-group
+                label.control-label 主题Banner图片：
+                .controls
+                    input#banInpt(type='text',value='1',name='banner')
+            .control-group
+                label.control-label 前台显示模板：
+                .controls
+                    select.input-block-level(name="viewOpt[templateName]")
+                        option(value="default",selected=) default
+
         fieldset
             legend 活动设置
-            div.row
-                .span3
-                    div.b-switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
+            .control-group
+                label.control-label 首页是否可见：
+                .controls
+                    div.b-switch(data-on-label='是',data-off-label='否')
                         input(name='isPublic',type='checkbox',checked='true',value='1')
-                .span3
-                    div.b-switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
+            .control-group
+                label.control-label 是否开放报名：
+                .controls
+                    div.b-switch(data-on-label='是',data-off-label='否')
                         input(name='canReg',type='checkbox',checked='true',value='1')
-                .span3
-                    div.b-switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
-                        input(name='token',type='checkbox',value='1')
-            div.row &nbsp;
-            div.row
-                div.span-4
-                    div.well
-                        h5 投票设置
-                        p 每个人在这次活动中能投多少票
-                        .control-group
-                            input#voteMax(type='text',name='voteChance',value="1",v="require;number")
-                        p 投票的窗口期：
-                        .control-group
-                            div.input-append
-                                input.dpInpt.input-block-level(name='voteStart',type="text",v="require")
-                                span.add-on
-                                    i.icon-th
-                        .control-group
-                            div.input-append
-                                input.dpInpt.input-block-level(name='voteEnd',type="text",v="require")
-                                span.add-on
-                                    i.icon-th
-                div.span-4.pull-right
-                    div.well
-                        h5 报名设置
-                        p 每个人在这次活动中能报名几次
-                        .control-group
-                            input#regMax(type='text',name='regChance',value='1',v="require;number")
-                        p 报名的窗口期：
-                        .control-group
-                            div.input-append
-                                input.dpInpt.input-block-level(name='regStart',type="text",v="require")
-                                span.add-on
-                                    i.icon-th
-                        .control-group
-                            div.input-append
-                                input.dpInpt.input-block-level(name='regEnd',type="text",v="require")
-                                span.add-on
-                                    i.icon-th
+            .control-group
+                label.control-label 是否使用令牌：
+                .controls
+                    div.b-switch(data-on-label='是',data-off-label='否')
+                        input(name='token',type='checkbox',checked='true',value='1')
+            //.control-group
+                label.control-label 每人能投几票：
+                .controls
+                    input#voteMax(type='text',name='voteChance',value="1",v="require;number")
+            .control-group
+                label.control-label 投票开始时间：
+                .controls
+                    div.input-append
+                        input.dpInpt(name='voteStart',type="text",v="require")
+                        span.add-on: i.icon-th
+            .control-group
+                label.control-label 投票截止时间：
+                .controls
+                    div.input-append
+                        input.dpInpt(name='voteEnd',type="text",v="require")
+                        span.add-on: i.icon-th
+            //.control-group
+                label.control-label 每人能报名几次：
+                .controls
+                    input#regMax(type='text',name='regChance',value='1',v="require;number")
+            .control-group
+                label.control-label 报名开始时间：
+                .controls
+                    div.input-append
+                        input.dpInpt(name='regStart',type="text",v="require")
+                        span.add-on: i.icon-th
+            .control-group
+                label.control-label 报名截止时间：
+                .controls
+                    div.input-append
+                        input.dpInpt(name='regEnd',type="text",v="require")
+                        span.add-on: i.icon-th
+
+        fieldset
+            legend 活动介绍页
+            .control-group
+                textarea.input-block-level.wysihtml5(name="detail",placeholder="请填写活动详细介绍，此内容将在活动介绍页展示",rows="15")
+
         fieldset
             h3#toggleAdvancedOptsBtn.btn.btn-info 高级设置&nbsp;&nbsp;&nbsp;
                 i.icon-plus.icon-white
@@ -108,13 +132,6 @@ block main
             div#advancedOpts.well.hide
                 fieldset
                     legend 页面通用设置
-                    .alert.alert-info
-                        strong 小贴士：
-                        span 如果希望主题被置顶显示，请务必上传banner，否则无法正常显示
-                    .control-group
-                        label.control-label 主题Banner图片：
-                        .controls
-                            input#banInpt(type='text',value='1',name='banner')
                     .control-group
                         label.control-label 选项展示方式：
                         .controls
@@ -127,17 +144,6 @@ block main
                             label.radio
                                 input(type='radio',value='3',name='viewOpt[showType]',checked='true')
                                 span 文本、缩略图加详情页——用于复杂的调研活动，各个选项有专门的详情页介绍详细信息
-                    .control-group
-                        label.control-label 活动详细介绍：
-                        .controls
-                            textarea(name="detail",placeholder="请填写活动详细介绍，此内容将在活动介绍页展示").span6.wysihtml5
-                    .control-group
-                        label.control-label 前台显示模板：
-                        .controls
-                            .input-prepend.input-append
-                                span.add-on /app/views/templats/
-                                input(type="text",name="viewOpt[templateName]", value="default")
-                                span.add-on /
                     .control-group
                         label.control-label 选项是否为京东员工：
                         .controls
@@ -179,13 +185,8 @@ block main
                         .controls
                             input(type="text",name="viewOpt[newCandidatePage][actionBtnLabel]",value="提交报名")
 
-        fieldset
-            legend
-            .control-group
-                label.control-label
-                .controls
             div.form-actions
-                label.checkbox
+                //label.checkbox
                     input(type="checkbox")
                     span 其他人往这个主题添加的选项必须由我审核之后才能生效
                 a(href='javascript:;',onclick='sbmt()').btn.btn-success.btn-large 提交新主题
