@@ -24,6 +24,7 @@ block sidebar
         else
             li: a(href="/subject/#{subject._id}/candidate/add") 新增选项
         li: a(href="/subject/#{subject._id}/candidate/list") 管理选项
+        li: a(href="/subject/#{subject._id}/vote/list") 投票情况
         li: a(href="#scopeManager") 域管理
         li: a(href="#groupManager") 组管理
 
@@ -36,7 +37,7 @@ block main
             p!=subject.comment
             p
                 div.btn-group
-                    button.btn 下一轮投票
+                    a(href="/subject/#{subject._id}/vote/list").btn 投票情况
                     a(href="/subject/#{subject._id}/candidate/list").btn 选项管理
                     if(subject.token)
                         a(href='/subject/#{subject._id}/candidate/add?token=#{subject.token}').btn.btn-success.btn-add-opt 新选项

@@ -3,6 +3,7 @@ var moment = require("moment");
 var uuid = require("node-uuid");
 var Subject = mongoose.model("Subject");
 var Candidate = mongoose.model("Candidate");
+var Vote = mongoose.model("Vote");
 var util = require("./util/util");
 var env = process.env.NODE_ENV || "development";
 var config = require("../../config/config")[env];
@@ -229,67 +230,69 @@ exports.chgBanner = function (req, res) {
  * @param res
  */
 exports.list = function (req, res) {
-    console.log(process.env.NODE_ENV);
-    var kw = req.param('kw');
-    var st = req.param('st');
-    var owner = req.param('owner');
+    dashboard(function (dashboard) {
+        var kw = req.param('kw');
+        var st = req.param('st');
+        var owner = req.param('owner');
 
-    var page = req.param('page') > 0 ? req.param('page') : 0;
-    var pageSize = 6;
-    var options = {
-        pageSize: pageSize,
-        page: page
-    };
-    var reg;
-    if (kw) {
-        var r = '';
-        for (var i = 0; i < kw.length; i++) {
-            var c = kw.charAt(i);
-            c && c.trim() && (r += ('.*' + c));
+        var page = req.param('page') > 0 ? req.param('page') : 0;
+        var pageSize = 6;
+        var options = {
+            pageSize: pageSize,
+            page: page
+        };
+        var reg;
+        if (kw) {
+            var r = '';
+            for (var i = 0; i < kw.length; i++) {
+                var c = kw.charAt(i);
+                c && c.trim() && (r += ('.*' + c));
+            }
+            reg = new RegExp(r + '.*', 'i');
         }
-        reg = new RegExp(r + '.*', 'i');
-    }
-    var sort = {};
-    switch (st) {
-        case '1':
-            sort.createTime = '-1';
-            break;
-        case '2':
-            sort.createTime = '1';
-            break;
-        case '3':
-            sort.votes = '-1';
-            break;
-        case '4':
-            sort.votes = '1';
-            break;
-        default :
-            sort.createTime = '-1';
-    }
-    options.sort = sort;
-    options.criteria = {};
-    reg && (options.criteria.name = reg);
-    owner && owner.trim() && (options.criteria.owner = owner.trim());
+        var sort = {};
+        switch (st) {
+            case '1':
+                sort.createTime = '-1';
+                break;
+            case '2':
+                sort.createTime = '1';
+                break;
+            case '3':
+                sort.votes = '-1';
+                break;
+            case '4':
+                sort.votes = '1';
+                break;
+            default :
+                sort.createTime = '-1';
+        }
+        options.sort = sort;
+        options.criteria = {};
+        reg && (options.criteria.name = reg);
+        owner && owner.trim() && (options.criteria.owner = owner.trim());
 
-    Subject.list(options, function (err, subjects) {
-        if (err) throw err;
-        Subject.count(options.criteria).exec(function (err, count) {
+        Subject.list(options, function (err, subjects) {
             if (err) throw err;
-            res.render("admin/index", {
-                title: "管理控制台",
-                subjects: subjects,
-                kw: kw,
-                st: st,
-                owner: owner,
-                pages: count / pageSize,
-                page: page
+            Subject.count(options.criteria).exec(function (err, count) {
+                if (err) throw err;
+                res.render("admin/index", {
+                    title: "管理控制台",
+                    subjects: subjects,
+                    kw: kw,
+                    st: st,
+                    owner: owner,
+                    pages: count / pageSize,
+                    page: page,
+                    dashboard: dashboard
+                });
             });
         });
     });
 };
 
 /**
- * 首页
+ * 系统首页
  * @param req
  * @param res
  */
@@ -372,3 +375,26 @@ exports.intro = function (req, res) {
     });
 };
 
+/**
+ * 查询仪表板数据，数据包括主题数，选项数，投票数
+ * @param cb 回调函数
+ */
+var dashboard = function (cb) {
+    var summary = {};
+    // 主题数
+    Subject.count({yn: 1}).exec(function (err, count) {
+        if (err) throw err;
+        summary.numSubject = count;
+        // 总选项数
+        Candidate.count({}).exec(function (err, count) {
+            if (err) throw err;
+            summary.numCandidate = count;
+            // 总投票数
+            Vote.count({}).exec(function (err, count) {
+                if (err) throw err;
+                summary.numVote = count;
+                cb(summary);
+            });
+        });
+    });
+};

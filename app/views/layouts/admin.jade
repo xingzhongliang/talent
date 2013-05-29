@@ -25,7 +25,6 @@ html
                     a.brand Genius Bar
                     ul.nav
                         li(class="#{isActive("/admin", req.url)}"): a(href="/admin") 首页
-                        li(class="#{isActive("/data", req.url)}"): a(href="/data") 数据
                     p.navbar-text.pull-right
                         if(req.session.user)
                             span 欢迎&nbsp;

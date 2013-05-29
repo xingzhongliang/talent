@@ -8,6 +8,8 @@ var express = require('express')
     , mongoose = require('mongoose')
     , fs = require('fs');
 
+console.log("NODE_ENV=" + env);
+
 // 启动数据库连接
 mongoose.connect(config.db);
 

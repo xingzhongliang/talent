@@ -5,6 +5,14 @@
 extends ../layouts/adminWithSideBar
 block sidebar
     ul(data-spy="affix").nav.nav-tabs.nav-stacked
+        li: a(href="/subject/#{subject._id}/edit") 管理主题
+        li: a(href="/subject/#{subject._id}",target="_blank") 查看主题
+        li: a(href="/subject/add") 新增主题
+        if(subject.token)
+            li: a(href="/subject/#{subject._id}/candidate/add?token=#{subject.token}") 新增选项
+        else
+            li: a(href="/subject/#{subject._id}/candidate/add") 新增选项
+        li: a(href="/subject/#{subject._id}/vote/list") 投票情况
 
 block main
     .well

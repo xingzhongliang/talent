@@ -19,25 +19,7 @@ var config = require("../../config/config")[env];
  * @param res
  */
 exports.index = function (req, res) {
-    var summary = {};
-    // 主题数
-    Subject.count({yn: 1}).exec(function (err, count) {
-        if (err) throw err;
-        summary.numSubject = count;
-        // 总选项数
-        Candidate.count({}).exec(function (err, count) {
-            if (err) throw err;
-            summary.numCandidate = count;
-            // 总投票数
-            Vote.count({}).exec(function (err, count) {
-                if (err) throw err;
-                summary.numVote = count;
-                res.render("data/index", {
-                    summary: summary
-                });
-            });
-        });
-    });
+
 
 };
 
