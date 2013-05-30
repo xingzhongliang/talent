@@ -127,33 +127,31 @@ exports.doAdd = function (req, res) {
  * @param res
  */
 exports.doEdit = function (req, res) {
-    var subject = req.body.sub;
+    var sub = req.body.sub;
     var erpId = req.session.user.erpId;
-    var sub = req.subject;
-    if (!sub) {                         //Subject check
+    var subInDb = req.subject;
+    if (!subInDb) {                         //Subject check
         return res.send({code: -1})
     }
-    if (sub.owner != erpId && !config.isAdmin(erpId)) {   //User check,Admin can modify any subject
+    if (subInDb.owner != erpId && !config.isAdmin(erpId)) {   //User check,Admin can modify any subject
         return res.send({code: -2})
     }
     // 如果设置为使用令牌，则生成令牌
-    if (subject.token == 1) {
-        subject.token = uuid.v4();
+    if (sub.token == 1) {
+        sub.token = uuid.v4();
     } else {
-        subject.token = 0;    //else set token to null
+        sub.token = "";    //else set token to null
     }
 
-    Subject.update({_id: sub._id},
+    Subject.update({_id: subInDb._id},
         {$set: {
-            token: subject.token,
-            voteStart: req.body['voteStart'],
-            voteEnd: req.body['voteEnd'],
-            regStart: req.body['regStart'],
-            regEnd: req.body['regEnd'],
-            voteChance: subject.voteChance,
-            regChance: subject.regChance,
-            isPublic: subject.isPublic ? true : false,
-            canReg: subject.canReg ? true : false
+            token: sub.token,
+            voteStart: sub.voteStart,
+            voteEnd: sub.voteEnd,
+            regStart: sub.regStart,
+            regEnd: sub.regEnd,
+            isPublic: sub.isPublic ? true : false,
+            canReg: sub.canReg ? true : false
         }}, function (err) {
             if (err) {
                 console.error(err);
@@ -161,7 +159,33 @@ exports.doEdit = function (req, res) {
             }
             res.send({code: 1});
         });
+};
 
+/**
+ * 修改主题介绍页
+ * @param req
+ * @param res
+ */
+exports.doEditDetail = function (req, res) {
+    var sub = req.body.sub;
+    var erpId = req.session.user.erpId;
+    var subInDb = req.subject;
+    if (!subInDb) {                         //Subject check
+        throw new Error("主题不存在！");
+    }
+    if (subInDb.owner != erpId && !config.isAdmin(erpId)) {   //User check,Admin can modify any subject
+        throw new Error("您不是主题的创建者，不允许修改这个主题！");
+    }
+    Subject.update({_id: subInDb._id}, {
+        $set: {
+            detail: sub.detail
+        }
+    }, function (err) {
+        if (err) {
+            throw err;
+        }
+        res.redirect("/subject/" + subInDb._id + "/edit#introManager")
+    });
 };
 
 /**

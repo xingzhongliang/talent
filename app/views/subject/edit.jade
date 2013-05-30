@@ -2,6 +2,7 @@ extends ../layouts/adminWithSideBar
 block head
     link(href="/css/bootstrapSwitch.css",rel="stylesheet",media="screen")
     link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
+    link(href="/css/bootstrap-wysihtml5-0.0.2.css",rel="stylesheet",media="screen")
     script(src="/js/bootstrap-sniper.js")
     script(src="/js/load/load.js")
     script(src="/js/popover/popover.js")
@@ -15,6 +16,8 @@ block head
             width: 340px;;
         }
     script(src="/js/datepicker/js/bootstrap-datepicker.js")
+    script(src="/js/wysihtml5-0.3.0.min.js")
+    script(src="/js/bootstrap-wysihtml5-0.0.2.min.js")
 
 block sidebar
     ul(data-spy="affix").nav.nav-tabs.nav-stacked
@@ -27,6 +30,7 @@ block sidebar
         li: a(href="/subject/#{subject._id}/vote/list") 投票情况
         li: a(href="#scopeManager") 域管理
         li: a(href="#groupManager") 组管理
+        li: a(href="#introManager") 活动介绍页管理
 
 block main
     input#sid(type='hidden',value='#{subject._id}')
@@ -78,17 +82,21 @@ block main
                 span.label.label-large  禁用令牌
             .well
                 if subject.canReg == 1
-                    .input-prepend
-                        span.add-on 报名链接
-                        input.span7(type="text",value="http://#{config.app.domain}/subject/#{subject._id}/candidate/add")
+                    p 报名链接：
+                        span.text-info http://#{config.app.domain}/subject/#{subject._id}/candidate/add
                 if subject.token
-                    .input-prepend
-                        span.add-on 报名令牌
-                        input.span7(type="text",value="#{subject.token}")
-                p 每人可投票次数：#{subject.voteChance}
-                p 每人可报名次数：#{subject.regChance}
-                p 投票窗口期：#{fmt(subject.voteStart)} 到 #{fmt(subject.voteEnd)}
-                p 报名窗口期：#{fmt(subject.regStart)} 到 #{fmt(subject.regEnd)}
+                    p 报名令牌：
+                        span.text-info #{subject.token}
+                //p 每人可投票次数：#{subject.voteChance}
+                //p 每人可报名次数：#{subject.regChance}
+                p 投票起止时间：
+                    span.text-info #{fmt(subject.voteStart)}
+                    | &nbsp;到&nbsp;
+                    span.text-info #{fmt(subject.voteEnd)}
+                p 报名起止时间：
+                    span.text-info #{fmt(subject.regStart)}
+                    | &nbsp;到&nbsp;
+                    span.text-info #{fmt(subject.regEnd)}
     .pull-right
         button#modSetBtn.btn.btn-primary 修改
     .clearfix
@@ -129,7 +137,6 @@ block main
                                         button.btn.btn-small.msBtn 修改
                                         button.btn.btn-small.btn-danger.dsBtn 删除
             btn#addScopeBtn.btn.btn-block.btn-success  添加域
-
     hr
 
     h4#groupManager 分组
@@ -173,133 +180,72 @@ block main
             btn#addGroupBtn.btn.btn-block.btn-success  添加分组
     hr
 
-    .hide
-        div#set
-            form#dataForm(method='post',action='/subject/do-add')
-                fieldset
-                    legend 活动设置
-                    div.row
-                        .span10
-                            .span3
-                                if subject.isPublic == 1
-                                    div.b2-switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
-                                        input(name='sub[isPublic]',type='checkbox',checked='true',value='1')
-                                else
-                                    div.b2-switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
-                                        input(name='sub[isPublic]',type='checkbox',checked='false',value='1')
-                            .span3
-                                if subject.canReg == 1
-                                    div.b2-switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
-                                        input(name='sub[canReg]',type='checkbox',checked='true',value='1')
-                                else
-                                    div.b2-switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
-                                        input(name='sub[canReg]',type='checkbox',checked='false',value='1')
-                            .span3
-                                if subject.token != 0
-                                    div.b2-switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
-                                        input(name='sub[token]',type='checkbox',value='1',checked='true')
-                                else
-                                    div.b2-switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
-                                        input(name='sub[token]',type='checkbox',value='1')
-                    div.row &nbsp;
-                    div.row
-                        .span10
-                            div.span-4
-                                div.well
-                                    h5 投票设置
-                                    p 每个人在这次活动中能投多少票
-                                    input.voteMax(type='text',name='sub[voteChance]',value="#{subject.voteChance}")
-                                    p 投票的窗口期：
-                                    div.input-append
-                                        input.dpInpt.input-block-level(name='voteStart',type="text",value='#{fmt(subject.voteStart)}')
-                                        span.add-on
-                                            i.icon-th
-                                    div.input-append
-                                        input.dpInpt.input-block-level(name='voteEnd',type="text",value='#{fmt(subject.voteEnd)}')
-                                        span.add-on
-                                            i.icon-th
-                            div.span-4.fl-right
-                                div.well
-                                    h5 报名设置
-                                    p 每个人在这次活动中能报名几次
-                                    input.regMax(type='text',name='sub[regChance]',value='#{subject.regChance}')
-                                    p 报名的窗口期：
-                                    div.input-append
-                                        input.dpInpt.input-block-level(name='regStart',type="text",value='#{fmt(subject.regStart)}')
-                                        span.add-on
-                                            i.icon-th
-                                    div.input-append
-                                        input.dpInpt.input-block-level(name='regEnd',type="text",value='#{fmt(subject.regEnd)}')
-                                        span.add-on
-                                            i.icon-th
-            div.row
-                div.span10
-                    div(style="margin-bottom:15px;height:30px").div-center
-                        a#cfrmEdit(href='javascript:;',onclick='sbmt()').btn.btn-success.btn-large   确认修改
-                        a(href='javascript:;',onclick='cancelModify()',style="margin-left:15px").btn  取消
+    h4#introManager 活动介绍页
+    form.clearfix(method="post",action="/subject/#{subject._id}/do-edit/detail")
+        textarea.input-block-level.wysihtml5(name="sub[detail]",rows="15") #{subject.detail}
+        .pull-right
+            button.btn.btn-primary(type="submit") 保存活动介绍页
+    hr
 
-    div#set.hide
-        h3 活动设置
+    div#set
+        form#dataForm.form-horizontal(method='post',action='/subject/do-edit')
+            fieldset
+                legend 活动设置
+                .control-group
+                    label.control-label 首页是否可见：
+                    .controls
+                        div.b-switch(data-on-label='是',data-off-label='否')
+                            if subject.isPublic
+                                input(name='sub[isPublic]',type='checkbox',checked,value='1')
+                            else
+                                input(name='sub[isPublic]',type='checkbox',value='1')
+                .control-group
+                    label.control-label 是否开放报名：
+                    .controls
+                        div.b-switch(data-on-label='是',data-off-label='否')
+                            if subject.canReg
+                                input(name='sub[canReg]',type='checkbox',checked='true',value='1')
+                            else
+                                input(name='sub[canReg]',type='checkbox',value='1')
+                .control-group
+                    label.control-label 是否使用令牌：
+                    .controls
+                        div.b-switch(data-on-label='是',data-off-label='否')
+                            if subject.token
+                                input(name='sub[token]',type='checkbox',checked='true',value='1')
+                            else
+                                input(name='sub[token]',type='checkbox',value='1')
+                .control-group
+                    label.control-label 投票开始时间：
+                    .controls
+                        div.input-append
+                            input.dpInpt(name='sub[voteStart]',type="text",value="#{fmt(subject.voteStart)}",v="require")
+                            span.add-on: i.icon-th
+                .control-group
+                    label.control-label 投票截止时间：
+                    .controls
+                        div.input-append
+                            input.dpInpt(name='sub[voteEnd]',type="text",value="#{fmt(subject.voteEnd)}",v="require")
+                            span.add-on: i.icon-th
+                .control-group
+                    label.control-label 报名开始时间：
+                    .controls
+                        div.input-append
+                            input.dpInpt(name='sub[regStart]',type="text",value="#{fmt(subject.regStart)}",v="require")
+                            span.add-on: i.icon-th
+                .control-group
+                    label.control-label 报名截止时间：
+                    .controls
+                        div.input-append
+                            input.dpInpt(name='sub[regEnd]',type="text",value="#{fmt(subject.regEnd)}",v="require")
+                            span.add-on: i.icon-th
         div.row
-            .span3
-                if subject.isPublic == 1
-                    div.switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
-                        input(name='sub[isPublic]',type='checkbox',checked='true',value='1')
-                else
-                    div.switch(data-on-label='首页可见',data-off-label='首页不可见',style='min-width:220px')
-                        input(name='sub[isPublic]',type='checkbox',checked='false',value='1')
-            .span3
-                if subject.canReg == 1
-                    div.switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
-                        input(name='sub[canReg]',type='checkbox',checked='true',value='1')
-                else
-                    div.switch(data-on-label='开放报名',data-off-label='不开放报名',style='min-width:220px')
-                        input(name='sub[canReg]',type='checkbox',checked='false',value='1')
-            .span3
-                if subject.token
-                    div.switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
-                        input(name='sub[token]',type='checkbox',value='1',checked='true')
-                else
-                    div.switch(data-on-label='使用令牌',data-off-label='禁用令牌',style='min-width:220px')
-                        input(name='sub[token]',type='checkbox',value='1')
-        div.row &nbsp;
-        div.row
-            div.span4
-                div.well
-                    h5 投票设置
-                    p 每个人在这次活动中能投多少票
-                    input#voteMax(type='text',name='sub[voteChance]',value="#{subject.voteChance}")
-                    p 投票的窗口期：
-                    div.input-append
-                        input.dpInpt.input-block-level(name='sub[voteStart]',type="text",value='#{fmt(subject.voteStart)}')
-                        span.add-on
-                            i.icon-th
-                    div.input-append
-                        input.dpInpt.input-block-level(name='sub[voteEnd]',type="text",value='#{fmt(subject.voteEnd)}')
-                        span.add-on
-                            i.icon-th
-            div.span4.fl-right
-                div.well
-                    h5 报名设置
-                    p 每个人在这次活动中能报名几次
-                    input#regMax(type='text',name='sub[regChance]',value='#{subject.regChance}')
-                    p 报名的窗口期：
-                    div.input-append
-                        input.dpInpt.input-block-level(name='sub[regStart]',type="text",value='#{fmt(subject.regStart)}')
-                        span.add-on
-                            i.icon-th
-                    div.input-append
-                        input.dpInpt.input-block-level(name='sub[regEnd]',type="text",value='#{fmt(subject.regEnd)}')
-                        span.add-on
-                            i.icon-th
-        br
-        br
-        br
-        div.row
-            div.span8
-                div.div-center
-                    a(href='javascript:;',onclick='sbmt()').btn.btn-primary  修改活动设置
-        hr
+            div.span10
+                div(style="margin-bottom:15px;height:30px").div-center
+                    a#cfrmEdit(href='javascript:;',onclick='sbmt()').btn.btn-success.btn-large   确认修改
+                    a(href='javascript:;',onclick='cancelModify()',style="margin-left:15px").btn  取消
+
+
     div#sp.hide
         .input-append
             input(type='hidden',value='SI')
@@ -340,9 +286,10 @@ block main
 
 
 block footer
-    script(src="/js/bootstrapSwitch.js")
     script
         $(function(){
+            // 初始化编辑器
+            $(".wysihtml5").wysihtml5();
 
             $('#banInpt').filebox({
                 width:450,

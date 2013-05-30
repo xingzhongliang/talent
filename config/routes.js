@@ -33,6 +33,7 @@ module.exports = function (app) {
     app.get('/subject/:subjectId/data', auth("admin"), data.subject); // 主题数据首页
     app.get('/subject/:subjectId/edit', auth("admin"), subject.edit); // 编辑，管理主题
     app.post('/subject/:subjectId/do-edit', auth("admin"), subject.doEdit); // 编辑，管理主题
+    app.post('/subject/:subjectId/do-edit/detail', auth("admin"), subject.doEditDetail); // 编辑活动介绍页
     app.post('/subject/:subjectId/fix-top', auth("admin"), subject.doFixTop); // 置顶主题
     app.post('/subject/:subjectId/chg-banner', auth("admin"), subject.chgBanner); // 修改banner
 

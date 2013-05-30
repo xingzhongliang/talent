@@ -25,9 +25,8 @@ block head
             });
            // validate
            $('#dataForm').validateInit();
-            // 初始化编辑器
-            $(".wysihtml5").wysihtml5();
-
+           // 初始化编辑器
+           $(".wysihtml5").wysihtml5();
         });
 
 
@@ -55,12 +54,12 @@ block content
             .control-group
                 label.control-label 主题Banner图片：
                 .controls
-                    input#banInpt(type='text',value='1',name='banner')
+                    input#banInpt(type='text',value='',name='banner')
             .control-group
                 label.control-label 前台显示模板：
                 .controls
                     select(name="viewOpt[templateName]")
-                        option(value="default",selected=) default
+                        option(value="default",selected) default
 
         fieldset
             legend 活动设置
@@ -79,10 +78,6 @@ block content
                 .controls
                     div.b-switch(data-on-label='是',data-off-label='否')
                         input(name='token',type='checkbox',checked='true',value='1')
-            //.control-group
-                label.control-label 每人能投几票：
-                .controls
-                    input#voteMax(type='text',name='voteChance',value="1",v="require;number")
             .control-group
                 label.control-label 投票开始时间：
                 .controls
@@ -95,10 +90,6 @@ block content
                     div.input-append
                         input.dpInpt(name='voteEnd',type="text",v="require")
                         span.add-on: i.icon-th
-            //.control-group
-                label.control-label 每人能报名几次：
-                .controls
-                    input#regMax(type='text',name='regChance',value='1',v="require;number")
             .control-group
                 label.control-label 报名开始时间：
                 .controls
