@@ -13,6 +13,7 @@ module.exports = {
         root: rootPath, // 系统根路径
         uploadDir: 'D:\\TEMP', // 文件上传的目录 ： 不能放在应用目录下面 防止应用更新时被误删
         templateDir: rootPath + '\\templates', // 模板文件夹
+        logFormat: 'dev', // 日志格式
         app: {
             domain: "127.0.0.1:3000" //项目域名，也充当url前缀
             , name: 'Genius Bar' // 项目名字
@@ -35,6 +36,7 @@ module.exports = {
         root: rootPath, // 系统根路径
         uploadDir: '/root/temp/uploads', // 文件上传的目录 ： 不能放在应用目录下面 防止应用更新时被误删
         templateDir: rootPath + '/templates', // 模板文件夹
+        logFormat: "dev", // 日志格式
         app: {
             domain: "genius.jd.com:3000" //项目域名，也充当url前缀
             , name: 'Genius Bar' // 项目名字
@@ -57,6 +59,7 @@ module.exports = {
         root: rootPath, // 系统根路径
         uploadDir: '/root/temp/uploads', // 文件上传的目录 ： 不能放在应用目录下面 防止应用更新时被误删
         templateDir: rootPath + '/templates', // 模板文件夹
+        logFormat: "default", // 日志格式
         app: {
             domain: "genius.jd.com:3000" //项目域名，也充当url前缀
             , name: 'Genius Bar' // 项目名字

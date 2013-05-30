@@ -1,5 +1,5 @@
 {
-	"name": "talent",
+	"name": "genius",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
@@ -7,9 +7,7 @@
 	},
 	"dependencies": {
 		"express": "3.1.0",
-		"ejs": "latest",
 		"jade": "latest",
-		"less-middleware": "latest",
 		"mongoose": "latest",
 		"soap": "0.2.7",
 		"connect-flash": "0.1.0",
