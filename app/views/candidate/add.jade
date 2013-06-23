@@ -64,24 +64,22 @@ block main
     form(id='dataForm',method="post",enctype="multipart/form-data", action="/subject/#{subject._id}/candidate/new").form-horizontal
         .span9
             //- 如果有组或域，显示备选
-            if subject.scopes.length > 1 || subject.groups.length > 1
-                fieldset
-                legend 基本信息
-                if subject.scopes.length > 1
-                    .control-group
-                        lebel.control-label #{subject.viewOpt.newCandidatePage.scopeLabel}：
-                        .controls
-                            select(name="scope").span6
-                                each scope in subject.scopes
-                                    option(value=scope._id)=scope.name
-                if subject.groups.length > 1
-                    .control-group
-                        lebel.control-label #{subject.viewOpt.newCandidatePage.groupLabel}：
-                        .controls
-                            select(name="group").span6
-                                each group in subject.groups
-                                    option(value=group._id)=group.name
             fieldset
+            legend 基本信息
+                //- if subject.scopes.length > 1
+                .control-group
+                    lebel.control-label #{subject.viewOpt.newCandidatePage.scopeLabel}：
+                    .controls
+                        select(name="scope").span6
+                            each scope in subject.scopes
+                                option(value=scope._id)=scope.name
+                //- if subject.groups.length > 1
+                .control-group
+                    lebel.control-label #{subject.viewOpt.newCandidatePage.groupLabel}：
+                    .controls
+                        select(name="group").span6
+                            each group in subject.groups
+                                option(value=group._id)=group.name
                 .control-group
                     label.control-label #{subject.viewOpt.newCandidatePage.titleLabel}：
                     .controls

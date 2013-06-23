@@ -2,6 +2,8 @@ var mongoose = require("mongoose");
 var moment = require("moment");
 var uuid = require("node-uuid");
 var Subject = mongoose.model("Subject");
+var Group = mongoose.model("Group");
+var Scope = mongoose.model("Scope");
 var Candidate = mongoose.model("Candidate");
 var Vote = mongoose.model("Vote");
 var util = require("./util/util");
@@ -91,7 +93,6 @@ exports.show = function (req, res) {
  * @param res
  */
 exports.doAdd = function (req, res) {
-    console.info('<<[doAddSub]begin');
     var subject = new Subject(req.body);
     // 如果设置为使用令牌，则生成令牌
     if (subject.token == 1) {
@@ -115,10 +116,22 @@ exports.doAdd = function (req, res) {
 
     subject.save(function (err) {
         if (err) throw err;
-        res.redirect('/admin');
-        console.info('[doAddSub]end>>');
+        // 生成默认的分组和域
+        var group = new Group();
+        group.subject = subject._id;
+        group.name = "默认分组";
+        group.save(function(err){
+            if (err) throw err;
+            var scope = new Scope();
+            scope.subject = subject._id;
+            scope.name = "默认域";
+            scope.save(function(err){
+                if (err) throw err;
+                // 跳转到管理页面
+                res.redirect('/subject/' + subject._id + '/edit');
+            });
+        });
     });
-
 };
 
 /**
