@@ -9,7 +9,7 @@ var rootPath = path.normalize(__dirname + '/..');
 module.exports = {
     // 研发环境配置
     development: {
-        db: 'mongodb://192.168.192.126/talent', // 数据库连接字符串
+        db: 'mongodb://192.168.192.126/genius', // 数据库连接字符串
         root: rootPath, // 系统根路径
         uploadDir: 'D:\\TEMP', // 文件上传的目录 ： 不能放在应用目录下面 防止应用更新时被误删
         templateDir: rootPath + '\\templates', // 模板文件夹
@@ -32,11 +32,11 @@ module.exports = {
 
     // 测试环境配置
     test: {
-        db: 'mongodb://192.168.192.126/talent', // 数据库连接字符串
+        db: 'mongodb://192.168.192.126/genius', // 数据库连接字符串
         root: rootPath, // 系统根路径
         uploadDir: '/root/temp/uploads', // 文件上传的目录 ： 不能放在应用目录下面 防止应用更新时被误删
         templateDir: rootPath + '/templates', // 模板文件夹
-        logFormat: "dev", // 日志格式
+        logFormat: "default", // 日志格式
         app: {
             domain: "genius.jd.com:3000" //项目域名，也充当url前缀
             , name: 'Genius Bar' // 项目名字
@@ -55,7 +55,7 @@ module.exports = {
 
     // 生产环境配置
     production: {
-        db: 'mongodb://192.168.192.126/talent', // 数据库连接字符串
+        db: 'mongodb://192.168.192.126/genius', // 数据库连接字符串
         root: rootPath, // 系统根路径
         uploadDir: '/root/temp/uploads', // 文件上传的目录 ： 不能放在应用目录下面 防止应用更新时被误删
         templateDir: rootPath + '/templates', // 模板文件夹
@@ -67,7 +67,7 @@ module.exports = {
             , pageSize: 10 // 默认的分页大小
             , page: 0 // 默认页号
         },
-        admins: ['bjlaichendong', 'ghost'], // 系统管理员erp列表 存到表里？
+        admins: ['bjlaichendong'], // 系统管理员erp列表 存到表里？
         isAdmin: function (userName) { // 判断一个erp是否是管理员
             for (var i = 0; i < this.admins.length; i++) {
                 if (userName == this.admins[i]) return true;
