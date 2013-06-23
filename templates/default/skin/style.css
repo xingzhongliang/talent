@@ -471,7 +471,7 @@ table {
 }
 
 .disabled {
-    filter: alpha(opacity = 30);
+    filter: alpha(opacity=30);
     -moz-opacity: .3;
     opacity: .3;
     cursor: default;
@@ -1236,7 +1236,7 @@ a.btn:link, a.btn:visited, a.btn:hover, a.btn:active {
     background: -o-linear-gradient(top, #d0456d 0, #b42748 100%);
     background: -ms-linear-gradient(top, #d0456d 0, #b42748 100%);
     background: linear-gradient(to bottom, #d0456d 0, #b42748 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(GradientType = 0, startColorstr = #d0456d, endColorstr = #b42748)
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#d0456d, endColorstr=#b42748)
 }
 
 .btn:hover {
@@ -1247,13 +1247,13 @@ a.btn:link, a.btn:visited, a.btn:hover, a.btn:active {
     background: -o-linear-gradient(top, #b42748 0, #d0456d 100%);
     background: -ms-linear-gradient(top, #b42748 0, #d0456d 100%);
     background: linear-gradient(to bottom, #b42748 0, #d0456d 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(GradientType = 0, startColorstr = #b42748, endColorstr = #d0456d)
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#b42748, endColorstr=#d0456d)
 }
 
 .btn:active {
     opacity: .9;
-    -ms-filter: alpha(opacity =(90) );
-    filter: alpha(opacity =(90) )
+    -ms-filter: alpha(opacity=(90) );
+    filter: alpha(opacity=(90) )
 }
 
 .btn-r2 {
@@ -1288,7 +1288,20 @@ body {
 
 .roles {
     height: 300px;
-    padding-right: 88px
+    padding-right: 88px;
+    position: relative;
+}
+
+.roles .back2home {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 600px;
+    height: 100%;
+    background: #fff;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    cursor: pointer;
 }
 
 .roles h3 {
@@ -1339,7 +1352,7 @@ body {
     background: -o-linear-gradient(top, #d0456d 0, #b42748 100%);
     background: -ms-linear-gradient(top, #d0456d 0, #b42748 100%);
     background: linear-gradient(to bottom, #d0456d 0, #b42748 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(GradientType = 0, startColorstr = #d0456d, endColorstr = #b42748);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#d0456d, endColorstr=#b42748);
     margin-bottom: 10px;
     border-bottom: 1px solid #fff;
     -webkit-box-shadow: 0 6px 14px #aaa;
@@ -1446,11 +1459,13 @@ body {
 .list-area .list-category .list-item dl dd strong {
     font-weight: bold
 }
-.list-area .list-category .list-item dl dd .intro{
-    height:42px;
+
+.list-area .list-category .list-item dl dd .intro {
+    height: 42px;
     line-height: 21px;
     overflow: hidden;
 }
+
 .list-area .list-category .list-item .toupiao {
     margin-left: 150px
 }
@@ -1721,15 +1736,16 @@ body {
     cursor: default;
     background-color: #fff;
 }
+
 .redwindow {
     border: 1px solid #B42748;
     margin: auto;
     width: 400px;
     background: #FFFFFF;
     position: fixed;
-    top:45%;
-    left:40%;
-    box-shadow:0px 0px 20px rgba(0,0,0,1);
+    top: 45%;
+    left: 40%;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 1);
 }
 
 .redwindow .title {
@@ -1742,7 +1758,7 @@ body {
     background: -o-linear-gradient(top, #d0456d 0, #b42748 100%);
     background: -ms-linear-gradient(top, #d0456d 0, #b42748 100%);
     background: linear-gradient(to bottom, #d0456d 0, #b42748 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(GradientType = 0, startColorstr = #d0456d, endColorstr = #b42748);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#d0456d, endColorstr=#b42748);
 }
 
 .redwindow .title .text {
@@ -1791,5 +1807,5 @@ body {
     background: -o-linear-gradient(top, #d0456d 0, #b42748 100%);
     background: -ms-linear-gradient(top, #d0456d 0, #b42748 100%);
     background: linear-gradient(to bottom, #d0456d 0, #b42748 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(GradientType = 0, startColorstr = #d0456d, endColorstr = #b42748);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#d0456d, endColorstr=#b42748);
 }

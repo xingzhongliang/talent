@@ -22,7 +22,8 @@ block content
                 .scopeBox(class=hide,s_id=s_id)
                     - for (g_id in candidates[s_id])
                         .list-category
-                            h3= groupName(g_id, subject.groups)
+                            h3
+                                a(href="/subject/#{subject._id}/candidate/?s_id=#{s_id}&g_id=#{g_id}")= groupName(g_id, subject.groups)
                                 .more
                                     a(href="/subject/#{subject._id}/candidate/?s_id=#{s_id}&g_id=#{g_id}") 更多&gt;
                             for c in candidates[s_id][g_id]
