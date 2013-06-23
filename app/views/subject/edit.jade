@@ -12,6 +12,7 @@ block head
         .muted {
             background: #F5F5F5;
         }
+
         .span-4 {
             width: 340px;;
         }
@@ -87,8 +88,8 @@ block main
                 if subject.token
                     p 报名令牌：
                         span.text-info #{subject.token}
-                //p 每人可投票次数：#{subject.voteChance}
-                //p 每人可报名次数：#{subject.regChance}
+//p 每人可投票次数：#{subject.voteChance}
+//p 每人可报名次数：#{subject.regChance}
                 p 投票起止时间：
                     span.text-info #{fmt(subject.voteStart)}
                     | &nbsp;到&nbsp;
@@ -356,8 +357,8 @@ block footer
                     return $('#gp').html().replace('GN',"").replace('GI',"").replace('GM',"");
                 }
             });
-            $(".msBtn").popover(msOpt);
-            $(".mgBtn").popover(mgOpt);
+            $("#scope").popover(msOpt);
+            $("#group").popover(mgOpt);
             $("#scope").delegate(".dsBtn","click",function(){
                 var id = $(this).parents("tr").attr("id");
                 // 显示删除警告
@@ -374,6 +375,7 @@ block footer
         var mgOpt = {
              placement:'top',
              html:true,
+             selector:'.mgBtn',
              content:function(){
                 var tr = $(this).parents("tr");
                 var name = tr.find("td:eq(1)").text();
@@ -385,6 +387,7 @@ block footer
         var msOpt = {
              placement:'top',
              html:true,
+             selector:'.msBtn',
              content:function(){
                 var tr = $(this).parents("tr");
                 var name = tr.find("td:eq(1)").text();
@@ -447,14 +450,14 @@ block footer
             var tab = $('#scope').show().find('table');
             var tr = $('#' + data._id);
             if(tr.length == 0) {
-                tab.append('<tr>' + tab.find('.tmpl').html() + '</tr>').show();
-                var tr = tab.find('tr:last');
-                tr.attr('id',data._id);  //使用scope的id
+                tr = $('<tr id="' + data._id + '">' + tab.find('.tmpl').html() + '</tr>');
+                tab.prepend(tr).show();
             }
             var tds = tr.find('td');
-            tds.eq(0).html(tab.find('tbody').find('tr').size() - 1);
             tds.eq(1).html(data.name);
-            $("tr .msBtn").popover(msOpt);
+            $(tab).find('tbody').find('tr').each(function(i, o){
+                $(o).find("td:eq(0)").html(i+1);
+            });
         }
 
         function svGroup(res) {
@@ -465,33 +468,32 @@ block footer
             var tab = $('#group').show().find('table');
             var tr = $('#' + data._id);
             if(tr.length == 0) {
-                tab.append('<tr>' + tab.find('.tmpl').html() + '</tr>').show();
-                var tr = tab.find('tr:last');
-                tr.attr('id',data._id);  //使用group的id
+                tr = $('<tr id="' + data._id + '">' + tab.find('.tmpl').html() + '</tr>');
+                tab.prepend(tr).show();
             }
             var tds = tr.find('td');
-            tds.eq(0).html(tab.find('tbody').find('tr').size() - 1);
             tds.eq(1).html(data.name);
             tds.eq(2).html(data.max);
-            $("tr .mgBtn").popover(mgOpt);
+            $(tab).find('tbody').find('tr').each(function(i, o){
+                $(o).find("td:eq(0)").html(i+1);
+            });
         }
 
         // 删除域或组
         function delSG(id, sg){
-          if(!id) return;
-          $('#' + id).parent("table").loading('/'+sg+'/'+id+'/del',{},function(res){
-            if(res && res.deleted) {
-              $('#delModal').modal('hide');
-              var tr = $("#" + id);
-              var tab = tr.parents("tbody");
-              tr.remove();
-              tab.find("tr").each(function(i, o) {
-                $(o).find("td:first").html(i);
-              });
-            }
-          });
+            if(!id) return;
+            $('#' + id).parent("table").loading('/'+sg+'/'+id+'/del',{},function(res){
+                if(res && res.deleted) {
+                    $('#delModal').modal('hide');
+                    var tr = $("#" + id);
+                    var tab = tr.parents("tbody");
+                    tr.remove();
+                    tab.find("tr").each(function(i, o) {
+                        $(o).find("td:first").html(i);
+                    });
+                }
+            });
         }
-
 
         function closeAS(obj) {
             var si = $(obj).siblings(':hidden').val();
