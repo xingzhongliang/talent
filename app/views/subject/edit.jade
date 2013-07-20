@@ -451,13 +451,11 @@ block footer
             var tr = $('#' + data._id);
             if(tr.length == 0) {
                 tr = $('<tr id="' + data._id + '">' + tab.find('.tmpl').html() + '</tr>');
-                tab.prepend(tr).show();
+                tab.append(tr).show();
             }
             var tds = tr.find('td');
+            tds.eq(0).html(tab.find("tbody tr").size() - 1);
             tds.eq(1).html(data.name);
-            $(tab).find('tbody').find('tr').each(function(i, o){
-                $(o).find("td:eq(0)").html(i+1);
-            });
         }
 
         function svGroup(res) {
@@ -469,14 +467,12 @@ block footer
             var tr = $('#' + data._id);
             if(tr.length == 0) {
                 tr = $('<tr id="' + data._id + '">' + tab.find('.tmpl').html() + '</tr>');
-                tab.prepend(tr).show();
+                tab.append(tr).show();
             }
             var tds = tr.find('td');
+            tds.eq(0).html(tab.find("tbody tr").size() - 1);
             tds.eq(1).html(data.name);
             tds.eq(2).html(data.max);
-            $(tab).find('tbody').find('tr').each(function(i, o){
-                $(o).find("td:eq(0)").html(i+1);
-            });
         }
 
         // 删除域或组

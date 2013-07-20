@@ -39,7 +39,7 @@ GroupSchema.statics = {
 
 function _list(condition, cb) {
     this.find(condition)
-        .sort({createTime: '-1'})
+        .sort({createTime: '1'})
         .exec(cb);
 }
 
