@@ -1,0 +1,14 @@
+.load_div {
+    margin:0 auto;
+    text-align: center;
+    opacity: 1;
+    background: #ffffff;
+    z-index: 9999;
+}
+
+.load_div .img {
+    width: 32px;
+    height: 32px;;
+    margin:0 auto;
+    background-image: url("../img/load-small.gif");
+}

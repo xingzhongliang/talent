@@ -1,44 +1,93 @@
-//
-   User: laichendong
-   Date: 13-4-23
-   Time: 上午11:31
+//系统首页 显示所有公开的主题
 extends layouts/default
+block head
+    link(href="/css/subject.css",rel="stylesheet",media="screen")
+    script
+        $(function(){
+            $('#top').carousel({interval: 2000});
+            $('#ts').click(function(){
+               $(this).find('i').hasClass('icon-arrow-up') ? $('#st').val(1) : $('#st').val(2);
+                $('#sform').submit();
+            });
+            $('#hs').click(function(){
+                $(this).find('i').hasClass('icon-arrow-up') ? $('#st').val(3) : $('#st').val(4);
+                $('#sform').submit();
+            });
+        });
 block content
-    .w
-        .list-area
-            .list-area-title
-                table
-                    tr
-                        td.curr
-                            h2
-                                a(href="") 北京赛区
-                        td
-                            h2
-                                a(href="") 成都赛区
-                        td
-                            h2
-                                a(href="") 沈阳赛区
-                        td
-                            h2
-                                a(href="") 南京赛区
-            -for(var j=0; j<3; j++)
-                .list-category
-                    h3 大师级程序员
-                        .more
-                            a(href="") 更多&gt;
-                    -for(var i=0; i<3; i++)
-                        .list-item
-                            .portrait
-                                img(src="", alt="达人的姓名")
-                            dl
-                                dt 姓名：
-                                dd 赖晨东
-                                dt 部门：
-                                dd 研发部
-                                dt 介绍：
-                                dd IT人士的终极称号战斗在一线的代码工作者。
-                                dt.purple 票数
-                                dd.purple
-                                    strong 1423
-                            .toupiao
-                                a(href="").btn.btn-r1 投票
+    .row
+        .span12
+            if tops && tops.length > 0
+                #top.carousel.slide
+                    .carousel-inner
+                        each top,i in tops
+                            if(i == 0)
+                                -var clazz="item active"
+                            else
+                                -var clazz="item"
+                            div(class="#{clazz}",style="background:gray")
+                                .div-center
+                                    a(href="/subject/#{top._id}")
+                                        img(src="#{top.banner}",alt="#{top.name}",style="max-height:500px")
+                                .carousel-caption
+                                    h4 #{top.name}
+                                    p #{top.comment}
+                    a.carousel-control.left(href="#top",data-slide="prev") &lsaquo;
+                    a.carousel-control.right(href="#top",data-slide="next") &rsaquo;
+
+        div(style="margin-bottom:15px;margin-top:15px").span12
+            div(style="text-align:center").form-search
+                form#sform(method="get",action="/")
+                    .input-append
+                        input#st(name="st",type="hidden",value="#{st}")
+                        if kw
+                            input.span6.search-query(type="text",name="kw",placeholder="请输入主题名称",value="#{kw}")
+                        else
+                            input.span6.search-query(type="text",name="kw",placeholder="请输入主题名称")
+                        button(type="submit").btn.btn-success
+                            i.icon-white.icon-search
+    hr
+    div(style="margin-bottom:15px").row
+        .span12
+                .btn-group
+                    button#ts.btn 时间&nbsp;
+                        if st == 2
+                            i.icon-arrow-up
+                        else
+                            i.icon-arrow-down
+                    button#hs.btn 人气&nbsp;
+                        if st == 4
+                            i.icon-arrow-up
+                        else
+                            i.icon-arrow-down
+
+            .clearfix
+    each item in list
+        .row(style="margin-bottom:15px;")
+            .span10
+                .subject
+                    .subject-name
+                        a.subject-a(href="/subject/#{item._id}")  #{item.name}
+                    .subject-desc #{item.comment}
+                        if item.banner && item.banner.length > 0
+                            .subject-banner
+                                img(src="#{item.banner}")
+                    .subject-foot
+                        .pull-right  Post By #{item.owner}  / #{fmt2(item.createTime,'YYYY-MM-DD HH:mm')}
+                        .clearfix
+            .span2
+                //.subject-top TOP
+                //.subject-hot HOT
+                if item.votes && item.votes > 0
+                    .subject-vote #{item.votes}
+                else
+                    .subject-vote 0
+
+    if list.length == 0
+        .row
+            if kw
+                .alert.div-center  没有查到关于 <strong style="color:red">#{kw} </strong>的主题 ！
+            else
+                .alert.div-center  目前没有主题，赶快去创建一个吧！
+
+

@@ -1,0 +1,86 @@
+.subject {
+    overflow: hidden;
+    /*padding: 10px;*/
+    border-radius: 3px;
+    box-shadow: 0px 0px 8px rgba(131, 131, 131, 0.54);
+}
+
+.subject-content {
+    /*border: 1px solid #bcbcbc;*/
+    background: #f4f4f4;
+    overflow: hidden;
+    padding: 10px;
+}
+
+
+.subject-name {
+    border-bottom: 1px solid rgba(188, 188, 188, 0.56);
+    background: #f4f4f4;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    width: 100%;
+}
+
+.subject-desc {
+    padding: 15px;
+    font-size: 14px;
+    width: 750px;
+}
+
+.subject-foot {
+    padding: 15px;
+    font-size: 14px;
+    width: 750px;
+    color: #808080;
+}
+
+.subject-img {
+    max-height: 84px;
+}
+
+.subject-vote {
+    /*height: 70px;*/
+    line-height: 40px;;
+    padding: 15px;
+    text-align: center;
+    font-size: 40px;
+    color: white;
+    background: #87cc6e;
+}
+
+.subject-hot {
+    line-height: 15px;;
+    padding: 2px;
+    text-align: center;
+    font-size: 15px;
+    font-family: 微软雅黑;
+    font-weight: bolder;
+    color: white;
+    background: #ff6928;
+}
+
+.subject-top {
+    line-height: 15px;;
+    padding: 2px;
+    text-align: center;
+    font-size: 15px;
+    font-family: 微软雅黑;
+    font-weight: bolder;
+    color: white;
+    background: #7aa2df;
+}
+
+.subject-banner {
+    padding: 2px;
+}
+.subject-banner img{
+    padding: 2px;
+    max-height: 270px;
+}
+
+.subject-a {
+    color: #2b2b2b;
+    text-decoration: none;
+}
+

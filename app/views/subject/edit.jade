@@ -1,0 +1,511 @@
+extends ../layouts/adminWithSideBar
+block head
+    link(href="/css/bootstrapSwitch.css",rel="stylesheet",media="screen")
+    link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
+    link(href="/css/bootstrap-wysihtml5-0.0.2.css",rel="stylesheet",media="screen")
+    script(src="/js/bootstrap-sniper.js")
+    script(src="/js/load/load.js")
+    script(src="/js/popover/popover.js")
+    script(src="/js/bootstrapSwitch.js")
+    script(src="/js/filebox/filebox.js")
+    style
+        .muted {
+            background: #F5F5F5;
+        }
+
+        .span-4 {
+            width: 340px;;
+        }
+    script(src="/js/datepicker/js/bootstrap-datepicker.js")
+    script(src="/js/wysihtml5-0.3.0.min.js")
+    script(src="/js/bootstrap-wysihtml5-0.0.2.min.js")
+
+block sidebar
+    ul(data-spy="affix").nav.nav-tabs.nav-stacked
+        li: a(href="/subject/#{subject._id}",target="_blank") 查看主题
+        if(subject.token)
+            li: a(href="/subject/#{subject._id}/candidate/add?token=#{subject.token}") 新增选项
+        else
+            li: a(href="/subject/#{subject._id}/candidate/add") 新增选项
+        li: a(href="/subject/#{subject._id}/candidate/list") 管理选项
+        li: a(href="/subject/#{subject._id}/vote/list") 投票情况
+        li: a(href="#scopeManager") 域管理
+        li: a(href="#groupManager") 组管理
+        li: a(href="#introManager") 活动介绍页管理
+
+block main
+    input#sid(type='hidden',value='#{subject._id}')
+    div
+        div.hero-unit
+            h2!=subject.name
+                small &nbsp;第 #{subject.round} 轮
+            p!=subject.comment
+            p
+                div.btn-group
+                    a(href="/subject/#{subject._id}/vote/list").btn 投票情况
+                    a(href="/subject/#{subject._id}/candidate/list").btn 选项管理
+                    if(subject.token)
+                        a(href='/subject/#{subject._id}/candidate/add?token=#{subject.token}').btn.btn-success.btn-add-opt 新选项
+                            i.icon-plus.icon-white
+                    else
+                        a(href='/subject/#{subject._id}/candidate/add').btn.btn-success.btn-add-opt 新选项
+                            i.icon-plus.icon-white
+
+    h4 Banner
+    .row
+        if subject.banner
+            .span9(style="text-align:center;margin-bottom:15px")
+                img(src="#{subject.banner}")
+        input(type="hidden",id="subBanner")
+        .pull-right
+            if subject.banner
+                button.addBan.btn.btn-primary 修改
+            else
+                button.addBan.btn.btn-primary 上传
+        .clearfix
+    hr
+
+    h4 活动设置
+    div.row
+        .span9
+            i.icon-tags
+            if subject.isPublic == 1
+                span.label.label-info.label-large 首页可见
+            else
+                span.label.label-large 首页不可见
+            if subject.canReg == 1
+                span.label.label-info.label-large 开放报名
+            else
+                span.label.label-large 不开放报名
+            if subject.token
+                span.label.label-important.label-large 使用令牌
+            else
+                span.label.label-large  禁用令牌
+            .well
+                if subject.canReg == 1
+                    p 报名链接：
+                        span.text-info http://#{config.app.domain}/subject/#{subject._id}/candidate/add
+                if subject.token
+                    p 报名令牌：
+                        span.text-info #{subject.token}
+                //p 每人可投票次数：#{subject.voteChance}
+                //p 每人可报名次数：#{subject.regChance}
+                p 投票起止时间：
+                    span.text-info #{fmt(subject.voteStart)}
+                    | &nbsp;到&nbsp;
+                    span.text-info #{fmt(subject.voteEnd)}
+                p 报名起止时间：
+                    span.text-info #{fmt(subject.regStart)}
+                    | &nbsp;到&nbsp;
+                    span.text-info #{fmt(subject.regEnd)}
+    .pull-right
+        button#modSetBtn.btn.btn-primary 修改
+    .clearfix
+    hr
+
+    h4#scopeManager 域
+    div.row
+        .span9
+            div(style="overflow:")
+            .alert
+                ul
+                    li 用于对选项进行垂直分类
+                    li 域的数量小于或等于一个时，不会显示域的信息
+                -var _hide_ = 'hide'
+                -if (scopes.length>0)
+                    -_hide_= ''
+            div#scope(class='well muted #{_hide_}')
+                table.table
+                    thead
+                        tr
+                            th.span1 #
+                            th 名称
+                            th.span2 操作
+                    tbody
+                        tr.tmpl.hide
+                            td
+                            td
+                            td
+                                .btn-group
+                                    button.btn.btn-small.msBtn 修改
+                                    button.btn.btn-small.btn-danger.dsBtn 删除
+                        each  sc,i in scopes
+                            tr(id='#{sc.id}')
+                                td #{i+1}
+                                td #{sc.name}
+                                td
+                                    .btn-group
+                                        button.btn.btn-small.msBtn 修改
+                                        button.btn.btn-small.btn-danger.dsBtn 删除
+            btn#addScopeBtn.btn.btn-block.btn-success  添加域
+    hr
+
+    h4#groupManager 分组
+    div.row
+        .span9
+            .alert
+                ul
+                    li 用于对选项进行水平分类
+                    li 分组的数量小于或等于一个时，不会显示分组的信息
+                    li 如果一个活动有分组信息，那么报名时必须要选择分组
+                    li 当需要对活动的报名人数做限制时，可以在分组中设置
+                -var _hide2_ = 'hide'
+                -if (groups.length)
+                    -_hide2_= ''
+            div#group(class='well muted #{_hide2_}')
+                table.table
+                    thead
+                        tr
+                            th.span1 #
+                            th 组名
+                            th MAX
+                            th.span2 操作
+                    tbody
+                        tr.tmpl.hide
+                            td
+                            td
+                            td
+                            td
+                                .btn-group
+                                    button.btn.btn-small.mgBtn 修改
+                                    button.btn.btn-small.btn-danger.dgBtn 删除
+                        each  gp,i in groups
+                            tr(id='#{gp.id}')
+                                td #{i+1}
+                                td #{gp.name}
+                                td #{gp.max}
+                                td
+                                    .btn-group
+                                        button.btn.btn-small.mgBtn 修改
+                                        button.btn.btn-small.btn-danger.dgBtn 删除
+            btn#addGroupBtn.btn.btn-block.btn-success  添加分组
+    hr
+
+    h4#introManager 活动介绍页
+    form.clearfix(method="post",action="/subject/#{subject._id}/do-edit/detail")
+        textarea.input-block-level.wysihtml5(name="sub[detail]",rows="15") #{subject.detail}
+        .pull-right
+            button.btn.btn-primary(type="submit") 保存活动介绍页
+    hr
+
+    div#set
+        form#dataForm.form-horizontal(method='post',action='/subject/do-edit')
+            fieldset
+                legend 活动设置
+                .control-group
+                    label.control-label 首页是否可见：
+                    .controls
+                        div.b-switch(data-on-label='是',data-off-label='否')
+                            if subject.isPublic
+                                input(name='sub[isPublic]',type='checkbox',checked,value='1')
+                            else
+                                input(name='sub[isPublic]',type='checkbox',value='1')
+                .control-group
+                    label.control-label 是否开放报名：
+                    .controls
+                        div.b-switch(data-on-label='是',data-off-label='否')
+                            if subject.canReg
+                                input(name='sub[canReg]',type='checkbox',checked='true',value='1')
+                            else
+                                input(name='sub[canReg]',type='checkbox',value='1')
+                .control-group
+                    label.control-label 是否使用令牌：
+                    .controls
+                        div.b-switch(data-on-label='是',data-off-label='否')
+                            if subject.token
+                                input(name='sub[token]',type='checkbox',checked='true',value='1')
+                            else
+                                input(name='sub[token]',type='checkbox',value='1')
+                .control-group
+                    label.control-label 投票开始时间：
+                    .controls
+                        div.input-append
+                            input.dpInpt(name='sub[voteStart]',type="text",value="#{fmt(subject.voteStart)}",v="require")
+                            span.add-on: i.icon-th
+                .control-group
+                    label.control-label 投票截止时间：
+                    .controls
+                        div.input-append
+                            input.dpInpt(name='sub[voteEnd]',type="text",value="#{fmt(subject.voteEnd)}",v="require")
+                            span.add-on: i.icon-th
+                .control-group
+                    label.control-label 报名开始时间：
+                    .controls
+                        div.input-append
+                            input.dpInpt(name='sub[regStart]',type="text",value="#{fmt(subject.regStart)}",v="require")
+                            span.add-on: i.icon-th
+                .control-group
+                    label.control-label 报名截止时间：
+                    .controls
+                        div.input-append
+                            input.dpInpt(name='sub[regEnd]',type="text",value="#{fmt(subject.regEnd)}",v="require")
+                            span.add-on: i.icon-th
+        div.row
+            div.span10
+                div(style="margin-bottom:15px;height:30px").div-center
+                    a#cfrmEdit(href='javascript:;',onclick='sbmt()').btn.btn-success.btn-large   确认修改
+                    a(href='javascript:;',onclick='cancelModify()',style="margin-left:15px").btn  取消
+
+
+    div#sp.hide
+        .input-append
+            input(type='hidden',value='SI')
+            input(type='text',placeholder='请输入域的名称',value='SN')
+            button(onclick='addScope(this)').btn.btn-success 确认
+            button(onclick='closeAS(this)').btn
+                i.icon-remove
+    div#gp.hide
+        div(style='width:260px')
+            input(type='hidden',value='GI').input-gi
+            input(type='text',placeholder='请输入分组的名称',value='GN').input-block-level.input-gn
+            input(type='text',placeholder='分组所能包含选项的最大数量',value='GM').input-block-level.input-gm
+            .pull-right
+                button(onclick='addGroup(this)').btn.btn-primary 确认
+                span &nbsp;
+                button(onclick='closeAG(this)').btn 取消
+            .clearfix
+
+    #delModal.modal.hide.fade
+        .modal-header
+            button(data-dismiss="modal").close ×
+            h3 确定删除
+        .modal-body
+            p
+        .modal-footer
+            a#sbmDelbtn.btn.btn-danger 确定
+            button(data-dismiss="modal").btn 取消
+    .hide
+        #banPop
+            div(style="margin-bottom:10px")
+                input#banInpt(type="text")
+            .pull-right
+                button#svBanner.btn.btn-success 确定
+                span &nbsp;
+                button#ccBtn.btn  取消
+            .clearfix
+
+
+
+block footer
+    script
+        $(function(){
+            // 初始化编辑器
+            $(".wysihtml5").wysihtml5();
+
+            $('#banInpt').filebox({
+                width:450,
+                height:150,
+                callback:function(f,data,res) {
+                   data && data.path && $('#subBanner').val(data.path);
+               }
+            });
+
+            $('#svBanner').click(function(){
+                var ban = $('#subBanner').val();
+                if(ban) {
+                    $.ajax({
+                        url:'/subject/#{subject._id}/chg-banner?' + new Date().getTime(),
+                        method:'post',
+                        dataType:'json',
+                        data:'banner=' + ban,
+                        success:function(res) {
+                            window.location.reload();
+                        }
+                    });
+                }
+            });
+
+            $('#ccBtn').click(function(){
+                var btn = $('.addBan').get(0);
+                btn.pop = !btn.pop;
+                $(btn).hideCover();
+            });
+
+            $('.addBan').zpop({
+                position:'left',
+                target:$('#banPop').get(0)
+            }).click(function(){
+                this.pop = !this.pop;
+                this.pop ? $(this).showCover() : $(this).hideCover();
+            });
+
+            $('#modSetBtn').zpop({
+                position:'left',
+                target:$('#set').get(0)
+            }).click(function(){
+                this.pop = !this.pop;
+                this.pop ? $(this).showCover() : $(this).hideCover();
+            });
+
+            $('.voteMax').sniper();
+            $('.regMax').sniper();
+            $('.b2-switch')['bootstrapSwitch']();
+            $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
+            $('.datepicker ').css({zIndex:1020});
+
+            $('#addScopeBtn').popover({
+                placement:'top',
+                html:true,
+                content:function(){
+                    return $('#sp').html().replace('SN',"").replace('SI',"");
+                }
+            });
+            $('#addGroupBtn').popover({
+                placement:'top',
+                html:true,
+                content:function(){
+                    return $('#gp').html().replace('GN',"").replace('GI',"").replace('GM',"");
+                }
+            });
+            $("#scope").popover(msOpt);
+            $("#group").popover(mgOpt);
+            $("#scope").delegate(".dsBtn","click",function(){
+                var id = $(this).parents("tr").attr("id");
+                // 显示删除警告
+                $("#sbmDelbtn").attr("href", "javascript:delSG('"+id+"','scope');");
+                $("#delModal").find(".modal-body p").html("您确定删除这个域吗？").end().modal();
+            });
+            $("#group").delegate(".dgBtn","click",function(){
+                var id = $(this).parents("tr").attr("id");
+                // 显示删除警告
+                $("#sbmDelbtn").attr("href", "javascript:delSG('"+id+"','group');");
+                $("#delModal").find(".modal-body p").html("您确定删除这个组吗？").end().modal();
+            });
+        });
+        var mgOpt = {
+             placement:'top',
+             html:true,
+             selector:'.mgBtn',
+             content:function(){
+                var tr = $(this).parents("tr");
+                var name = tr.find("td:eq(1)").text();
+                var id = tr.attr("id");
+                var max = tr.find("td:eq(2)").text();
+                return $('#gp').html().replace('GN',name).replace('GI',id).replace('GM',max);
+             }
+        };
+        var msOpt = {
+             placement:'top',
+             html:true,
+             selector:'.msBtn',
+             content:function(){
+                var tr = $(this).parents("tr");
+                var name = tr.find("td:eq(1)").text();
+                var id = tr.attr("id");
+                return $('#sp').html().replace('SN',name).replace('SI',id);
+             }
+        };
+        function sbmt() {
+            $('#cfrmEdit').siblings('a').hide();
+            $('#cfrmEdit').loading('/subject/#{subject._id}/do-edit',$('#dataForm').serialize(),{
+                method:'post'
+                , hide:true
+            }, function(res){
+                window.location.reload();
+            });
+        }
+        //新增域
+        function addScope(obj) {
+            var sn = jQuery.trim($(obj).prev().val());
+            var si = jQuery.trim($(obj).prev().prev().val());
+            var data = {};
+            data.name = sn;
+            data.subject = $('#sid').val();
+            si && (data._id = si);
+            closeAS(obj);
+            if(sn) {
+                if(si) {
+                    $('#' + si).find('.msBtn').loading('/scope/save',data,svScope);
+                }else{
+                    $('#addScopeBtn').loading('/scope/save',data,svScope);
+                }
+            }
+        }
+
+        //新增分组
+        function addGroup(obj) {
+            var gn = $(obj).parent().siblings('.input-gn').val();
+            var gm = $(obj).parent().siblings('.input-gm').val();
+            var gi = $(obj).parent().siblings('.input-gi').val();
+            var data = {};
+            data.name = gn;
+            data.max = gm;
+            data.subject = $('#sid').val();
+            gi && (data._id = gi);
+            closeAG(obj);
+            if(gn) {
+                if(gi) {
+                    $('#' + gi).find('.mgBtn').loading('/group/save',data,svGroup);
+                }else{
+                    $('#addGroupBtn').loading('/group/save',data,svGroup);
+                }
+            }
+        }
+
+        function svScope(res) {
+            if(res.i < 1) {
+                return alert('error!');
+            }
+            var data = res.data;
+            var tab = $('#scope').show().find('table');
+            var tr = $('#' + data._id);
+            if(tr.length == 0) {
+                tr = $('<tr id="' + data._id + '">' + tab.find('.tmpl').html() + '</tr>');
+                tab.append(tr).show();
+            }
+            var tds = tr.find('td');
+            tds.eq(0).html(tab.find("tbody tr").size() - 1);
+            tds.eq(1).html(data.name);
+        }
+
+        function svGroup(res) {
+            if(res.i < 1) {
+                return alert('error!');
+            }
+            var data = res.data;
+            var tab = $('#group').show().find('table');
+            var tr = $('#' + data._id);
+            if(tr.length == 0) {
+                tr = $('<tr id="' + data._id + '">' + tab.find('.tmpl').html() + '</tr>');
+                tab.append(tr).show();
+            }
+            var tds = tr.find('td');
+            tds.eq(0).html(tab.find("tbody tr").size() - 1);
+            tds.eq(1).html(data.name);
+            tds.eq(2).html(data.max);
+        }
+
+        // 删除域或组
+        function delSG(id, sg){
+            if(!id) return;
+            $('#' + id).parent("table").loading('/'+sg+'/'+id+'/del',{},function(res){
+                if(res && res.deleted) {
+                    $('#delModal').modal('hide');
+                    var tr = $("#" + id);
+                    var tab = tr.parents("tbody");
+                    tr.remove();
+                    tab.find("tr").each(function(i, o) {
+                        $(o).find("td:first").html(i);
+                    });
+                }
+            });
+        }
+
+        function closeAS(obj) {
+            var si = $(obj).siblings(':hidden').val();
+            var it = !si ? $('#addScopeBtn').popover('hide').get(0) : $('#' + si).find('.msBtn').popover('hide').get(0);
+            it.pop = !it.pop;
+        }
+
+        function closeAG(obj) {
+            var si = $(obj).parent().siblings(':hidden').val();
+            var it = !si ? $('#addGroupBtn').popover('hide').get(0) : $('#' + si).find('.mgBtn').popover('hide').get(0);
+            it.pop = !it.pop;
+        }
+
+        function cancelModify() {
+            var obj = $('#modSetBtn').get(0);
+            obj.pop = !obj.pop;
+            $('#modSetBtn').hideCover();
+        }
+

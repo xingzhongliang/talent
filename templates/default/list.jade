@@ -1,0 +1,40 @@
+//
+    列表页
+    User: laichendong
+    Date: 13-5-3
+    Time: 下午4:
+extends layout
+block content
+    .w
+        .list-area
+            .list-area-title
+                h2= scope.name
+
+            .list-category
+                h3= group.name
+                each c in candidates
+                    .list-item
+                        .portrait
+                            a(href="/candidate/#{c._id}")
+                                img(src=c.avatar, alt=c.name)
+                        dl
+                            dt 姓名：
+                            dd= c.name
+                            dt 部门：
+                            dd= c.department
+                            dt 介绍：
+                            dd
+                                .intro
+                                    = c.description
+                            dt.purple 票数：
+                            dd.purple
+                                strong= c.votes
+                        .toupiao
+                            a(href="/candidate/#{c._id}/vote").btn.btn-r1 投票
+
+// 分页条
+    if pages > 1
+        .pagination.pagination-centered
+            ul
+                != createPagination(pages, page)
+

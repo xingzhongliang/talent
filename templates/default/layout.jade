@@ -1,0 +1,57 @@
+//-
+   User: laichendong
+   Date: 13-4-23
+   Time: 下午1:43
+!!! 5
+html
+    head
+        title=title
+        meta(name="viewport",content="width=device-width, initial-scale=1.0")
+        link(href="/#{template}/skin/style.css",rel="stylesheet",media="screen")
+        link(href="/css/wysiwyg-color.css",rel="stylesheet",media="screen")
+        script(src="/js/jquery.js")
+        block head
+    body
+        .w
+            .roles
+                h3 活动规则及公告
+                a.back2home(href="/subject/#{subject._id}/")
+                p= subject.comment
+                    if subject.detail
+                        span.more
+                            a(href="/subject/#{subject._id}/intro") 更多
+                if req.session.user
+                    a.btn.btn-r2.login(href="/do-logout") 退出登录
+                else
+                    a.btn.btn-r2.login(href="/login") 立即登录
+
+        block content
+
+        .redwindow.hide
+            .title
+                .text
+                .close x
+            .content
+            .footer.mb10
+                button.btn.closBtn 确定
+
+        script
+            function pop (msg) {
+                $(".redwindow").find(".content").html(msg).end().fadeIn();
+            };
+            $(function(){
+                $(".redwindow").delegate(".close,.closBtn", "click", function(){
+                    $(".redwindow").fadeOut();
+                });
+            });
+        // 弹出info和error
+        if locals.errors.length > 0
+            script
+                pop("#{errors}")
+
+        if locals.info.length > 0
+            script
+                pop("#{info}")
+
+
+

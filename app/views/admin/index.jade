@@ -4,9 +4,121 @@
     Date: 13-4-30
     Time: 下午2:07
 extends ../layouts/admin
-block subhead
-    | 我是首页啊
+block head
+    script
+        $(function(){
+            $('#top').carousel({interval: 2000});
+                $('#ts').click(function(){
+                    $(this).find('i').hasClass('icon-arrow-up') ? $('#st').val(1) : $('#st').val(2);
+                    $('#sform').submit();
+                });
+                $('#hs').click(function(){
+                    $(this).find('i').hasClass('icon-arrow-up') ? $('#st').val(3) : $('#st').val(4);
+                    $('#sform').submit();
+             });
+            $('.x-group').delegate('.btn-fix','click',function(){
+                var self = this;
+                $.ajax({
+                    url:'/subject/' + self.id + '/fix-top?' + new Date().getTime(),
+                    method:'post',
+                    dataType:'json',
+                    success:function(res) {
+                        $("#delModal").find(".modal-body p").html('主题置顶成功！').end().modal();
+                        $(self).replaceWith('<button class="btn btn-warning btn-cfix" id="' + self.id + '">取消置顶</button>');
+                    }
+                });
+            });
+            $('.x-group').delegate('.btn-cfix','click',function(){
+                var self = this;
+                $.ajax({
+                    url:'/subject/' + self.id + '/fix-top?' + new Date().getTime(),
+                    method:'post',
+                    dataType:'json',
+                    success:function(res) {
+                        $("#delModal").find(".modal-body p").html('主题置顶已取消！').end().modal();
+                        $(self).replaceWith('<button class="btn btn-success btn-fix" id="' + self.id + '">置顶</button>');
+                    }
+                });
+            });
+        });
 
 block content
-    div 啦啦啦  我没侧边栏
+    .row
+        .span12
+            .hero-unit
+                h2  主题管理
+                p 欢迎进入主题管理系统！
+                .row
+                    .span12
+                        form#sform.form-inline
+                            input(type="hidden",name="st",value="#{st}")
+                            if st
+                                input(type="text",placeholder="创建者",name="owner",value="#{owner}").span2
+                            else
+                                input(type="text",placeholder="创建者",name="owner").span2
+                            span &nbsp;
+                            if kw
+                                input(type="text",placeholder="主题名称",name="kw",value="#{kw}").span4
+                            else
+                                input(type="text",placeholder="主题名称",name="kw").span4
+                            span &nbsp;
+                            button.btn.btn-warning &nbsp;&nbsp;
+                                i.icon-search
+                                | &nbsp;&nbsp;
+                            span &nbsp;&nbsp;&nbsp;&nbsp;
+                            a.btn.btn-success(href="/subject/add") 创建新主题
+                .row
+                    .span12
+                        span.label.label-success 主题数：
+                        &nbsp;
+                        span.badge.badge-warning= dashboard.numSubject
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        span.label.label-success 选项数：
+                        &nbsp;
+                        span.badge.badge-warning= dashboard.numCandidate
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        span.label.label-success 投票数：
+                        &nbsp;
+                        span.badge.badge-warning= dashboard.numVote
+
+    hr
+    .alert.alert-info
+        strong 小贴士：
+        span 置顶主题只会显示最新的三个
+    .row
+        .span12
+            ul.thumbnails
+                for subject in subjects
+                    li.span4
+                        .thumbnail
+                            .well.well-small.clearfix
+                                h4
+                                    a(href="/subject/#{subject._id}",style="text-decoration:none",target="_blank") #{cut(subject.name, 9)}
+                                .clearfix
+                                    p.pull-right!=subject.owner
+                                p.subjectComment!=cut(subject.comment, 100)
+                                div.pull-right=fmt2(subject.createTime,'YYYY-MM-DD HH:mm')
+                            .btn-group.x-group
+                                if !subject.fixTop
+                                    button.btn.btn-success.btn-fix(id="#{subject._id}") 置顶
+                                else
+                                    button.btn.btn-warning.btn-cfix(id="#{subject._id}") 取消置顶
+                                a.btn(href="/subject/#{subject._id}/edit") 管理
+                                    i.icon-cog
+                            p
+
+            if pages > 1
+                // 分页条
+                .pagination.pagination-centered
+                    ul
+                        != createPagination(pages, page)
+
+    #delModal.modal.hide.fade
+        .modal-header
+            button(data-dismiss="modal").close ×
+            h3 主题管理
+        .modal-body
+            p
+        .modal-footer
+            button(data-dismiss="modal").btn.btn-primary 确 定
 

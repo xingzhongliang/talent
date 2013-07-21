@@ -1,16 +1,18 @@
 {
-	"name": "talent",
+	"name": "genius",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"start": "node app"
+		"start": "NODE_ENV=development node app"
 	},
 	"dependencies": {
 		"express": "3.1.0",
-		"ejs": "*",
-		"jade": "*",
-		"less-middleware": "*",
-		"mongoose": "*",
-		"soap": "0.2.7"
+		"jade": "latest",
+		"mongoose": "latest",
+		"soap": "0.2.7",
+		"connect-flash": "0.1.0",
+		"moment": "2.0.0",
+		"node-uuid": "1.4.0",
+		"mime-magic": "latest"
 	}
 }

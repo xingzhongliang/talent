@@ -36,9 +36,13 @@ block content
             padding: 7px 9px;
         }
     div.container
-        form.form-signin(method="post", action="/doLogin")
-            h2.form-signin-heading 登录
-            input.input-block-level(type="text",placeholder="ERP账号",name="userName")
-            input.input-block-level(type="password",placeholder="密码",name="password")
+        form.form-signin(method="post", action="/do-login",id="loginForm")
+            h2.form-signin-heading Genius Bar
+            if locals.errors.length > 0
+                for error in errors
+                    div.alert.alert-error=error
+            input.input-block-level(type="text",placeholder="ERP账号",name="userName",required)
+            input.input-block-level(type="password",placeholder="密码",name="password",required)
             input(type="hidden", name="target", value=target)
             button.btn.btn-large.btn-primary(type="submit") 登录
+

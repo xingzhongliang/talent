@@ -9,33 +9,64 @@
 var auth = require("../config/middlewares/auth");
 
 module.exports = function (app) {
-    var show = require("../app/controllers/show");
-    // 首页
-    app.get('/', show.index);
-    // 列表页
-    app.get("/list/:area", show.list);
-    var candidate = require("../app/controllers/candidate");
-    app.get("/candidate/new", candidate.new);
-    // 个人详情页
-    app.get("/candidate/:erpId", show.candidate);
-
-
-    var login = require("../app/controllers/passport");
-    // 登录登出
-    app.get('/login', login.login);
-    app.post('/doLogin', login.doLogin);
-    app.get('/doLogout', login.doLogout);
-
-    // 管理控制台
-    var admin = require("../app/controllers/admin");
-    app.get("/admin", auth("admin"), admin.index);
-
-
-    //添加主题
     var subject = require("../app/controllers/subject");
-    app.get('/admin/addSub',auth("admin"), subject.addSubject);
-    //主题选项详情页编辑
-    app.get('/admin/addSubOpt',auth("admin"), subject.addSubjectOption);
+    var candidate = require("../app/controllers/candidate");
+    var passport = require("../app/controllers/passport");
+    var data = require("../app/controllers/data");
+    var vote = require("../app/controllers/vote");
 
+    app.get('/', subject.index);// 首页
+    app.get("/admin", auth("admin"), subject.list);// 管理控制台
+
+    // 登录登出
+    app.get('/login', passport.login);
+    app.post('/do-login', passport.doLogin);
+    app.get('/do-logout', passport.doLogout);
+    app.get('/token', passport.token);
+    app.post('/verify-token', passport.verifyToken);
+
+    // 主题相关
+    app.get('/subject/add', auth("admin"), subject.add); // 添加主题
+    app.post('/subject/do-add', auth("admin"), subject.doAdd);// 插入数据
+    app.get('/subject/:subjectId', subject.show); // 前台展示主题首页
+    app.get('/subject/:subjectId/intro', subject.intro); // 主题介绍页
+    app.get('/subject/:subjectId/data', auth("admin"), data.subject); // 主题数据首页
+    app.get('/subject/:subjectId/edit', auth("admin"), subject.edit); // 编辑，管理主题
+    app.post('/subject/:subjectId/do-edit', auth("admin"), subject.doEdit); // 编辑，管理主题
+    app.post('/subject/:subjectId/do-edit/detail', auth("admin"), subject.doEditDetail); // 编辑活动介绍页
+    app.post('/subject/:subjectId/fix-top', auth("admin"), subject.doFixTop); // 置顶主题
+    app.post('/subject/:subjectId/chg-banner', auth("admin"), subject.chgBanner); // 修改banner
+
+    // 选项管理
+    app.get('/subject/:subjectId/candidate', candidate.channel); // 前台展示列表（频道）页
+    app.get('/subject/:subjectId/candidate/add', auth("token"), candidate.add); // 新选项
+    app.post("/subject/:subjectId/candidate/new", auth("token"), candidate.doAdd); // 保存新选项
+    app.get('/subject/:subjectId/candidate/list', auth("admin"), candidate.list); // 主题管理选项
+
+    // 域管理
+    var scope = require("../app/controllers/scope");
+    app.get('/scope/save', auth("admin"), scope.save);
+    app.get('/scope/:scopeId/del', auth("admin"), scope.del);
+    // 分组管理
+    var group = require("../app/controllers/group");
+    app.get('/group/save', auth("admin"), group.save);
+    app.get('/group/:groupId/del', auth("admin"), group.del);
+
+    // 选项相关
+    app.get("/candidate/:candidateId", candidate.show); // 选项详情页
+    app.get("/candidate/:candidateId/del", auth("admin"), candidate.del); // 删除选项
+    app.get("/candidate/:candidateId/vote", auth("user"), candidate.vote); // 投票
+
+    // 投票相关
+    app.get("/subject/:subjectId/vote/list", auth("admin"), vote.list); // 某个主题的投票列表
+
+    app.param("subjectId", subject.subject); // 处理带:subjectId参数的url中的:subjectId
+    app.param("candidateId", candidate.candidate); // 处理带:candidateId参数的url中的:candidateId
+    app.param("scopeId", scope.scope);
+    app.param("groupId", group.group);
+
+    //改良版本的upload
+    var svf = require('../app/controllers/svf');
+    app.all('/svf', svf.svf);
 
 };

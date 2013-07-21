@@ -1,0 +1,267 @@
+//
+    User: laichendong
+    Date: 13-5-10
+    Time: 下午11:54
+extends ../layouts/adminWithSideBar
+block head
+    style
+        .muted {
+            background-color: #ffffff;
+            margin-bottom: 20px;
+            min-height: 20px;
+            padding: 19px;
+        }
+
+        .a_cursor {
+            cursor: pointer;
+        }
+    script(src="/js/filebox/filebox.js")
+    script
+        $(function(){
+           $('#avatar').filebox({
+                width:140,
+                height:160,
+                bgType:'head',
+                callback:function(f,data,res) {
+                    $('#avatar').val(data.path);
+                }
+           });
+           $('#addImg').filebox({
+                width:120,
+                height:120,
+                set_result_handler:setImg
+           });
+           $('#addMedia').filebox({
+                width:286,
+                height:179,
+                type:'video',
+                loadingType:'bar',
+                set_result_handler:setVideo
+           });
+           $('#addMusic').filebox({
+                width:286,
+                height:30,
+                type:'music',
+                loadingType:'bar',
+                set_result_handler:setMusic
+           });
+        });
+
+
+
+block sidebar
+    ul(data-spy="affix").nav.nav-tabs.nav-stacked
+        li: a(href="/subject/#{subject._id}/edit") 管理主题
+        li: a(href="/subject/#{subject._id}",target="_blank") 查看主题
+        li: a(href="/subject/add") 新增主题
+        li: a(href="/subject/#{subject._id}/candidate/list") 管理选项
+
+block main
+    .page-header
+        h2= subject.name
+            small #{subject.viewOpt.newCandidatePage.actionLabel}
+    .row &nbsp;
+    form(id='dataForm',method="post",enctype="multipart/form-data", action="/subject/#{subject._id}/candidate/new").form-horizontal
+        .span9
+            //- 如果有组或域，显示备选
+            fieldset
+            legend 基本信息
+                //- if subject.scopes.length > 1
+                .control-group
+                    lebel.control-label #{subject.viewOpt.newCandidatePage.scopeLabel}：
+                    .controls
+                        select(name="scope").span6
+                            each scope in subject.scopes
+                                option(value=scope._id)=scope.name
+                //- if subject.groups.length > 1
+                .control-group
+                    lebel.control-label #{subject.viewOpt.newCandidatePage.groupLabel}：
+                    .controls
+                        select(name="group").span6
+                            each group in subject.groups
+                                option(value=group._id)=group.name
+                .control-group
+                    label.control-label #{subject.viewOpt.newCandidatePage.titleLabel}：
+                    .controls
+                        if subject.viewOpt.candidateIsEmployee
+                            //- 如果选项时京东员工，选项标题默认为员工姓名，不能更改
+                            input.span6(name="name",type="text",readonly,value=req.session.user.name)
+                        else
+                            //- 否则不提供默认值，并可输入
+                            input.span6(name="name",type="text",placeholder="#{subject.viewOpt.newCandidatePage.titleLabel}")
+                //- showType > 1 表示为非纯文本，需要图片和详细信息
+                if subject.viewOpt.showType > 1
+                    .control-group
+                        label.control-label #{subject.viewOpt.newCandidatePage.imgLabel}：
+                        .controls
+                            input#avatar.span6(type="text",name="avatar")
+                    .control-group
+                        lebel.control-label #{subject.viewOpt.newCandidatePage.descriptionLabel}：
+                        .controls
+                            textarea.span6(name="description",rows="5",placeholder="简短描述")
+                //- showType == 3 表示为有详情页，则至少需要提供一个文本，图片，音频或视频作为详情
+                if subject.viewOpt.showType == 3
+                    .well.span8
+                        fieldset
+                            legend #{subject.viewOpt.newCandidatePage.detailLegend}
+                        input(name='witOfImg',type="hidden")
+                        input(name='witOfVideo',type="hidden")
+                        input(name='witOfAudio',type="hidden")
+                        textarea.span8(rows="7",placeholder="详细描述",name="witOfText")
+                        div.row
+                            .span8
+                                .btn-group
+                                    a(href="javascript:;", title="上传图片",onclick="showPanel(1)").btn
+                                        i.icon-picture
+                                    a(href="javascript:;", title="上传视频",onclick="showPanel(2)").btn
+                                        i.icon-film
+                                    a(href="javascript:;", title="上传音频",onclick="showPanel(3)").btn
+                                        i.icon-music
+                            .span8 &nbsp;
+                        div#imgPanel.row.hide
+                            .span8.atvSpan
+                                .pull-left
+                                    ul.thumbnails
+                                .pull-left &nbsp;
+                                .pull-left
+                                    input#addImg(type="text")
+                                .clearfix
+                            .span8 &nbsp;
+                                a(name='imgPanel')
+                        div#mediaPanel.row.hide
+                            .span8.atvSpan
+                                .pull-left
+                                    ul.thumbnails
+                                .pull-left &nbsp;
+                                .pull-left
+                                    input#addMedia(type="text")
+                                .clearfix
+                            .span8 &nbsp;
+                                a(name='mediaPanel')
+                        div#musicPanel.row.hide
+                            .span8.atvSpan
+                                .pull-left
+                                    ul.thumbnails
+                                .pull-left &nbsp;
+                                .pull-left
+                                    input#addMusic(type="text")
+                                .clearfix
+                            .span8 &nbsp;
+                                a(name='musicPanel')
+
+                    .span8.muted
+                        .pull-right
+                            button.btn.btn-success.btn-large(type="button",onclick="sbmt()") 提交报名信息
+block footer
+    script
+        var witOfImg=[],witOfAudio=[],witOfVideo=[];
+        function showPanel(type) {
+            var target;
+            switch(type) {
+                case 1:
+                target = '#imgPanel';
+                break;
+                case 2:
+                target = '#mediaPanel';
+                break;
+                case 3:
+                target = '#musicPanel';
+                break;
+            }
+            $(target).slideDown('fast',function(){
+                var href = window.location;
+                window.location.href = href.toString().split('#')[0] + target;
+            });
+        }
+
+        function setImg(f,data,res) {
+            witOfImg.push(data.path);
+            var sp = $('#imgPanel').find('.atvSpan');
+            var ul = sp.find('ul');
+            if(sp.find('li').length >= 3) {
+                sp.before('<div class="span9"><ul class="thumbnails"></ul></div>');
+                ul = sp.prev().find('ul');
+                ul.append(sp.find('ul').html());
+                ul.find('a').click(bind).addClass('a_cursor');
+                sp.find('ul').html('');
+            }
+            ul.append('<li class="span2"><div class="thumbnail"><img src=""><div class="pull-left"><i class="icon-picture"></i></div><div class="pull-right"><a><i class="icon-remove"></i></a></div><div class="clearfix"></div></div></li>');
+            var li =  ul.find('li:last');
+            li.find('img').attr('src',data.path).attr('id',data.path);
+            li.find('a').click(bind).addClass('a_cursor');
+
+            function bind() {
+                var val =$(this).parents('li').find('img').attr('id');
+                witOfImg = remove(val,witOfImg);
+                $(this).parents('li').remove();
+            }
+        }
+
+        function setVideo(f,data,res) {
+            witOfVideo.push(data.video);
+            var sp = $('#mediaPanel').find('.atvSpan');
+            var ul = sp.find('ul');
+            if(sp.find('li').length >= 1) {
+                sp.before('<div class="span9"><ul class="thumbnails"></ul></div>');
+                ul = sp.prev().find('ul');
+                ul.append(sp.find('ul').html());
+                ul.find('a').click(bind).addClass('a_cursor');
+                sp.find('ul').html('');
+            }
+            ul.append('<li class="span4"><div class="thumbnail"><img src=""><div class="pull-left"><i class="icon-film"></i></div><div class="pull-right"><a><i class="icon-remove"></i></a></div><div class="clearfix"></div></div></li>');
+            var li =  ul.find('li:last');
+            li.find('img').attr('src',data.path).attr('id',data.video);
+            li.find('a').click(bind).addClass('a_cursor');
+
+            function bind() {
+                var val =$(this).parents('li').find('img').attr('id');
+                witOfVideo = remove(val,witOfVideo);
+                $(this).parents('li').remove();
+            }
+        }
+
+        function setMusic(f,data,res) {
+            witOfAudio.push(data.path);
+            var sp = $('#musicPanel').find('.atvSpan');
+            var ul = sp.find('ul');
+            if(sp.find('li').length >= 1) {
+                sp.before('<div class="span9"><ul class="thumbnails"></ul></div>');
+                ul = sp.prev().find('ul');
+                var val = sp.find('ul input').val();
+                ul.append(sp.find('ul').html());
+                ul.find('.a_btn').click(bind).addClass('a_cursor');
+                ul.find('input').val(val);
+                sp.find('ul').html('');
+            }
+            ul.append('<li class="span4"><div class="input-append input-prepend"><button class="btn" type="button"><i class="icon-music"></i></button><input type="text" class="span3" readonly="readonly"/><button class="btn a_btn" type="button"><i class="icon-remove"></i></button></div></li>');
+            var li =  ul.find('li:last');
+            li.find('input').val(f.name).attr('id',data.path);
+            li.find('.a_btn').click(bind).addClass('a_cursor');
+
+            function bind() {
+                var val = $(this).siblings('input').attr('id');
+                witOfAudio = remove(val,witOfAudio);
+                $(this).parents('li').remove()
+            }
+        }
+
+        function remove(elem,arr) {
+            var c = [];
+            for(var i in arr) {
+                if(arr[i] != elem) {
+                    c.push(arr[i]);
+                }
+            }
+            return c;
+        }
+
+        function sbmt() {
+            $('[name="witOfImg"]').val(witOfImg.join(','));
+            $('[name="witOfAudio"]').val(witOfAudio.join(','));
+            $('[name="witOfVideo"]').val(witOfVideo.join(','));
+            console.info($('[name="witOfImg"]').val());
+            console.info($('[name="witOfAudio"]').val());
+            console.info($('[name="witOfVideo"]').val());
+            $('#dataForm').submit();
+        }
+

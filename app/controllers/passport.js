@@ -1,9 +1,12 @@
-var config = require("../../config/config");
+var env = process.env.NODE_ENV || "development";
+var config = require("../../config/config")[env];
+var mongoose = require("mongoose");
+var Subject = mongoose.model("Subject");
 /*
  * login page.
  */
 exports.login = function (req, res) {
-    res.render('login', { target: req.param("target")});
+    res.render('login', { target: req.param("target") || req.flash("target")});
 };
 
 /**
@@ -16,21 +19,27 @@ exports.doLogin = function (req, res) {
         if (config.app.needErpLogin) {
             loginWithErp(req, res, function (err) {
                 if (err) {
-                    res.flash(err);
+                    req.flash('errors', err.message);
+                    req.flash("target", req.body.target);
+                    return res.redirect("/login");
                 }
                 gotoTarget(req, res);
             });
         } else {
             loginNoErp(req, res, function (err) {
                 if (err) {
-                    res.flash(err);
+                    req.flash('errors', [err.message]);
+                    req.flash("target", req.body.target);
+                    return res.redirect("/login");
                 }
                 gotoTarget(req, res);
             });
         }
 
     } else {
-        res.flash("login error", "ERP账号和密码必填");
+        req.flash('errors', ["ERP账号和密码必填"]);
+        req.flash("target", req.body.target);
+        res.redirect("/login");
     }
 };
 
@@ -40,9 +49,64 @@ exports.doLogin = function (req, res) {
  * @param res
  */
 exports.doLogout = function (req, res) {
-    req.session.destroy(function () {
-        res.redirect('/');
-    });
+    req.flash("target", undefined);
+    req.flash("subjectId", undefined);
+    req.session.user = null;
+    res.redirect('back');
+};
+
+/**
+ * token 输入页面
+ * @param req
+ * @param res
+ */
+exports.token = function (req, res) {
+    var subjectId = req.flash("subjectId")[0];
+    if (subjectId) {
+        Subject.load(subjectId, function (err, subject) {
+            if (err) throw err;
+            if (!subject) throw new Error("骚年，你说的那个主题不存在");
+            res.render('token', { target: req.flash("target"), subject: subject});
+        });
+    } else {
+        throw new Error("骚年，你要验证哪个主题的令牌？");
+    }
+};
+
+/**
+ * 验证token是否正确
+ * @param req
+ * @param res
+ */
+exports.verifyToken = function (req, res) {
+    // 返回错误信息
+    var returnError = function (err) {
+        req.flash("errors", err);
+        req.flash("target", req.body.target);
+        req.flash("subjectId", req.body.subjectId);
+        return res.redirect("/token");
+    };
+
+    if (req.body) {
+        if (!req.body.token) {
+            return returnError("请输入令牌");
+        } else if (!req.body.subjectId) {
+            return returnError("额，骚年，你要验证哪个主题的令牌？");
+        } else {
+            Subject.load(req.body.subjectId, function (err, subject) {
+                if (err) return returnError("系统错误，请稍后再试");
+                if (!subject) return returnError("额，骚年，你说的那个主题不存在");
+                console.info(subject.token);
+                if (req.body.token == subject.token) { // token 验证通过
+                    req.session.user.token = req.body.token;
+                    gotoTarget(req, res);
+                } else {
+                    return returnError("您的令牌不对");
+                }
+            });
+        }
+    }
+
 };
 
 /**
@@ -58,7 +122,7 @@ var loginWithErp = function (req, res, callBack) {
     soap.createClient(url, function (err, client) {
         client.Verify(args, function (err, result) {
             if (err) {
-                return callBack(err);
+                return callBack({message: "糟糕，ERP好像开小差了，暂时不能登录。"});
             }
             if (result && result.VerifyResult) {
                 result = result.VerifyResult[0];
@@ -74,11 +138,10 @@ var loginWithErp = function (req, res, callBack) {
                     user.role.push("admin");
                 }
                 req.session.user = user;
-                req.session.save();
                 callBack();
             } else {
                 // 登录失败
-                callBack("登录失败");
+                callBack({message: "erp账号和密码不匹配"});
             }
         });
 
@@ -95,13 +158,13 @@ var loginNoErp = function (req, res, callBack) {
     var user = {};
     user.erpId = req.body.userName;
     user.name = req.body.userName;
+    user.department = "技术部";
     user.role = ["user"];
     // 如果登录者是管理员， 赋予用户管理员角色
     if (config.isAdmin(user.erpId)) {
         user.role.push("admin");
     }
     req.session.user = user;
-    req.session.save();
 
     callBack();
 };
@@ -112,9 +175,11 @@ var loginNoErp = function (req, res, callBack) {
  * @param res
  */
 var gotoTarget = function (req, res) {
+    req.flash("target", undefined);
+    req.flash("subjectId", undefined);
     var target = req.body.target;
     if (target) {
-        res.redirect(target);
+        res.redirect(decodeURIComponent(target));
     } else {
         res.redirect("/");
     }

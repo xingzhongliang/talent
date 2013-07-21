@@ -4728,7 +4728,7 @@ button.btn.btn-mini, input[type="submit"].btn.btn-mini {
     left: 0;
     z-index: 1010;
     display: none;
-    max-width: 600px;
+    max-width: 1280px;
     padding: 1px;
     text-align: left;
     white-space: normal;
@@ -5467,3 +5467,18 @@ a.label:hover, a.label:focus, a.badge:hover, a.badge:focus {
 .affix {
     position: fixed
 }
+
+.div-center {
+    width: auto;
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.label-large {
+    line-height: 24px;
+    font-size: 18px;
+    margin: 5px;
+}
+
+

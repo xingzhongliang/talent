@@ -1,0 +1,199 @@
+extends ../layouts/admin
+block head
+    link(href="/css/bootstrapSwitch.css",rel="stylesheet",media="screen")
+    link(href="/js/datepicker/css/datepicker.css",rel="stylesheet",media="screen")
+    link(href="/css/bootstrap-wysihtml5-0.0.2.css",rel="stylesheet",media="screen")
+    script(src="/js/bootstrap-sniper.js")
+    script(src="/js/datepicker/js/bootstrap-datepicker.js")
+    script(src="/js/filebox/filebox.js")
+    script(src="/js/popover/popover.js")
+    script(src="/js/validate/validate.js")
+    script(src="/js/wysihtml5-0.3.0.min.js")
+    script(src="/js/bootstrap-wysihtml5-0.0.2.min.js")
+    script
+        $(function(){
+            $('#voteMax').sniper();
+            $('#regMax').sniper();
+            $(".dpInpt").datepicker({format:'yyyy-mm-dd'});
+
+            $('#banInpt').filebox({
+                width:746,
+                height:150,
+                callback:function(f,data,res) {
+                    $('#banInpt').val(data.path);
+                }
+            });
+           // validate
+           $('#dataForm').validateInit();
+           // 初始化编辑器
+           $(".wysihtml5").wysihtml5();
+        });
+
+
+block content
+    div.page-header
+        h2 添加主题
+            small     Add Subject
+    div#msgDiv.alert.alert-block.alert-error.hide
+        strong 表单验证失败！
+        span(style='margin-left:5px') &nbsp;
+    form#dataForm.form-horizontal(method='post',action='/subject/do-add')
+        fieldset
+            legend 基本信息
+            .control-group
+                label.control-label 活动名称：
+                .controls
+                    input.input-block-level(type='text',id='sub-name',name='name',placeholder='活动名称',v="require;length:30")
+            .control-group
+                label.control-label 活动说明：
+                .controls
+                    textarea.input-block-level(name='comment',rows=3,placeholder='活动说明',v="require;length:800")
+            //.alert.alert-info
+                strong 小贴士：
+                span 如果希望主题被置顶显示，请务必上传banner，否则无法正常显示
+            .control-group
+                label.control-label 主题Banner图片：
+                .controls
+                    input#banInpt(type='text',value='',name='banner')
+            .control-group
+                label.control-label 前台显示模板：
+                .controls
+                    select(name="viewOpt[templateName]")
+                        option(value="default",selected) default
+
+        fieldset
+            legend 活动设置
+            .control-group
+                label.control-label 首页是否可见：
+                .controls
+                    div.b-switch(data-on-label='是',data-off-label='否')
+                        input(name='isPublic',type='checkbox',checked='true',value='1')
+            .control-group
+                label.control-label 是否开放报名：
+                .controls
+                    div.b-switch(data-on-label='是',data-off-label='否')
+                        input(name='canReg',type='checkbox',checked='true',value='1')
+            .control-group
+                label.control-label 是否使用令牌：
+                .controls
+                    div.b-switch(data-on-label='是',data-off-label='否')
+                        input(name='token',type='checkbox',checked='true',value='1')
+            .control-group
+                label.control-label 投票开始时间：
+                .controls
+                    div.input-append
+                        input.dpInpt(name='voteStart',type="text",v="require")
+                        span.add-on: i.icon-th
+            .control-group
+                label.control-label 投票截止时间：
+                .controls
+                    div.input-append
+                        input.dpInpt(name='voteEnd',type="text",v="require")
+                        span.add-on: i.icon-th
+            .control-group
+                label.control-label 报名开始时间：
+                .controls
+                    div.input-append
+                        input.dpInpt(name='regStart',type="text",v="require")
+                        span.add-on: i.icon-th
+            .control-group
+                label.control-label 报名截止时间：
+                .controls
+                    div.input-append
+                        input.dpInpt(name='regEnd',type="text",v="require")
+                        span.add-on: i.icon-th
+
+        fieldset
+            legend 活动介绍页
+            .control-group
+                textarea.input-block-level.wysihtml5(name="detail",placeholder="请填写活动详细介绍，此内容将在活动介绍页展示",rows="15")
+
+        fieldset
+            h3#toggleAdvancedOptsBtn.btn.btn-info 高级设置&nbsp;&nbsp;&nbsp;
+                i.icon-plus.icon-white
+            .row &nbsp;
+            div#advancedOpts.well.hide
+                fieldset
+                    legend 页面通用设置
+                    .control-group
+                        label.control-label 选项展示方式：
+                        .controls
+                            label.radio
+                                input(type='radio',value='1',name='viewOpt[showType]')
+                                span 简单文本展示——适用于一般的简单意见调查
+                            label.radio
+                                input(type='radio',value='2',name='viewOpt[showType]')
+                                span 文本加缩略图展示——比简单文本展示方式稍微丰富一点的方式
+                            label.radio
+                                input(type='radio',value='3',name='viewOpt[showType]',checked='true')
+                                span 文本、缩略图加详情页——用于复杂的调研活动，各个选项有专门的详情页介绍详细信息
+                    .control-group
+                        label.control-label 选项是否为京东员工：
+                        .controls
+                            div.b-switch(data-on-label='是',data-off-label='否')
+                                input(type='checkbox',name="viewOpt[candidateIsEmployee]",checked='true',value='1')
+
+                fieldset
+                    legend 新增选项页面设置
+                    .control-group
+                        label.control-label 页面动作名称：
+                        .controls
+                            input(type="text",name="viewOpt[newCandidatePage][actionLabel]",value="报名")
+                    .control-group
+                        label.control-label 选项所属域表单标题：
+                        .controls
+                            input(type="text",name="viewOpt[newCandidatePage][scopeLabel]",value="地区")
+                    .control-group
+                        label.control-label 选项所属组表单标题：
+                        .controls
+                            input(type="text",name="viewOpt[newCandidatePage][groupLabel]",value="分组")
+                    .control-group
+                        label.control-label 选项名称表单标题：
+                        .controls
+                            input(type="text",name="viewOpt[newCandidatePage][titleLabel]",value="姓名")
+                    .control-group
+                        label.control-label 选项图片表单标题：
+                        .controls
+                            input(type="text",name="viewOpt[newCandidatePage][imgLabel]",value="头像")
+                    .control-group
+                        label.control-label 选项描述表单标题：
+                        .controls
+                            input(type="text",name="viewOpt[newCandidatePage][descriptionLabel]",value="简介")
+                    .control-group
+                        label.control-label 选项详情的表单legend：
+                        .controls
+                            input(type="text",name="viewOpt[newCandidatePage][detailLegend]",value="才艺展示")
+                    .control-group
+                        label.control-label 新增选项动作按钮名称：
+                        .controls
+                            input(type="text",name="viewOpt[newCandidatePage][actionBtnLabel]",value="提交报名")
+
+            div.form-actions
+                //label.checkbox
+                    input(type="checkbox")
+                    span 其他人往这个主题添加的选项必须由我审核之后才能生效
+                a(href='javascript:;',onclick='sbmt()').btn.btn-success.btn-large 提交新主题
+                span &nbsp;
+                a(href="javascript:window.location='/admin';").btn 取消
+
+
+
+block footer
+    script(src="/js/bootstrapSwitch.js")
+    script
+        function sbmt() {
+             console.info($('#dataForm').validate());
+             $('#dataForm').validate() && $('#dataForm').submit();
+        }
+
+
+        function showMsg(msg) {
+            $('#msgDiv').show().find('span').html(msg);
+        }
+
+        $(function(){
+            $("#toggleAdvancedOptsBtn").click(function(){
+                $(this).find("i").toggleClass("icon-plus").toggleClass("icon-minus");
+                $("#advancedOpts").slideToggle();
+            });
+        });

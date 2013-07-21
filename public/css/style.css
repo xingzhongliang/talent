@@ -1,10 +1,13 @@
 body {
-    padding-top: 40px;
-    padding-bottom: 40px;
+    padding-top: 60px;
+    padding-bottom: 55px;
 }
-.fl-left {
-    float: left;
+.sideBar .nav{
+    width: 220px;
+    box-shadow:3px 3px 3px rgba(0,0,0,.03);
 }
-.fl-right {
-    float: right;
+.subjectComment{
+    text-indent: 2em;
+    height:100px;
+    max-height: 100px;
 }

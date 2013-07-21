@@ -1,0 +1,127 @@
+//-
+  User: laichendong
+  Date: 13-5-11
+  Time: 下午7:57
+extends ../layouts/adminWithSideBar
+block sidebar
+    ul(data-spy="affix").nav.nav-tabs.nav-stacked
+        li: a(href="/subject/#{subject._id}/edit") 管理主题
+        li: a(href="/subject/#{subject._id}",target="_blank") 查看主题
+        li: a(href="/subject/add") 新增主题
+        if(subject.token)
+            li: a(href="/subject/#{subject._id}/candidate/add?token=#{subject.token}") 新增选项
+        else
+            li: a(href="/subject/#{subject._id}/candidate/add") 新增选项
+        li: a(href="/subject/#{subject._id}/candidate/list") 管理选项
+        li: a(href="/subject/#{subject._id}/vote/list") 投票情况
+
+block main
+    .well
+        p 投票总数：
+            span.badge.badge-warning #{summary.count}
+        dl
+            if Object.getOwnPropertyNames(summary.department)
+                dt 投票者部门：
+                each count, department in summary.department
+                    dd.span2 #{department}：
+                        if (count)
+                            b.badge.badge-success #{count}
+                        else
+                            b.badge 0
+        dl
+            if Object.getOwnPropertyNames(summary.candidate)
+                dt 选项：
+                each c, c_id in summary.candidate
+                    dd.span2 #{c.name}：
+                        if (c.count)
+                            b.badge.badge-success #{c.count}
+                        else
+                            b.badge 0
+    table.table.table-striped.table-hover
+        thead
+            tr
+                th.span1 #
+                th 姓名
+                th
+                    .dropdown
+                        .btn-group
+                            a.departmentSelector.btn(_id="") 投票者部门
+                            if Object.getOwnPropertyNames(summary.department)
+                                a.btn.dropdown-toggle(data-toggle="dropdown")
+                                    i.icon-chevron-down
+                                ul.dropdown-menu
+                                    each count, department in summary.department
+                                        li: a.departmentSelector(_id="#{department}") #{department}：
+                                            b.text-error
+                                                if (count)
+                                                    | ( #{count} )
+                                                else
+                                                    | ( 0 )
+                th
+                    .dropdown
+                        .btn-group
+                            a.candidateSelector.btn(_id="") 选项
+                            if Object.getOwnPropertyNames(summary.candidate)
+                                a.btn.dropdown-toggle(data-toggle="dropdown")
+                                    i.icon-chevron-down
+                                ul.dropdown-menu
+                                    each c, c_id in summary.candidate
+                                        li: a.candidateSelector(_id="#{c_id}") #{c.name}：
+                                            b.text-error
+                                                if (c.count)
+                                                    | ( #{c.count} )
+                                                else
+                                                    | ( 0 )
+                th
+                    #sortByTime.btn 投票时间
+                        i.icon-arrow-down
+        tbody
+            if(summary.count <= 0)
+                tr: td(colspan="5")
+                    p.text-center.text-warning 没有数据
+            each v,i in votes
+                tr
+                    td= i+1
+                    td= v.voter_name
+                    td= v.voter_department
+                    td: a(href="/candidate/#{v.candidate}",target="_blank")= v.candidate_name
+                    td= fmt2(v.time,'YYYY-MM-DD HH:mm')
+
+    if pages > 1
+        // 分页条
+        .pagination.pagination-centered
+            ul
+                != createPagination(pages, page)
+
+    script
+        $(function(){
+
+            var dataOptions = !{JSON.stringify(dataOptions)};
+            if(dataOptions.time == "-1") {
+                $("#sortByTime").find("i").removeClass("icon-arrow-up").addClass("icon-arrow-down")
+            } else {
+                $("#sortByTime").find("i").removeClass("icon-arrow-down").addClass("icon-arrow-up")
+            }
+
+            // 按票数排序
+            $("#sortByTime").click(function(){
+                var sort = $(this).find("i")
+                    .toggleClass("icon-arrow-down")
+                    .toggleClass("icon-arrow-up")
+                    .hasClass("icon-arrow-down") ? "-1" : "1";
+                $.extend(dataOptions, {time : sort})
+                window.location = "?" + $.param(dataOptions)
+            });
+
+            //
+            $(".departmentSelector").click(function(){
+                var department = $(this).attr("_id");
+                $.extend(dataOptions, {department : department})
+                window.location = "?" + $.param(dataOptions)
+            })
+            $(".candidateSelector").click(function(){
+                var candidate = $(this).attr("_id");
+                $.extend(dataOptions, {candidate : candidate})
+                window.location = "?" + $.param(dataOptions)
+            });
+        });

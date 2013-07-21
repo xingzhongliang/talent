@@ -1,0 +1,54 @@
+//
+    登陆页面
+    User: laichendong
+    Date: 13-4-23
+    Time: 上午11:31
+extends layouts/bootstrap
+block content
+    style
+        body {
+            background-color: #f5f5f5;
+        }
+        .form-signin {
+            padding: 19px 29px 29px;
+            margin: 0 auto 20px;
+            background-color: #fff;
+            border: 1px solid #e5e5e5;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+            -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+        }
+
+        .form-signin .form-signin-heading,
+        .form-signin .checkbox {
+            margin-bottom: 10px;
+        }
+
+        .form-signin input[type="text"],
+        .form-signin input[type="password"] {
+            font-size: 16px;
+            height: auto;
+            margin-bottom: 15px;
+            padding: 7px 9px;
+        }
+
+    div.container
+        .span10.offset1
+            form.form-signin(method="post", action="/verify-token",id="loginForm")
+                h2.page-header=locals.subject.name
+                    small 令牌验证
+                div.alert.alert-info
+                    p 由于主题设置需要令牌才可以报名,请先输入令牌。
+                    p 如果不知道令牌是什么，请联系主题创建者：
+                        b=subject.owner
+                if locals.errors.length > 0
+                    for error in errors
+                        div.alert.alert-error=error
+                input.input-block-level(type="text",placeholder="令牌",name="token",required)
+                input(type="hidden", name="target", value=locals.target)
+                input(type="hidden", name="subjectId", value=locals.subject._id)
+                button.btn.btn-large.btn-primary(type="submit") 验&nbsp;证
+
