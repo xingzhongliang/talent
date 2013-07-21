@@ -52,7 +52,7 @@ exports.add = function (req, res) {
         // 检查是否已经报过名
         Candidate.loadInSubject(req.session.user.erpId, subject._id, function (err, candidate) {
             if (err) throw err;
-            if (!candidate) {
+            if (candidate) {
                 req.flash("errors", "您已经报过名了，不能重复报名");
                 return res.redirect('/subject/' + subject._id);
             } else {
