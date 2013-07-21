@@ -38,22 +38,40 @@ exports.candidate = function (req, res, next, id) {
  */
 exports.add = function (req, res) {
     var subject = req.subject;
-    if (!config.isAdmin(req.session.user.erpId)) { // 非管理员 限制在报名窗口期内进入这个页面
+    if (!config.isAdmin(req.session.user.erpId)) { // 非管理员
+        // 限制在报名窗口期内进入这个页面
         var now = new Date().getTime();
         if (subject.regStart && now < subject.regStart.getTime()) { // 还没到报名时间
             req.flash("errors", "还没到报名时间");
-            res.redirect('/subject/' + subject._id);
+            return res.redirect('/subject/' + subject._id);
         } else if (subject.regEnd && now > subject.regEnd.getTime()) { // 报名时间已过
             req.flash("errors", "报名时间已过");
-            res.redirect('/subject/' + subject._id);
+            return res.redirect('/subject/' + subject._id);
         }
+
+        // 检查是否已经报过名
+        Candidate.loadInSubject(req.session.user.erpId, subject._id, function (err, candidate) {
+            if (err) throw err;
+            if (!candidate) {
+                req.flash("errors", "您已经报过名了，不能重复报名");
+                return res.redirect('/subject/' + subject._id);
+            } else {
+                return goToRegisterPage();
+            }
+        });
+    } else {
+        return goToRegisterPage();
     }
-    // 查询主题下的域和组
-    Subject.scopesAndGroups(subject._id, function (scopes, groups) {
-        subject.scopes = scopes;
-        subject.groups = groups;
-        res.render("candidate/add", {subject: subject});
-    });
+
+    function goToRegisterPage() {
+        // 查询主题下的域和组
+        Subject.scopesAndGroups(subject._id, function (scopes, groups) {
+            subject.scopes = scopes;
+            subject.groups = groups;
+            res.render("candidate/add", {subject: subject});
+        });
+    }
+
 
 };
 

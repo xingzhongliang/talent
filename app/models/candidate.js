@@ -64,6 +64,16 @@ CandidateSchema.statics = {
         this.findOne({"value": value}).exec(cb);
     },
 
+    /**
+     *
+     * @param value
+     * @param subjectId
+     * @param cb
+     */
+    loadInSubject : function (value, subjectId, cb) {
+      this.findOne({"value" : value, "subject" : subjectId}).exec(cb);
+    },
+
     findBySubjectId: function (sid, cb) {
         _list.call(this, {criteria: {subject: sid}}, cb);
     },
